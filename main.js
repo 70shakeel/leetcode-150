@@ -1,14 +1,15 @@
-// Remove Duplicates from Sorted Array
-// Easy
+// Remove Duplicates from Sorted Array II
+// Medium
 // Topics
 // Companies
-// Hint
-// Given an integer array nums sorted in non - decreasing order, remove the duplicates in -place such that each unique element appears only once.The relative order of the elements should be kept the same.Then return the number of unique elements in nums.
+// Given an integer array nums sorted in non - decreasing order, remove some duplicates in -place such that each unique element appears at most twice.The relative order of the elements should be kept the same.
 
-// Consider the number of unique elements of nums to be k, to get accepted, you need to do the following things:
+// Since it is impossible to change the length of the array in some languages, you must instead have the result be placed in the first part of the array nums.More formally, if there are k elements after removing the duplicates, then the first k elements of nums should hold the final result.It does not matter what you leave beyond the first k elements.
 
-// Change the array nums such that the first k elements of nums contain the unique elements in the order they were present in nums initially.The remaining elements of nums are not important as well as the size of nums.
-// Return k.
+// Return k after placing the final result in the first k slots of nums.
+
+// Do not allocate extra space for another array.You must do this by modifying the input array in -place with O(1) extra memory.
+
 // Custom Judge:
 
 // The judge will test your solution with the following code:
@@ -28,26 +29,32 @@
 
 //     Example 1:
 
-// Input: nums = [1, 1, 2]
-// Output: 2, nums = [1, 2, _]
-// Explanation: Your function should return k = 2, with the first two elements of nums being 1 and 2 respectively.
+// Input: nums = [1, 1, 1, 2, 2, 3]
+// Output: 5, nums = [1, 1, 2, 2, 3, _]
+// Explanation: Your function should return k = 5, with the first five elements of nums being 1, 1, 2, 2 and 3 respectively.
 // It does not matter what you leave beyond the returned k(hence they are underscores).
 //     Example 2:
 
-// Input: nums = [0, 0, 1, 1, 1, 2, 2, 3, 3, 4]
-// Output: 5, nums = [0, 1, 2, 3, 4, _, _, _, _, _]
-// Explanation: Your function should return k = 5, with the first five elements of nums being 0, 1, 2, 3, and 4 respectively.
+// Input: nums = [0, 0, 1, 1, 1, 1, 2, 3, 3]
+// Output: 7, nums = [0, 0, 1, 1, 2, 3, 3, _, _]
+// Explanation: Your function should return k = 7, with the first seven elements of nums being 0, 0, 1, 1, 2, 3 and 3 respectively.
 // It does not matter what you leave beyond the returned k(hence they are underscores).
 function removeDuplicates(nums) {
-    if (nums.length === 0) return 0; // Edge case: empty array
+    let count = 1;
+    let duplicateCount = 1;
 
-    let k = 1; // Pointer for unique elements
     for (let i = 1; i < nums.length; i++) {
-        if (nums[i] !== nums[i - 1]) {
-            nums[k] = nums[i]; // Overwrite duplicate with unique element
-            k++; // Move pointer to next unique element
+        if (nums[i] === nums[i - 1]) {
+            duplicateCount++;
+        } else {
+            duplicateCount = 1;
+        }
+
+        if (duplicateCount <= 2) {
+            nums[count] = nums[i];
+            count++;
         }
     }
 
-    return k; // Return the number of unique elements
+    return count;
 }
