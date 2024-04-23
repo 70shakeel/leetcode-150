@@ -1,27 +1,29 @@
-// Majority Element
-// Easy
+// Rotate Array
+// Medium
 // Topics
 // Companies
-// Given an array nums of size n, return the majority element.
-
-// The majority element is the element that appears more than ⌊n / 2⌋ times.You may assume that the majority element always exists in the array.
+// Hint
+// Given an integer array nums, rotate the array to the right by k steps, where k is non - negative.
 
 
 
 //     Example 1:
 
-// Input: nums = [3, 2, 3]
-// Output: 3
+// Input: nums = [1, 2, 3, 4, 5, 6, 7], k = 3
+// Output: [5, 6, 7, 1, 2, 3, 4]
+// Explanation:
+// rotate 1 steps to the right: [7, 1, 2, 3, 4, 5, 6]
+// rotate 2 steps to the right: [6, 7, 1, 2, 3, 4, 5]
+// rotate 3 steps to the right: [5, 6, 7, 1, 2, 3, 4]
 // Example 2:
 
-// Input: nums = [2, 2, 1, 1, 1, 2, 2]
-// Output: 2
-function majorityElement(nums) {
-    let count = {};
-    for (let num of nums) {
-        count[num] = (count[num] || 0) + 1;
-        if (count[num] > nums.length / 2) {
-            return num;
-        }
-    }
+// Input: nums = [-1, -100, 3, 99], k = 2
+// Output: [3, 99, -1, -100]
+// Explanation: 
+// rotate 1 steps to the right: [99, -1, -100, 3]
+// rotate 2 steps to the right: [3, 99, -1, -100]
+function rotate(nums, k) {
+    k = k % nums.length;
+    nums.unshift(...nums.splice(-k));
+    return nums;
 }
