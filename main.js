@@ -1,29 +1,37 @@
-// Rotate Array
-// Medium
+// Best Time to Buy and Sell Stock
+// Easy
 // Topics
 // Companies
-// Hint
-// Given an integer array nums, rotate the array to the right by k steps, where k is non - negative.
+// You are given an array prices where prices[i] is the price of a given stock on the ith day.
+
+// You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock.
+
+// Return the maximum profit you can achieve from this transaction.If you cannot achieve any profit, return 0.
 
 
 
-//     Example 1:
+// Example 1:
 
-// Input: nums = [1, 2, 3, 4, 5, 6, 7], k = 3
-// Output: [5, 6, 7, 1, 2, 3, 4]
-// Explanation:
-// rotate 1 steps to the right: [7, 1, 2, 3, 4, 5, 6]
-// rotate 2 steps to the right: [6, 7, 1, 2, 3, 4, 5]
-// rotate 3 steps to the right: [5, 6, 7, 1, 2, 3, 4]
-// Example 2:
+// Input: prices = [7, 1, 5, 3, 6, 4]
+// Output: 5
+// Explanation: Buy on day 2(price = 1) and sell on day 5(price = 6), profit = 6 - 1 = 5.
+// Note that buying on day 2 and selling on day 1 is not allowed because you must buy before you sell.
+//     Example 2:
 
-// Input: nums = [-1, -100, 3, 99], k = 2
-// Output: [3, 99, -1, -100]
-// Explanation: 
-// rotate 1 steps to the right: [99, -1, -100, 3]
-// rotate 2 steps to the right: [3, 99, -1, -100]
-function rotate(nums, k) {
-    k = k % nums.length;
-    nums.unshift(...nums.splice(-k));
-    return nums;
+// Input: prices = [7, 6, 4, 3, 1]
+// Output: 0
+// Explanation: In this case, no transactions are done and the max profit = 0.
+function maxProfit(prices) {
+    let minPrice = prices[0];
+    let maxProfit = 0;
+
+    for (let i = 1; i < prices.length; i++) {
+        if (prices[i] < minPrice) {
+            minPrice = prices[i];
+        } else if (prices[i] - minPrice > maxProfit) {
+            maxProfit = prices[i] - minPrice;
+        }
+    }
+
+    return maxProfit;
 }
