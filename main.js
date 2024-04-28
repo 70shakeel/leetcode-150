@@ -1,47 +1,33 @@
-// Jump Game II
+// H - Index
 // Medium
 // Topics
 // Companies
-// You are given a 0 - indexed array of integers nums of length n.You are initially positioned at nums[0].
+// Hint
+// Given an array of integers citations where citations[i] is the number of citations a researcher received for their ith paper, return the researcher's h-index.
 
-// Each element nums[i] represents the maximum length of a forward jump from index i.In other words, if you are at nums[i], you can jump to any nums[i + j] where:
-
-// 0 <= j <= nums[i] and
-// i + j < n
-// Return the minimum number of jumps to reach nums[n - 1].The test cases are generated such that you can reach nums[n - 1].
+// According to the definition of h - index on Wikipedia: The h - index is defined as the maximum value of h such that the given researcher has published at least h papers that have each been cited at least h times.
 
 
 
 //     Example 1:
 
-// Input: nums = [2, 3, 1, 1, 4]
-// Output: 2
-// Explanation: The minimum number of jumps to reach the last index is 2. Jump 1 step from index 0 to 1, then 3 steps to the last index.
-//     Example 2:
+// Input: citations = [3, 0, 6, 1, 5]
+// Output: 3
+// Explanation: [3, 0, 6, 1, 5] means the researcher has 5 papers in total and each of them had received 3, 0, 6, 1, 5 citations respectively.
+// Since the researcher has 3 papers with at least 3 citations each and the remaining two with no more than 3 citations each, their h - index is 3.
+// Example 2:
 
-// Input: nums = [2, 3, 0, 1, 4]
-// Output: 2
-function jump(nums) {
-    if (nums.length === 1) {
-        return 0;
-    }
-
-    let jumps = 0;
-    let currentJumpEnd = 0;
-    let farthest = 0;
-
-    for (let i = 0; i < nums.length - 1; i++) {
-        farthest = Math.max(farthest, i + nums[i]);
-
-        if (i === currentJumpEnd) {
-            jumps++;
-            currentJumpEnd = farthest;
-
-            if (currentJumpEnd >= nums.length - 1) {
-                break;
-            }
+// Input: citations = [1, 3, 1]
+// Output: 1
+function hIndex(citations) {
+    citations.sort((a, b) => b - a);
+    let hIndex = 0;
+    for (let i = 0; i < citations.length; i++) {
+        if (citations[i] >= i + 1) {
+            hIndex = i + 1;
+        } else {
+            break;
         }
     }
-
-    return jumps;
+    return hIndex;
 }
