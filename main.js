@@ -1,33 +1,56 @@
-// H - Index
+// Insert Delete GetRandom O(1)
 // Medium
 // Topics
 // Companies
-// Hint
-// Given an array of integers citations where citations[i] is the number of citations a researcher received for their ith paper, return the researcher's h-index.
+// Implement the RandomizedSet class:
 
-// According to the definition of h - index on Wikipedia: The h - index is defined as the maximum value of h such that the given researcher has published at least h papers that have each been cited at least h times.
+// RandomizedSet() Initializes the RandomizedSet object.
+// bool insert(int val) Inserts an item val into the set if not present.Returns true if the item was not present, false otherwise.
+// bool remove(int val) Removes an item val from the set if present.Returns true if the item was present, false otherwise.
+// int getRandom() Returns a random element from the current set of elements(it's guaranteed that at least one element exists when this method is called). Each element must have the same probability of being returned.
+// You must implement the functions of the class such that each function works in average O(1) time complexity.
 
 
 
 //     Example 1:
 
-// Input: citations = [3, 0, 6, 1, 5]
-// Output: 3
-// Explanation: [3, 0, 6, 1, 5] means the researcher has 5 papers in total and each of them had received 3, 0, 6, 1, 5 citations respectively.
-// Since the researcher has 3 papers with at least 3 citations each and the remaining two with no more than 3 citations each, their h - index is 3.
-// Example 2:
+//     Input
+//     ["RandomizedSet", "insert", "remove", "insert", "getRandom", "remove", "insert", "getRandom"]
+//     [[], [1], [2], [2], [], [1], [2], []]
+// Output
+//     [null, true, false, true, 2, true, false, 2]
 
-// Input: citations = [1, 3, 1]
-// Output: 1
-function hIndex(citations) {
-    citations.sort((a, b) => b - a);
-    let hIndex = 0;
-    for (let i = 0; i < citations.length; i++) {
-        if (citations[i] >= i + 1) {
-            hIndex = i + 1;
-        } else {
-            break;
-        }
+// Explanation
+// RandomizedSet randomizedSet = new RandomizedSet();
+// randomizedSet.insert(1); // Inserts 1 to the set. Returns true as 1 was inserted successfully.
+// randomizedSet.remove(2); // Returns false as 2 does not exist in the set.
+// randomizedSet.insert(2); // Inserts 2 to the set, returns true. Set now contains [1,2].
+// randomizedSet.getRandom(); // getRandom() should return either 1 or 2 randomly.
+// randomizedSet.remove(1); // Removes 1 from the set, returns true. Set now contains [2].
+// randomizedSet.insert(2); // 2 was already in the set, so return false.
+// randomizedSet.getRandom(); // Since 2 is the only number in the set, getRandom() will always return 2.
+class RandomizedSet {
+    constructor() {
+        this.set = new Set();
+        this.arr = [];
     }
-    return hIndex;
+
+    insert(val) {
+        if (this.set.has(val)) return false;
+        this.set.add(val);
+        this.arr.push(val);
+        return true;
+    }
+
+    remove(val) {
+        if (!this.set.has(val)) return false;
+        this.set.delete(val);
+        this.arr.splice(this.arr.indexOf(val), 1);
+        return true;
+    }
+
+    getRandom() {
+        const randomIndex = Math.floor(Math.random() * this.arr.length);
+        return this.arr[randomIndex];
+    }
 }
