@@ -1,56 +1,53 @@
-// Insert Delete GetRandom O(1)
+// Gas Station
 // Medium
 // Topics
 // Companies
-// Implement the RandomizedSet class:
+// There are n gas stations along a circular route, where the amount of gas at the ith station is gas[i].
 
-// RandomizedSet() Initializes the RandomizedSet object.
-// bool insert(int val) Inserts an item val into the set if not present.Returns true if the item was not present, false otherwise.
-// bool remove(int val) Removes an item val from the set if present.Returns true if the item was present, false otherwise.
-// int getRandom() Returns a random element from the current set of elements(it's guaranteed that at least one element exists when this method is called). Each element must have the same probability of being returned.
-// You must implement the functions of the class such that each function works in average O(1) time complexity.
+// You have a car with an unlimited gas tank and it costs cost[i] of gas to travel from the ith station to its next(i + 1)th station.You begin the journey with an empty tank at one of the gas stations.
+
+// Given two integer arrays gas and cost, return the starting gas station's index if you can travel around the circuit once in the clockwise direction, otherwise return -1. If there exists a solution, it is guaranteed to be unique
 
 
 
-//     Example 1:
+// Example 1:
 
-//     Input
-//     ["RandomizedSet", "insert", "remove", "insert", "getRandom", "remove", "insert", "getRandom"]
-//     [[], [1], [2], [2], [], [1], [2], []]
-// Output
-//     [null, true, false, true, 2, true, false, 2]
+// Input: gas = [1, 2, 3, 4, 5], cost = [3, 4, 5, 1, 2]
+// Output: 3
+// Explanation:
+// Start at station 3(index 3) and fill up with 4 unit of gas.Your tank = 0 + 4 = 4
+// Travel to station 4. Your tank = 4 - 1 + 5 = 8
+// Travel to station 0. Your tank = 8 - 2 + 1 = 7
+// Travel to station 1. Your tank = 7 - 3 + 2 = 6
+// Travel to station 2. Your tank = 6 - 4 + 3 = 5
+// Travel to station 3. The cost is 5. Your gas is just enough to travel back to station 3.
+// Therefore, return 3 as the starting index.
+//     Example 2:
 
-// Explanation
-// RandomizedSet randomizedSet = new RandomizedSet();
-// randomizedSet.insert(1); // Inserts 1 to the set. Returns true as 1 was inserted successfully.
-// randomizedSet.remove(2); // Returns false as 2 does not exist in the set.
-// randomizedSet.insert(2); // Inserts 2 to the set, returns true. Set now contains [1,2].
-// randomizedSet.getRandom(); // getRandom() should return either 1 or 2 randomly.
-// randomizedSet.remove(1); // Removes 1 from the set, returns true. Set now contains [2].
-// randomizedSet.insert(2); // 2 was already in the set, so return false.
-// randomizedSet.getRandom(); // Since 2 is the only number in the set, getRandom() will always return 2.
-class RandomizedSet {
-    constructor() {
-        this.set = new Set();
-        this.arr = [];
+// Input: gas = [2, 3, 4], cost = [3, 4, 3]
+// Output: -1
+// Explanation:
+// You can't start at station 0 or 1, as there is not enough gas to travel to the next station.
+// Let's start at station 2 and fill up with 4 unit of gas. Your tank = 0 + 4 = 4
+// Travel to station 0. Your tank = 4 - 3 + 2 = 3
+// Travel to station 1. Your tank = 3 - 3 + 3 = 3
+// You cannot travel back to station 2, as it requires 4 unit of gas but you only have 3.
+// Therefore, you can't travel around the circuit once no matter where you start.
+function canCompleteCircuit(gas, cost) {
+    let totalGas = 0;
+    let currentGas = 0;
+    let startStation = 0;
+
+    for (let i = 0; i < gas.length; i++) {
+        totalGas += gas[i] - cost[i];
+        currentGas += gas[i] - cost[i];
+
+        // If we can't reach the next station, start from the next station
+        if (currentGas < 0) {
+            startStation = i + 1;
+            currentGas = 0;
+        }
     }
 
-    insert(val) {
-        if (this.set.has(val)) return false;
-        this.set.add(val);
-        this.arr.push(val);
-        return true;
-    }
-
-    remove(val) {
-        if (!this.set.has(val)) return false;
-        this.set.delete(val);
-        this.arr.splice(this.arr.indexOf(val), 1);
-        return true;
-    }
-
-    getRandom() {
-        const randomIndex = Math.floor(Math.random() * this.arr.length);
-        return this.arr[randomIndex];
-    }
+    return totalGas >= 0 ? startStation : -1;
 }
