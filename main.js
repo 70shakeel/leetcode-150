@@ -1,61 +1,84 @@
-// Roman to Integer
-// Easy
+// Integer to Roman
+// Medium
 // Topics
 // Companies
-// Hint
-// Roman numerals are represented by seven different symbols: I, V, X, L, C, D and M.
+// Seven different symbols represent Roman numerals with the following values:
 
-// Symbol       Value
-// I             1
-// V             5
-// X             10
-// L             50
-// C             100
-// D             500
-// M             1000
-// For example, 2 is written as II in Roman numeral, just two ones added together. 12 is written as XII, which is simply X + II.The number 27 is written as XXVII, which is XX + V + II.
+// Symbol	Value
+// I	1
+// V	5
+// X	10
+// L	50
+// C	100
+// D	500
+// M	1000
+// Roman numerals are formed by appending the conversions of decimal place values from highest to lowest.Converting a decimal place value into a Roman numeral has the following rules:
 
-// Roman numerals are usually written largest to smallest from left to right.However, the numeral for four is not IIII.Instead, the number four is written as IV.Because the one is before the five we subtract it making four.The same principle applies to the number nine, which is written as IX.There are six instances where subtraction is used:
-
-// I can be placed before V(5) and X(10) to make 4 and 9. 
-// X can be placed before L(50) and C(100) to make 40 and 90. 
-// C can be placed before D(500) and M(1000) to make 400 and 900.
-// Given a roman numeral, convert it to an integer.
+// If the value does not start with 4 or 9, select the symbol of the maximal value that can be subtracted from the input, append that symbol to the result, subtract its value, and convert the remainder to a Roman numeral.
+// If the value starts with 4 or 9 use the subtractive form representing one symbol subtracted from the following symbol, for example, 4 is 1(I) less than 5(V): IV and 9 is 1(I) less than 10(X): IX.Only the following subtractive forms are used: 4(IV), 9(IX), 40(XL), 90(XC), 400(CD) and 900(CM).
+// Only powers of 10(I, X, C, M) can be appended consecutively at most 3 times to represent multiples of 10. You cannot append 5(V), 50(L), or 500(D) multiple times.If you need to append a symbol 4 times use the subtractive form.
+// Given an integer, convert it to a Roman numeral.
 
 
 
 //     Example 1:
 
-// Input: s = "III"
-// Output: 3
-// Explanation: III = 3.
+// Input: num = 3749
+
+// Output: "MMMDCCXLIX"
+
+// Explanation:
+
+// 3000 = MMM as 1000 (M) + 1000(M) + 1000(M)
+// 700 = DCC as 500 (D) + 100(C) + 100(C)
+// 40 = XL as 10 (X) less of 50(L)
+// 9 = IX as 1 (I) less of 10(X)
+// Note: 49 is not 1(I) less of 50(L) because the conversion is based on decimal places
 // Example 2:
 
-// Input: s = "LVIII"
-// Output: 58
-// Explanation: L = 50, V = 5, III = 3.
+// Input: num = 58
+
+// Output: "LVIII"
+
+// Explanation:
+
+// 50 = L
+// 8 = VIII
 // Example 3:
 
-// Input: s = "MCMXCIV"
-// Output: 1994
-// Explanation: M = 1000, CM = 900, XC = 90 and IV = 4.
-function romanToInt(s) {
-    const romanToIntMap = {
-        'I': 1,
-        'V': 5,
-        'X': 10,
-        'L': 50,
-        'C': 100,
-        'D': 500,
-        'M': 1000
-    };
+// Input: num = 1994
 
-    let result = 0;
-    for (let i = 0; i < s.length; i++) {
-        if (i > 0 && romanToIntMap[s[i]] > romanToIntMap[s[i - 1]]) {
-            result += romanToIntMap[s[i]] - 2 * romanToIntMap[s[i - 1]];
-        } else {
-            result += romanToIntMap[s[i]];
+// Output: "MCMXCIV"
+
+// Explanation:
+
+// 1000 = M
+// 900 = CM
+// 90 = XC
+// 4 = IV
+function intToRoman(num) {
+    const romanMap = [
+        { value: 1000, symbol: 'M' },
+        { value: 900, symbol: 'CM' },
+        { value: 500, symbol: 'D' },
+        { value: 400, symbol: 'CD' },
+        { value: 100, symbol: 'C' },
+        { value: 90, symbol: 'XC' },
+        { value: 50, symbol: 'L' },
+        { value: 40, symbol: 'XL' },
+        { value: 10, symbol: 'X' },
+        { value: 9, symbol: 'IX' },
+        { value: 5, symbol: 'V' },
+        { value: 4, symbol: 'IV' },
+        { value: 1, symbol: 'I' }
+    ];
+
+    let result = '';
+
+    for (let i = 0; i < romanMap.length; i++) {
+        while (num >= romanMap[i].value) {
+            result += romanMap[i].symbol;
+            num -= romanMap[i].value;
         }
     }
 
