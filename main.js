@@ -1,37 +1,32 @@
-// Length of Last Word
+// Longest Common Prefix
 // Easy
 // Topics
 // Companies
-// Given a string s consisting of words and spaces, return the length of the last word in the string.
+// Write a function to find the longest common prefix string amongst an array of strings.
 
-// A word is a maximal
-// substring
-//  consisting of non - space characters only.
+// If there is no common prefix, return an empty string "".
 
 
 
-//     Example 1:
+// Example 1:
 
-// Input: s = "Hello World"
-// Output: 5
-// Explanation: The last word is "World" with length 5.
+// Input: strs = ["flower","flow","flight"]
+// Output: "fl"
 // Example 2:
 
-// Input: s = "   fly me   to   the moon  "
-// Output: 4
-// Explanation: The last word is "moon" with length 4.
-// Example 3:
+// Input: strs = ["dog","racecar","car"]
+// Output: ""
+// Explanation: There is no common prefix among the input strings.
+function longestCommonPrefix(strs) {
+    if (strs.length === 0) return "";
 
-// Input: s = "luffy is still joyboy"
-// Output: 6
-// Explanation: The last word is "joyboy" with length 6.
-function lengthOfLastWord(s) {
-    // Trim the string to remove leading and trailing spaces
-    s = s.trim();
+    let prefix = strs[0];
+    for (let i = 1; i < strs.length; i++) {
+        while (strs[i].indexOf(prefix) !== 0) {
+            prefix = prefix.substring(0, prefix.length - 1);
+            if (prefix === "") return "";
+        }
+    }
 
-    // Split the string into an array of words
-    const words = s.split(" ");
-
-    // Return the length of the last word
-    return words[words.length - 1].length;
+    return prefix;
 }
