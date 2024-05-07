@@ -1,32 +1,39 @@
-// Longest Common Prefix
-// Easy
+// Reverse Words in a String
+// Solved
+// Medium
 // Topics
 // Companies
-// Write a function to find the longest common prefix string amongst an array of strings.
+// Given an input string s, reverse the order of the words.
 
-// If there is no common prefix, return an empty string "".
+// A word is defined as a sequence of non - space characters.The words in s will be separated by at least one space.
+
+// Return a string of the words in reverse order concatenated by a single space.
+
+// Note that s may contain leading or trailing spaces or multiple spaces between two words.The returned string should only have a single space separating the words.Do not include any extra spaces.
 
 
 
-// Example 1:
+//     Example 1:
 
-// Input: strs = ["flower","flow","flight"]
-// Output: "fl"
+// Input: s = "the sky is blue"
+// Output: "blue is sky the"
 // Example 2:
 
-// Input: strs = ["dog","racecar","car"]
-// Output: ""
-// Explanation: There is no common prefix among the input strings.
-function longestCommonPrefix(strs) {
-    if (strs.length === 0) return "";
+// Input: s = "  hello world  "
+// Output: "world hello"
+// Explanation: Your reversed string should not contain leading or trailing spaces.
+//     Example 3:
 
-    let prefix = strs[0];
-    for (let i = 1; i < strs.length; i++) {
-        while (strs[i].indexOf(prefix) !== 0) {
-            prefix = prefix.substring(0, prefix.length - 1);
-            if (prefix === "") return "";
-        }
-    }
+// Input: s = "a good   example"
+// Output: "example good a"
+// Explanation: You need to reduce multiple spaces between two words to a single space in the reversed string.
+function reverseWords(s) {
+    // Split the input string into an array of words
+    let words = s.split(" ");
 
-    return prefix;
+    // Filter out any empty strings
+    words = words.filter(word => word.length > 0);
+
+    // Join the array of words in reverse order
+    return words.reverse().join(" ");
 }
