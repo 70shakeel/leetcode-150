@@ -1,39 +1,59 @@
-// Reverse Words in a String
-// Solved
+// Zigzag Conversion
 // Medium
 // Topics
 // Companies
-// Given an input string s, reverse the order of the words.
+// The string "PAYPALISHIRING" is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)
 
-// A word is defined as a sequence of non - space characters.The words in s will be separated by at least one space.
+// P   A   H   N
+// A P L S I I G
+// Y   I   R
+// And then read line by line: "PAHNAPLSIIGYIR"
 
-// Return a string of the words in reverse order concatenated by a single space.
+// Write the code that will take a string and make this conversion given a number of rows:
 
-// Note that s may contain leading or trailing spaces or multiple spaces between two words.The returned string should only have a single space separating the words.Do not include any extra spaces.
+// string convert(string s, int numRows);
 
 
+// Example 1:
 
-//     Example 1:
-
-// Input: s = "the sky is blue"
-// Output: "blue is sky the"
+// Input: s = "PAYPALISHIRING", numRows = 3
+// Output: "PAHNAPLSIIGYIR"
 // Example 2:
 
-// Input: s = "  hello world  "
-// Output: "world hello"
-// Explanation: Your reversed string should not contain leading or trailing spaces.
-//     Example 3:
+// Input: s = "PAYPALISHIRING", numRows = 4
+// Output: "PINALSIGYAHRPI"
+// Explanation:
+// P     I    N
+// A   L S  I G
+// Y A   H R
+// P     I
+// Example 3:
 
-// Input: s = "a good   example"
-// Output: "example good a"
-// Explanation: You need to reduce multiple spaces between two words to a single space in the reversed string.
-function reverseWords(s) {
-    // Split the input string into an array of words
-    let words = s.split(" ");
+// Input: s = "A", numRows = 1
+// Output: "A"
+function convert(s, numRows) {
+    if (numRows === 1) return s;
 
-    // Filter out any empty strings
-    words = words.filter(word => word.length > 0);
+    const rows = [];
+    for (let i = 0; i < Math.min(numRows, s.length); i++) {
+        rows[i] = '';
+    }
 
-    // Join the array of words in reverse order
-    return words.reverse().join(" ");
+    let currentRow = 0;
+    let goingDown = false;
+
+    for (const char of s) {
+        rows[currentRow] += char;
+        if (currentRow === 0 || currentRow === numRows - 1) {
+            goingDown = !goingDown;
+        }
+        currentRow += goingDown ? 1 : -1;
+    }
+
+    let result = '';
+    for (const row of rows) {
+        result += row;
+    }
+
+    return result;
 }
