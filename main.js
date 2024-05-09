@@ -1,59 +1,34 @@
-// Zigzag Conversion
-// Medium
+// Find the Index of the First Occurrence in a String
+// Easy
 // Topics
 // Companies
-// The string "PAYPALISHIRING" is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)
-
-// P   A   H   N
-// A P L S I I G
-// Y   I   R
-// And then read line by line: "PAHNAPLSIIGYIR"
-
-// Write the code that will take a string and make this conversion given a number of rows:
-
-// string convert(string s, int numRows);
+// Given two strings needle and haystack, return the index of the first occurrence of needle in haystack, or - 1 if needle is not part of haystack.
 
 
-// Example 1:
 
-// Input: s = "PAYPALISHIRING", numRows = 3
-// Output: "PAHNAPLSIIGYIR"
+//     Example 1:
+
+// Input: haystack = "sadbutsad", needle = "sad"
+// Output: 0
+// Explanation: "sad" occurs at index 0 and 6.
+// The first occurrence is at index 0, so we return 0.
 // Example 2:
 
-// Input: s = "PAYPALISHIRING", numRows = 4
-// Output: "PINALSIGYAHRPI"
-// Explanation:
-// P     I    N
-// A   L S  I G
-// Y A   H R
-// P     I
-// Example 3:
+// Input: haystack = "leetcode", needle = "leeto"
+// Output: -1
+// Explanation: "leeto" did not occur in "leetcode", so we return -1.
+function strStr(haystack, needle) {
+    if (needle === '') return 0;
 
-// Input: s = "A", numRows = 1
-// Output: "A"
-function convert(s, numRows) {
-    if (numRows === 1) return s;
-
-    const rows = [];
-    for (let i = 0; i < Math.min(numRows, s.length); i++) {
-        rows[i] = '';
-    }
-
-    let currentRow = 0;
-    let goingDown = false;
-
-    for (const char of s) {
-        rows[currentRow] += char;
-        if (currentRow === 0 || currentRow === numRows - 1) {
-            goingDown = !goingDown;
+    for (let i = 0; i <= haystack.length - needle.length; i++) {
+        let j = 0;
+        while (j < needle.length && haystack[i + j] === needle[j]) {
+            j++;
         }
-        currentRow += goingDown ? 1 : -1;
+        if (j === needle.length) {
+            return i;
+        }
     }
 
-    let result = '';
-    for (const row of rows) {
-        result += row;
-    }
-
-    return result;
+    return -1;
 }
