@@ -1,73 +1,33 @@
-// Text Justification
-// Hard
+// Valid Palindrome
+// Easy
 // Topics
 // Companies
-// Given an array of strings words and a width maxWidth, format the text such that each line has exactly maxWidth characters and is fully(left and right) justified.
+// A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non - alphanumeric characters, it reads the same forward and backward.Alphanumeric characters include letters and numbers.
 
-// You should pack your words in a greedy approach; that is, pack as many words as you can in each line.Pad extra spaces ' ' when necessary so that each line has exactly maxWidth characters.
+// Given a string s, return true if it is a palindrome, or false otherwise.
 
-// Extra spaces between words should be distributed as evenly as possible.If the number of spaces on a line does not divide evenly between words, the empty slots on the left will be assigned more spaces than the slots on the right.
-
-// For the last line of text, it should be left - justified, and no extra space is inserted between words.
-
-//     Note:
-
-// A word is defined as a character sequence consisting of non - space characters only.
-// Each word's length is guaranteed to be greater than 0 and not exceed maxWidth.
-// The input array words contains at least one word.
 
 
 //     Example 1:
 
-// Input: words = ["This", "is", "an", "example", "of", "text", "justification."], maxWidth = 16
-// Output:
-// [
-//     "This    is    an",
-//     "example  of text",
-//     "justification.  "
-// ]
-// Example 2:
+// Input: s = "A man, a plan, a canal: Panama"
+// Output: true
+// Explanation: "amanaplanacanalpanama" is a palindrome.
+//     Example 2:
 
-// Input: words = ["What", "must", "be", "acknowledgment", "shall", "be"], maxWidth = 16
-// Output:
-// [
-//     "What   must   be",
-//     "acknowledgment  ",
-//     "shall be        "
-// ]
-// Explanation: Note that the last line is "shall be    " instead of "shall     be", because the last line must be left - justified instead of fully - justified.
-// Note that the second line is also left - justified because it contains only one word.
+// Input: s = "race a car"
+// Output: false
+// Explanation: "raceacar" is not a palindrome.
 //     Example 3:
 
-// Input: words = ["Science", "is", "what", "we", "understand", "well", "enough", "to", "explain", "to", "a", "computer.", "Art", "is", "everything", "else", "we", "do"], maxWidth = 20
-// Output:
-// [
-//     "Science  is  what we",
-//     "understand      well",
-//     "enough to explain to",
-//     "a  computer.  Art is",
-//     "everything  else  we",
-//     "do                  "
-// ]
-var fullJustify = function (words, maxWidth) {
-    const lines = [];
-    let line = [];
-    let lineLength = 0;
+// Input: s = " "
+// Output: true
+// Explanation: s is an empty string "" after removing non - alphanumeric characters.
+// Since an empty string reads the same forward and backward, it is a palindrome.
+function isPalindrome(s) {
+    // Remove non-alphanumeric characters and convert to lowercase
+    const cleanString = s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
 
-    for (const word of words) {
-        if (lineLength + line.length + word.length > maxWidth) {
-            for (let i = 0; i < maxWidth - lineLength; i++) {
-                line[i % (line.length - 1 || 1)] += ' ';
-            }
-            lines.push(line.join(''));
-            line = [];
-            lineLength = 0;
-        }
-        line.push(word);
-        lineLength += word.length;
-    }
-
-    lines.push(line.join(' ').padEnd(maxWidth, ' '));
-
-    return lines;
+    // Check if the clean string is a palindrome
+    return cleanString === cleanString.split('').reverse().join('');
 }
