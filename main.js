@@ -1,33 +1,47 @@
-// Valid Palindrome
-// Easy
-// Topics
-// Companies
-// A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non - alphanumeric characters, it reads the same forward and backward.Alphanumeric characters include letters and numbers.
+Two Sum II - Input Array Is Sorted
+Medium
+Topics
+Companies
+Given a 1 - indexed array of integers numbers that is already sorted in non - decreasing order, find two numbers such that they add up to a specific target number.Let these two numbers be numbers[index1] and numbers[index2] where 1 <= index1 < index2 <= numbers.length.
 
-// Given a string s, return true if it is a palindrome, or false otherwise.
+Return the indices of the two numbers, index1 and index2, added by one as an integer array[index1, index2] of length 2.
+
+The tests are generated such that there is exactly one solution.You may not use the same element twice.
+
+Your solution must use only constant extra space.
 
 
 
-//     Example 1:
+    Example 1:
 
-// Input: s = "A man, a plan, a canal: Panama"
-// Output: true
-// Explanation: "amanaplanacanalpanama" is a palindrome.
-//     Example 2:
+Input: numbers = [2, 7, 11, 15], target = 9
+Output: [1, 2]
+Explanation: The sum of 2 and 7 is 9. Therefore, index1 = 1, index2 = 2. We return [1, 2].
+    Example 2:
 
-// Input: s = "race a car"
-// Output: false
-// Explanation: "raceacar" is not a palindrome.
-//     Example 3:
+Input: numbers = [2, 3, 4], target = 6
+Output: [1, 3]
+Explanation: The sum of 2 and 4 is 6. Therefore index1 = 1, index2 = 3. We return [1, 3].
+    Example 3:
 
-// Input: s = " "
-// Output: true
-// Explanation: s is an empty string "" after removing non - alphanumeric characters.
-// Since an empty string reads the same forward and backward, it is a palindrome.
-function isPalindrome(s) {
-    // Remove non-alphanumeric characters and convert to lowercase
-    const cleanString = s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+Input: numbers = [-1, 0], target = -1
+Output: [1, 2]
+Explanation: The sum of - 1 and 0 is - 1. Therefore index1 = 1, index2 = 2. We return [1, 2].
+function twoSum(numbers, target) {
+    let left = 0;
+    let right = numbers.length - 1;
 
-    // Check if the clean string is a palindrome
-    return cleanString === cleanString.split('').reverse().join('');
+    while (left < right) {
+        const sum = numbers[left] + numbers[right];
+
+        if (sum === target) {
+            return [left + 1, right + 1]; // Adding 1 to convert to 1-indexed array
+        } else if (sum < target) {
+            left++;
+        } else {
+            right--;
+        }
+    }
+
+    return [-1, -1]; // No solution found
 }
