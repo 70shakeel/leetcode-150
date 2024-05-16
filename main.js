@@ -1,40 +1,46 @@
-// Minimum Size Subarray Sum
+// Longest Substring Without Repeating Characters
 // Medium
 // Topics
 // Companies
-// Given an array of positive integers nums and a positive integer target, return the minimal length of a
-// subarray
-//  whose sum is greater than or equal to target.If there is no such subarray, return 0 instead.
+// Hint
+// Given a string s, find the length of the longest
+// substring
+//  without repeating characters.
 
 
 
 //     Example 1:
 
-// Input: target = 7, nums = [2, 3, 1, 2, 4, 3]
-// Output: 2
-// Explanation: The subarray[4, 3] has the minimal length under the problem constraint.
-//     Example 2:
+// Input: s = "abcabcbb"
+// Output: 3
+// Explanation: The answer is "abc", with the length of 3.
+// Example 2:
 
-// Input: target = 4, nums = [1, 4, 4]
+// Input: s = "bbbbb"
 // Output: 1
+// Explanation: The answer is "b", with the length of 1.
 // Example 3:
 
-// Input: target = 11, nums = [1, 1, 1, 1, 1, 1, 1, 1]
-// Output: 0
-function minSubArrayLen(target, nums) {
-    let left = 0;
-    let sum = 0;
-    let minLength = Infinity;
+// Input: s = "pwwkew"
+// Output: 3
+// Explanation: The answer is "wke", with the length of 3.
+// Notice that the answer must be a substring, "pwke" is a subsequence and not a substring.
+function lengthOfLongestSubstring(s) {
+    let start = 0;
+    let end = 0;
+    let maxLength = 0;
+    const charSet = new Set();
 
-    for (let right = 0; right < nums.length; right++) {
-        sum += nums[right];
-
-        while (sum >= target) {
-            minLength = Math.min(minLength, right - left + 1);
-            sum -= nums[left];
-            left++;
+    while (end < s.length) {
+        if (!charSet.has(s[end])) {
+            charSet.add(s[end]);
+            maxLength = Math.max(maxLength, end - start + 1);
+            end++;
+        } else {
+            charSet.delete(s[start]);
+            start++;
         }
     }
 
-    return minLength === Infinity ? 0 : minLength;
+    return maxLength;
 }
