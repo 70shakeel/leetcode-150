@@ -1,85 +1,71 @@
-// Substring with Concatenation of All Words
+// Minimum Window Substring
 // Hard
 // Topics
 // Companies
-// You are given a string s and an array of strings words.All the strings of words are of the same length.
+// Hint
+// Given two strings s and t of lengths m and n respectively, return the minimum window
+// substring
+//  of s such that every character in t(including duplicates) is included in the window.If there is no such substring, return the empty string "".
 
-// A concatenated string is a string that exactly contains all the strings of any permutation of words concatenated.
-
-// For example, if words = ["ab", "cd", "ef"], then "abcdef", "abefcd", "cdabef", "cdefab", "efabcd", and "efcdab" are all concatenated strings. "acdbef" is not a concatenated string because it is not the concatenation of any permutation of words.
-// Return an array of the starting indices of all the concatenated substrings in s.You can return the answer in any order.
+// The testcases will be generated such that the answer is unique.
 
 
 
 //     Example 1:
 
-// Input: s = "barfoothefoobarman", words = ["foo", "bar"]
-
-// Output: [0, 9]
-
-// Explanation:
-
-// The substring starting at 0 is "barfoo".It is the concatenation of["bar", "foo"] which is a permutation of words.
-// The substring starting at 9 is "foobar".It is the concatenation of["foo", "bar"] which is a permutation of words.
-
+// Input: s = "ADOBECODEBANC", t = "ABC"
+// Output: "BANC"
+// Explanation: The minimum window substring "BANC" includes 'A', 'B', and 'C' from string t.
 //     Example 2:
 
-// Input: s = "wordgoodgoodgoodbestword", words = ["word", "good", "best", "word"]
-
-// Output: []
-
-// Explanation:
-
-// There is no concatenated substring.
-
+// Input: s = "a", t = "a"
+// Output: "a"
+// Explanation: The entire string s is the minimum window.
 //     Example 3:
 
-// Input: s = "barfoofoobarthefoobarman", words = ["bar", "foo", "the"]
+// Input: s = "a", t = "aa"
+// Output: ""
+// Explanation: Both 'a's from t must be included in the window.
+// Since the largest window of s only has one 'a', return empty string.
+function minWindow(s, t) {
+    if (t.length > s.length) return "";
 
-// Output: [6, 9, 12]
-
-// Explanation:
-
-// The substring starting at 6 is "foobarthe".It is the concatenation of["foo", "bar", "the"].
-// The substring starting at 9 is "barthefoo".It is the concatenation of["bar", "the", "foo"].
-// The substring starting at 12 is "thefoobar".It is the concatenation of["the", "foo", "bar"].
-function findSubstring(s, words) {
-    if (!s || words.length === 0) return [];
-
-    const wordLength = words[0].length;
-    const totalWordsLength = wordLength * words.length;
-    const sLength = s.length;
-
-    if (sLength < totalWordsLength) return [];
-
-    const wordsMap = new Map();
-    for (let word of words) {
-        wordsMap.set(word, (wordsMap.get(word) || 0) + 1);
+    const charCount = {};
+    for (let char of t) {
+        charCount[char] = (charCount[char] || 0) + 1;
     }
 
-    const result = [];
+    let required = Object.keys(charCount).length;
+    let formed = 0;
+    const windowCounts = {};
+    let left = 0, right = 0;
+    let minLen = Infinity, minLeft = 0, minRight = 0;
 
-    for (let i = 0; i <= sLength - totalWordsLength; i++) {
-        const seenWords = new Map();
-        let j = 0;
+    while (right < s.length) {
+        let char = s[right];
+        windowCounts[char] = (windowCounts[char] || 0) + 1;
 
-        while (j < words.length) {
-            const wordIndex = i + j * wordLength;
-            const word = s.substring(wordIndex, wordIndex + wordLength);
-
-            if (!wordsMap.has(word)) break;
-
-            seenWords.set(word, (seenWords.get(word) || 0) + 1);
-
-            if (seenWords.get(word) > wordsMap.get(word)) break;
-
-            j++;
+        if (char in charCount && windowCounts[char] === charCount[char]) {
+            formed++;
         }
 
-        if (j === words.length) {
-            result.push(i);
+        while (left <= right && formed === required) {
+            char = s[left];
+
+            if (right - left + 1 < minLen) {
+                minLen = right - left + 1;
+                minLeft = left;
+                minRight = right;
+            }
+
+            windowCounts[char]--;
+            if (char in charCount && windowCounts[char] < charCount[char]) {
+                formed--;
+            }
+            left++;
         }
+        right++;
     }
 
-    return result;
+    return minLen === Infinity ? "" : s.substring(minLeft, minLeft + minLen);
 }
