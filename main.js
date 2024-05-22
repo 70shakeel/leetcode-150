@@ -1,37 +1,76 @@
-// Rotate Image
+// Set Matrix Zeroes
 // Medium
 // Topics
 // Companies
-// You are given an n x n 2D matrix representing an image, rotate the image by 90 degrees(clockwise).
+// Hint
+// Given an m x n integer matrix matrix, if an element is 0, set its entire row and column to 0's.
 
-// You have to rotate the image in -place, which means you have to modify the input 2D matrix directly.DO NOT allocate another 2D matrix and do the rotation.
+// You must do it in place.
 
 
 
 //     Example 1:
 
 
-// Input: matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
-// Output: [[7, 4, 1], [8, 5, 2], [9, 6, 3]]
+// Input: matrix = [[1, 1, 1], [1, 0, 1], [1, 1, 1]]
+// Output: [[1, 0, 1], [0, 0, 0], [1, 0, 1]]
 // Example 2:
 
 
-// Input: matrix = [[5, 1, 9, 11], [2, 4, 8, 10], [13, 3, 6, 7], [15, 14, 12, 16]]
-// Output: [[15, 13, 2, 5], [14, 3, 4, 1], [12, 6, 8, 9], [16, 7, 10, 11]]
-function rotate(matrix) {
-    const n = matrix.length;
+// Input: matrix = [[0, 1, 2, 0], [3, 4, 5, 2], [1, 3, 1, 5]]
+// Output: [[0, 0, 0, 0], [0, 4, 5, 0], [0, 3, 1, 0]]
+function setZeroes(matrix) {
+    const rows = matrix.length;
+    const cols = matrix[0].length;
+    let firstRowHasZero = false;
+    let firstColHasZero = false;
 
-    // Transpose the matrix
-    for (let i = 0; i < n; i++) {
-        for (let j = i; j < n; j++) {
-            [matrix[i][j], matrix[j][i]] = [matrix[j][i], matrix[i][j]];
+    // Check if the first row has any zeroes
+    for (let j = 0; j < cols; j++) {
+        if (matrix[0][j] === 0) {
+            firstRowHasZero = true;
+            break;
         }
     }
 
-    // Reverse each row
-    for (let i = 0; i < n; i++) {
-        matrix[i].reverse();
+    // Check if the first column has any zeroes
+    for (let i = 0; i < rows; i++) {
+        if (matrix[i][0] === 0) {
+            firstColHasZero = true;
+            break;
+        }
     }
 
-    return matrix;
+    // Use the first row and column to mark zero rows and columns
+    for (let i = 1; i < rows; i++) {
+        for (let j = 1; j < cols; j++) {
+            if (matrix[i][j] === 0) {
+                matrix[i][0] = 0;
+                matrix[0][j] = 0;
+            }
+        }
+    }
+
+    // Zero out cells based on marks in the first row and column
+    for (let i = 1; i < rows; i++) {
+        for (let j = 1; j < cols; j++) {
+            if (matrix[i][0] === 0 || matrix[0][j] === 0) {
+                matrix[i][j] = 0;
+            }
+        }
+    }
+
+    // Zero out the first row if needed
+    if (firstRowHasZero) {
+        for (let j = 0; j < cols; j++) {
+            matrix[0][j] = 0;
+        }
+    }
+
+    // Zero out the first column if needed
+    if (firstColHasZero) {
+        for (let i = 0; i < rows; i++) {
+            matrix[i][0] = 0;
+        }
+    }
 }
