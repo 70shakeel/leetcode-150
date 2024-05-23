@@ -1,76 +1,72 @@
-// Set Matrix Zeroes
+// Game of Life
 // Medium
 // Topics
 // Companies
-// Hint
-// Given an m x n integer matrix matrix, if an element is 0, set its entire row and column to 0's.
+// According to Wikipedia's article: "The Game of Life, also known simply as Life, is a cellular automaton devised by the British mathematician John Horton Conway in 1970."
 
-// You must do it in place.
+// The board is made up of an m x n grid of cells, where each cell has an initial state: live(represented by a 1) or dead(represented by a 0).Each cell interacts with its eight neighbors(horizontal, vertical, diagonal) using the following four rules (taken from the above Wikipedia article):
+
+// Any live cell with fewer than two live neighbors dies as if caused by under - population.
+// Any live cell with two or three live neighbors lives on to the next generation.
+// Any live cell with more than three live neighbors dies, as if by over - population.
+// Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
+// The next state is created by applying the above rules simultaneously to every cell in the current state, where births and deaths occur simultaneously.Given the current state of the m x n grid board, return the next state.
 
 
 
 //     Example 1:
 
 
-// Input: matrix = [[1, 1, 1], [1, 0, 1], [1, 1, 1]]
-// Output: [[1, 0, 1], [0, 0, 0], [1, 0, 1]]
+// Input: board = [[0, 1, 0], [0, 0, 1], [1, 1, 1], [0, 0, 0]]
+// Output: [[0, 0, 0], [1, 0, 1], [0, 1, 1], [0, 1, 0]]
 // Example 2:
 
 
-// Input: matrix = [[0, 1, 2, 0], [3, 4, 5, 2], [1, 3, 1, 5]]
-// Output: [[0, 0, 0, 0], [0, 4, 5, 0], [0, 3, 1, 0]]
-function setZeroes(matrix) {
-    const rows = matrix.length;
-    const cols = matrix[0].length;
-    let firstRowHasZero = false;
-    let firstColHasZero = false;
+// Input: board = [[1, 1], [1, 0]]
+// Output: [[1, 1], [1, 1]]
+function gameOfLife(board) {
+    const m = board.length;
+    const n = board[0].length;
 
-    // Check if the first row has any zeroes
-    for (let j = 0; j < cols; j++) {
-        if (matrix[0][j] === 0) {
-            firstRowHasZero = true;
-            break;
-        }
-    }
+    // Create a copy of the original board
+    const copyBoard = board.map(row => [...row]);
 
-    // Check if the first column has any zeroes
-    for (let i = 0; i < rows; i++) {
-        if (matrix[i][0] === 0) {
-            firstColHasZero = true;
-            break;
-        }
-    }
+    // Directions array to find the 8 neighbors of a cell
+    const directions = [
+        [-1, -1], [-1, 0], [-1, 1],
+        [0, -1], [0, 1],
+        [1, -1], [1, 0], [1, 1]
+    ];
 
-    // Use the first row and column to mark zero rows and columns
-    for (let i = 1; i < rows; i++) {
-        for (let j = 1; j < cols; j++) {
-            if (matrix[i][j] === 0) {
-                matrix[i][0] = 0;
-                matrix[0][j] = 0;
+    // Helper function to count live neighbors
+    function countLiveNeighbors(row, col) {
+        let liveNeighbors = 0;
+        for (const [dx, dy] of directions) {
+            const newRow = row + dx;
+            const newCol = col + dy;
+            if (newRow >= 0 && newRow < m && newCol >= 0 && newCol < n && copyBoard[newRow][newCol] === 1) {
+                liveNeighbors++;
             }
         }
+        return liveNeighbors;
     }
 
-    // Zero out cells based on marks in the first row and column
-    for (let i = 1; i < rows; i++) {
-        for (let j = 1; j < cols; j++) {
-            if (matrix[i][0] === 0 || matrix[0][j] === 0) {
-                matrix[i][j] = 0;
+    // Apply the rules to update the board
+    for (let row = 0; row < m; row++) {
+        for (let col = 0; col < n; col++) {
+            const liveNeighbors = countLiveNeighbors(row, col);
+
+            // Rule 1 or Rule 3
+            if (copyBoard[row][col] === 1 && (liveNeighbors < 2 || liveNeighbors > 3)) {
+                board[row][col] = 0;
             }
+            // Rule 4
+            if (copyBoard[row][col] === 0 && liveNeighbors === 3) {
+                board[row][col] = 1;
+            }
+            // Rule 2 does not need explicit handling as the cell remains the same
         }
     }
 
-    // Zero out the first row if needed
-    if (firstRowHasZero) {
-        for (let j = 0; j < cols; j++) {
-            matrix[0][j] = 0;
-        }
-    }
-
-    // Zero out the first column if needed
-    if (firstColHasZero) {
-        for (let i = 0; i < rows; i++) {
-            matrix[i][0] = 0;
-        }
-    }
+    return board;
 }
