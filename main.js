@@ -1,46 +1,51 @@
-// Ransom Note
+// Isomorphic Strings
 // Easy
 // Topics
 // Companies
-// Given two strings ransomNote and magazine, return true if ransomNote can be constructed by using the letters from magazine and false otherwise.
+// Given two strings s and t, determine if they are isomorphic.
 
-// Each letter in magazine can only be used once in ransomNote.
+// Two strings s and t are isomorphic if the characters in s can be replaced to get t.
+
+// All occurrences of a character must be replaced with another character while preserving the order of characters.No two characters may map to the same character, but a character may map to itself.
 
 
 
 //     Example 1:
 
-// Input: ransomNote = "a", magazine = "b"
-// Output: false
+// Input: s = "egg", t = "add"
+// Output: true
 // Example 2:
 
-// Input: ransomNote = "aa", magazine = "ab"
+// Input: s = "foo", t = "bar"
 // Output: false
 // Example 3:
 
-// Input: ransomNote = "aa", magazine = "aab"
+// Input: s = "paper", t = "title"
 // Output: true
-function canConstruct(ransomNote, magazine) {
-    // Create a hashmap to store the frequency of each letter in the magazine
-    const magazineMap = {};
+function isIsomorphic(s, t) {
+    if (s.length !== t.length) {
+        return false;
+    }
 
-    // Populate the hashmap with the frequency of each letter in the magazine
-    for (const char of magazine) {
-        if (magazineMap[char]) {
-            magazineMap[char]++;
+    const mapST = new Map();
+    const mapTS = new Map();
+
+    for (let i = 0; i < s.length; i++) {
+        const charS = s[i];
+        const charT = t[i];
+
+        if (mapST.has(charS)) {
+            if (mapST.get(charS) !== charT) {
+                return false;
+            }
         } else {
-            magazineMap[char] = 1;
+            if (mapTS.has(charT)) {
+                return false;
+            }
+            mapST.set(charS, charT);
+            mapTS.set(charT, charS);
         }
     }
 
-    // Check each character in the ransomNote
-    for (const char of ransomNote) {
-        if (magazineMap[char]) {
-            magazineMap[char]--;
-        } else {
-            return false; // Character is not available or not enough in the magazine
-        }
-    }
-
-    return true; // All characters in ransomNote are available in the magazine
+    return true;
 }
