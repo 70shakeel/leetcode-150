@@ -1,49 +1,52 @@
-// Isomorphic Strings
+// Word Pattern
 // Easy
 // Topics
 // Companies
-// Given two strings s and t, determine if they are isomorphic.
+// Given a pattern and a string s, find if s follows the same pattern.
 
-// Two strings s and t are isomorphic if the characters in s can be replaced to get t.
-
-// All occurrences of a character must be replaced with another character while preserving the order of characters.No two characters may map to the same character, but a character may map to itself.
+// Here follow means a full match, such that there is a bijection between a letter in pattern and a non - empty word in s.
 
 
 
 //     Example 1:
 
-// Input: s = "egg", t = "add"
+// Input: pattern = "abba", s = "dog cat cat dog"
 // Output: true
 // Example 2:
 
-// Input: s = "foo", t = "bar"
+// Input: pattern = "abba", s = "dog cat cat fish"
 // Output: false
 // Example 3:
 
-// Input: s = "paper", t = "title"
-// Output: true
-function isIsomorphic(s, t) {
-    if (s.length !== t.length) {
+// Input: pattern = "aaaa", s = "dog cat cat dog"
+// Output: false
+function wordPattern(pattern, s) {
+    const words = s.split(' ');
+    if (pattern.length !== words.length) {
         return false;
     }
 
-    const mapST = new Map();
-    const mapTS = new Map();
+    const charToWord = new Map();
+    const wordToChar = new Map();
 
-    for (let i = 0; i < s.length; i++) {
-        const charS = s[i];
-        const charT = t[i];
+    for (let i = 0; i < pattern.length; i++) {
+        const char = pattern[i];
+        const word = words[i];
 
-        if (mapST.has(charS)) {
-            if (mapST.get(charS) !== charT) {
+        if (charToWord.has(char)) {
+            if (charToWord.get(char) !== word) {
                 return false;
             }
         } else {
-            if (mapTS.has(charT)) {
+            charToWord.set(char, word);
+        }
+
+        if (wordToChar.has(word)) {
+            if (wordToChar.get(word) !== char) {
                 return false;
             }
-            mapST.set(charS, charT);
-            mapTS.set(charT, charS);
+        } else {
+            wordToChar.set(word, char);
         }
     }
 
