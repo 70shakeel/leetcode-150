@@ -1,52 +1,40 @@
-// Word Pattern
+// Valid Anagram
 // Easy
 // Topics
 // Companies
-// Given a pattern and a string s, find if s follows the same pattern.
+// Given two strings s and t, return true if t is an anagram of s, and false otherwise.
 
-// Here follow means a full match, such that there is a bijection between a letter in pattern and a non - empty word in s.
+// An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
 
 
 
 //     Example 1:
 
-// Input: pattern = "abba", s = "dog cat cat dog"
+// Input: s = "anagram", t = "nagaram"
 // Output: true
 // Example 2:
 
-// Input: pattern = "abba", s = "dog cat cat fish"
+// Input: s = "rat", t = "car"
 // Output: false
-// Example 3:
-
-// Input: pattern = "aaaa", s = "dog cat cat dog"
-// Output: false
-function wordPattern(pattern, s) {
-    const words = s.split(' ');
-    if (pattern.length !== words.length) {
+function isAnagram(s, t) {
+    // Step 1: Check if lengths are equal
+    if (s.length !== t.length) {
         return false;
     }
 
-    const charToWord = new Map();
-    const wordToChar = new Map();
+    // Step 2: Create hashmaps to count character frequencies
+    const countS = {};
+    const countT = {};
 
-    for (let i = 0; i < pattern.length; i++) {
-        const char = pattern[i];
-        const word = words[i];
+    for (let i = 0; i < s.length; i++) {
+        countS[s[i]] = (countS[s[i]] || 0) + 1;
+        countT[t[i]] = (countT[t[i]] || 0) + 1;
+    }
 
-        if (charToWord.has(char)) {
-            if (charToWord.get(char) !== word) {
-                return false;
-            }
-        } else {
-            charToWord.set(char, word);
-        }
-
-        if (wordToChar.has(word)) {
-            if (wordToChar.get(word) !== char) {
-                return false;
-            }
-        } else {
-            wordToChar.set(word, char);
+    // Step 3: Compare the hashmaps
+    for (let char in countS) {
+        if (countS[char] !== countT[char]) {
+            return false;
         }
     }
 
