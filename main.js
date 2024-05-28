@@ -1,8 +1,8 @@
-// Valid Anagram
-// Easy
+// Group Anagrams
+// Medium
 // Topics
 // Companies
-// Given two strings s and t, return true if t is an anagram of s, and false otherwise.
+// Given an array of strings strs, group the anagrams together.You can return the answer in any order.
 
 // An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
 
@@ -10,33 +10,34 @@
 
 //     Example 1:
 
-// Input: s = "anagram", t = "nagaram"
-// Output: true
+// Input: strs = ["eat", "tea", "tan", "ate", "nat", "bat"]
+// Output: [["bat"], ["nat", "tan"], ["ate", "eat", "tea"]]
 // Example 2:
 
-// Input: s = "rat", t = "car"
-// Output: false
-function isAnagram(s, t) {
-    // Step 1: Check if lengths are equal
-    if (s.length !== t.length) {
-        return false;
-    }
+// Input: strs = [""]
+// Output: [[""]]
+// Example 3:
 
-    // Step 2: Create hashmaps to count character frequencies
-    const countS = {};
-    const countT = {};
+// Input: strs = ["a"]
+// Output: [["a"]]
+function groupAnagrams(strs) {
+    // Initialize the hashmap
+    const map = {};
 
-    for (let i = 0; i < s.length; i++) {
-        countS[s[i]] = (countS[s[i]] || 0) + 1;
-        countT[t[i]] = (countT[t[i]] || 0) + 1;
-    }
+    // Iterate through each string in the input array
+    for (let str of strs) {
+        // Sort the characters in the string
+        const sortedStr = str.split('').sort().join('');
 
-    // Step 3: Compare the hashmaps
-    for (let char in countS) {
-        if (countS[char] !== countT[char]) {
-            return false;
+        // If the sorted string is already a key in the map, append the original string
+        if (map[sortedStr]) {
+            map[sortedStr].push(str);
+        } else {
+            // Otherwise, create a new array with the original string
+            map[sortedStr] = [str];
         }
     }
 
-    return true;
+    // Return the values of the hashmap
+    return Object.values(map);
 }
