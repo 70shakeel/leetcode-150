@@ -1,41 +1,48 @@
-// Two Sum
+// Happy Number
 // Easy
 // Topics
 // Companies
-// Hint
-// Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+// Write an algorithm to determine if a number n is happy.
 
-// You may assume that each input would have exactly one solution, and you may not use the same element twice.
+// A happy number is a number defined by the following process:
 
-// You can return the answer in any order.
+// Starting with any positive integer, replace the number by the sum of the squares of its digits.
+// Repeat the process until the number equals 1(where it will stay), or it loops endlessly in a cycle which does not include 1.
+// Those numbers for which this process ends in 1 are happy.
+// Return true if n is a happy number, and false if not.
 
 
 
 //     Example 1:
 
-// Input: nums = [2, 7, 11, 15], target = 9
-// Output: [0, 1]
-// Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].
-//     Example 2:
+// Input: n = 19
+// Output: true
+// Explanation:
+// 12 + 92 = 82
+// 82 + 22 = 68
+// 62 + 82 = 100
+// 12 + 02 + 02 = 1
+// Example 2:
 
-// Input: nums = [3, 2, 4], target = 6
-// Output: [1, 2]
-// Example 3:
+// Input: n = 2
+// Output: false
+function isHappy(n) {
+    const seen = new Set();
 
-// Input: nums = [3, 3], target = 6
-// Output: [0, 1]
-function twoSum(nums, target) {
-    const map = new Map();  // Create a hashmap to store value and its index
-
-    for (let i = 0; i < nums.length; i++) {
-        const complement = target - nums[i];
-
-        if (map.has(complement)) {
-            return [map.get(complement), i];  // Return the indices of the two numbers
+    function getNextNumber(num) {
+        let sum = 0;
+        while (num > 0) {
+            const digit = num % 10;
+            sum += digit * digit;
+            num = Math.floor(num / 10);
         }
-
-        map.set(nums[i], i);  // Store the current number and its index in the hashmap
+        return sum;
     }
 
-    return [];  // In case no solution is found, though the problem guarantees one solution
+    while (n !== 1 && !seen.has(n)) {
+        seen.add(n);
+        n = getNextNumber(n);
+    }
+
+    return n === 1;
 }
