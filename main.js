@@ -1,35 +1,43 @@
-//  Contains Duplicate II
-// Easy
+// Longest Consecutive Sequence
+// Medium
 // Topics
 // Companies
-// Given an integer array nums and an integer k, return true if there are two distinct indices i and j in the array such that nums[i] == nums[j] and abs(i - j) <= k.
+// Given an unsorted array of integers nums, return the length of the longest consecutive elements sequence.
+
+// You must write an algorithm that runs in O(n) time.
 
 
 
 //     Example 1:
 
-// Input: nums = [1, 2, 3, 1], k = 3
-// Output: true
+// Input: nums = [100, 4, 200, 1, 3, 2]
+// Output: 4
+// Explanation: The longest consecutive elements sequence is[1, 2, 3, 4].Therefore its length is 4.
 // Example 2:
 
-// Input: nums = [1, 0, 1, 1], k = 1
-// Output: true
-// Example 3:
+// Input: nums = [0, 3, 7, 2, 5, 8, 4, 6, 0, 1]
+// Output: 9
+function longestConsecutive(nums) {
+    if (nums.length === 0) return 0;
 
-// Input: nums = [1, 2, 3, 1, 2, 3], k = 2
-// Output: false
-function containsNearbyDuplicate(nums, k) {
-    const indexMap = new Map();
+    const numSet = new Set(nums);
+    let maxLength = 0;
 
-    for (let i = 0; i < nums.length; i++) {
-        if (indexMap.has(nums[i])) {
-            const prevIndex = indexMap.get(nums[i]);
-            if (i - prevIndex <= k) {
-                return true;
+    for (let num of numSet) {
+        // Check if it's the start of a sequence
+        if (!numSet.has(num - 1)) {
+            let currentNum = num;
+            let currentStreak = 1;
+
+            // Check the length of the sequence
+            while (numSet.has(currentNum + 1)) {
+                currentNum += 1;
+                currentStreak += 1;
             }
+
+            maxLength = Math.max(maxLength, currentStreak);
         }
-        indexMap.set(nums[i], i);
     }
 
-    return false;
+    return maxLength;
 }
