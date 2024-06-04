@@ -1,46 +1,51 @@
-// Merge Intervals
+// Insert Interval
 // Medium
 // Topics
 // Companies
-// Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, and return an array of the non - overlapping intervals that cover all the intervals in the input.
+// Hint
+// You are given an array of non - overlapping intervals intervals where intervals[i] = [starti, endi] represent the start and the end of the ith interval and intervals is sorted in ascending order by starti.You are also given an interval newInterval = [start, end] that represents the start and end of another interval.
+
+// Insert newInterval into intervals such that intervals is still sorted in ascending order by starti and intervals still does not have any overlapping intervals(merge overlapping intervals if necessary).
+
+// Return intervals after the insertion.
+
+// Note that you don't need to modify intervals in-place. You can make a new array and return it.
 
 
 
-//     Example 1:
+// Example 1:
 
-// Input: intervals = [[1, 3], [2, 6], [8, 10], [15, 18]]
-// Output: [[1, 6], [8, 10], [15, 18]]
-// Explanation: Since intervals[1, 3] and[2, 6] overlap, merge them into[1, 6].
-//     Example 2:
+// Input: intervals = [[1, 3], [6, 9]], newInterval = [2, 5]
+// Output: [[1, 5], [6, 9]]
+// Example 2:
 
-// Input: intervals = [[1, 4], [4, 5]]
-// Output: [[1, 5]]
-// Explanation: Intervals[1, 4] and[4, 5] are considered overlapping.
-function mergeIntervals(intervals) {
-    if (intervals.length === 0) return intervals;
+// Input: intervals = [[1, 2], [3, 5], [6, 7], [8, 10], [12, 16]], newInterval = [4, 8]
+// Output: [[1, 2], [3, 10], [12, 16]]
+// Explanation: Because the new interval[4, 8] overlaps with [3, 5], [6, 7], [8, 10].
+function insert(intervals, newInterval) {
+    let result = [];
+    let i = 0;
+    let n = intervals.length;
 
-    // Sort intervals by starting point
-    intervals.sort((a, b) => a[0] - b[0]);
-
-    const result = [];
-    let currentInterval = intervals[0];
-
-    for (let i = 1; i < intervals.length; i++) {
-        const [currentStart, currentEnd] = currentInterval;
-        const [nextStart, nextEnd] = intervals[i];
-
-        if (currentEnd >= nextStart) {
-            // Merge the intervals
-            currentInterval = [currentStart, Math.max(currentEnd, nextEnd)];
-        } else {
-            // No overlap, push the current interval to result and update current interval
-            result.push(currentInterval);
-            currentInterval = intervals[i];
-        }
+    // Add all intervals before newInterval
+    while (i < n && intervals[i][1] < newInterval[0]) {
+        result.push(intervals[i]);
+        i++;
     }
 
-    // Add the last interval
-    result.push(currentInterval);
+    // Merge intervals that overlap with newInterval
+    while (i < n && intervals[i][0] <= newInterval[1]) {
+        newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
+        newInterval[1] = Math.max(newInterval[1], intervals[i][1]);
+        i++;
+    }
+    result.push(newInterval);
+
+    // Add all intervals after newInterval
+    while (i < n) {
+        result.push(intervals[i]);
+        i++;
+    }
 
     return result;
 }
