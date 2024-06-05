@@ -1,51 +1,51 @@
-// Insert Interval
-// Medium
+// Valid Parentheses
+// Easy
 // Topics
 // Companies
 // Hint
-// You are given an array of non - overlapping intervals intervals where intervals[i] = [starti, endi] represent the start and the end of the ith interval and intervals is sorted in ascending order by starti.You are also given an interval newInterval = [start, end] that represents the start and end of another interval.
+// Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
 
-// Insert newInterval into intervals such that intervals is still sorted in ascending order by starti and intervals still does not have any overlapping intervals(merge overlapping intervals if necessary).
+// An input string is valid if:
 
-// Return intervals after the insertion.
+// Open brackets must be closed by the same type of brackets.
+// Open brackets must be closed in the correct order.
+// Every close bracket has a corresponding open bracket of the same type.
 
-// Note that you don't need to modify intervals in-place. You can make a new array and return it.
 
+//     Example 1:
 
-
-// Example 1:
-
-// Input: intervals = [[1, 3], [6, 9]], newInterval = [2, 5]
-// Output: [[1, 5], [6, 9]]
+// Input: s = "()"
+// Output: true
 // Example 2:
 
-// Input: intervals = [[1, 2], [3, 5], [6, 7], [8, 10], [12, 16]], newInterval = [4, 8]
-// Output: [[1, 2], [3, 10], [12, 16]]
-// Explanation: Because the new interval[4, 8] overlaps with [3, 5], [6, 7], [8, 10].
-function insert(intervals, newInterval) {
-    let result = [];
-    let i = 0;
-    let n = intervals.length;
+// Input: s = "()[]{}"
+// Output: true
+// Example 3:
 
-    // Add all intervals before newInterval
-    while (i < n && intervals[i][1] < newInterval[0]) {
-        result.push(intervals[i]);
-        i++;
+// Input: s = "(]"
+// Output: false
+function isValid(s) {
+    const stack = [];
+    const bracketMap = {
+        '(': ')',
+        '{': '}',
+        '[': ']'
+    };
+
+    for (let i = 0; i < s.length; i++) {
+        const char = s[i];
+
+        if (bracketMap[char]) {
+            // If the character is an opening bracket, push it onto the stack
+            stack.push(char);
+        } else {
+            // If the character is a closing bracket
+            const topElement = stack.length === 0 ? '#' : stack.pop();
+            if (bracketMap[topElement] !== char) {
+                return false;
+            }
+        }
     }
 
-    // Merge intervals that overlap with newInterval
-    while (i < n && intervals[i][0] <= newInterval[1]) {
-        newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
-        newInterval[1] = Math.max(newInterval[1], intervals[i][1]);
-        i++;
-    }
-    result.push(newInterval);
-
-    // Add all intervals after newInterval
-    while (i < n) {
-        result.push(intervals[i]);
-        i++;
-    }
-
-    return result;
+    return stack.length === 0;
 }
