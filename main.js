@@ -1,51 +1,84 @@
-// Valid Parentheses
-// Easy
+// Simplify Path
+// Medium
 // Topics
 // Companies
-// Hint
-// Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+// Given an absolute path for a Unix - style file system, which begins with a slash '/', transform this path into its simplified canonical path.
 
-// An input string is valid if:
+// In Unix - style file system context, a single period '.' signifies the current directory, a double period ".." denotes moving up one directory level, and multiple slashes such as "//" are interpreted as a single slash.In this problem, treat sequences of periods not covered by the previous rules(like "...") as valid names for files or directories.
 
-// Open brackets must be closed by the same type of brackets.
-// Open brackets must be closed in the correct order.
-// Every close bracket has a corresponding open bracket of the same type.
+// The simplified canonical path should adhere to the following rules:
+
+// It must start with a single slash '/'.
+// Directories within the path should be separated by only one slash '/'.
+// It should not end with a slash '/', unless it's the root directory.
+// It should exclude any single or double periods used to denote current or parent directories.
+// Return the new path.
+
 
 
 //     Example 1:
 
-// Input: s = "()"
-// Output: true
-// Example 2:
+// Input: path = "/home/"
 
-// Input: s = "()[]{}"
-// Output: true
-// Example 3:
+// Output: "/home"
 
-// Input: s = "(]"
-// Output: false
-function isValid(s) {
+// Explanation:
+
+// The trailing slash should be removed.
+
+
+//     Example 2:
+
+// Input: path = "/home//foo/"
+
+// Output: "/home/foo"
+
+// Explanation:
+
+// Multiple consecutive slashes are replaced by a single one.
+
+//     Example 3:
+
+// Input: path = "/home/user/Documents/../Pictures"
+
+// Output: "/home/user/Pictures"
+
+// Explanation:
+
+// A double period ".." refers to the directory up a level.
+
+//     Example 4:
+
+// Input: path = "/../"
+
+// Output: "/"
+
+// Explanation:
+
+// Going one level up from the root directory is not possible.
+
+//     Example 5:
+
+// Input: path = "/.../a/../b/c/../d/./"
+
+// Output: "/.../b/d"
+
+// Explanation:
+
+// "..." is a valid name for a directory in this problem.
+function simplifyPath(path) {
     const stack = [];
-    const bracketMap = {
-        '(': ')',
-        '{': '}',
-        '[': ']'
-    };
+    const parts = path.split('/');
 
-    for (let i = 0; i < s.length; i++) {
-        const char = s[i];
-
-        if (bracketMap[char]) {
-            // If the character is an opening bracket, push it onto the stack
-            stack.push(char);
-        } else {
-            // If the character is a closing bracket
-            const topElement = stack.length === 0 ? '#' : stack.pop();
-            if (bracketMap[topElement] !== char) {
-                return false;
+    for (const part of parts) {
+        if (part === '..') {
+            if (stack.length > 0) {
+                stack.pop();
             }
+        } else if (part !== '' && part !== '.') {
+            stack.push(part);
         }
     }
 
-    return stack.length === 0;
+    return '/' + stack.join('/');
 }
