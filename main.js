@@ -1,73 +1,61 @@
-// Evaluate Reverse Polish Notation
-// Medium
+// Basic Calculator
+// Hard
 // Topics
 // Companies
-// You are given an array of strings tokens that represents an arithmetic expression in a Reverse Polish Notation.
+// Given a string s representing a valid expression, implement a basic calculator to evaluate it, and return the result of the evaluation.
 
-// Evaluate the expression. Return an integer that represents the value of the expression.
-
-// Note that:
-
-// The valid operators are '+', '-', '*', and '/'.
-// Each operand may be an integer or another expression.
-// The division between two integers always truncates toward zero.
-// There will not be any division by zero.
-// The input represents a valid arithmetic expression in a reverse polish notation.
-// The answer and all the intermediate calculations can be represented in a 32-bit integer.
+//     Note: You are not allowed to use any built -in function which evaluates strings as mathematical expressions, such as eval().
 
 
-// Example 1:
 
-// Input: tokens = ["2","1","+","3","*"]
-// Output: 9
-// Explanation: ((2 + 1) * 3) = 9
+//         Example 1:
+
+// Input: s = "1 + 1"
+// Output: 2
 // Example 2:
 
-// Input: tokens = ["4","13","5","/","+"]
-// Output: 6
-// Explanation: (4 + (13 / 5)) = 6
+// Input: s = " 2-1 + 2 "
+// Output: 3
 // Example 3:
 
-// Input: tokens = ["10","6","9","3","+","-11","*","/","*","17","+","5","+"]
-// Output: 22
-// Explanation: ((10 * (6 / ((9 + 3) * -11))) + 17) + 5
-// = ((10 * (6 / (12 * -11))) + 17) + 5
-// = ((10 * (6 / -132)) + 17) + 5
-// = ((10 * 0) + 17) + 5
-// = (0 + 17) + 5
-// = 17 + 5
-// = 22
-function evalRPN(tokens) {
-    const stack = [];
+// Input: s = "(1+(4+5+2)-3)+(6+8)"
+// Output: 23
+function calculate(s) {
+    let stack = [];
+    let currentNumber = 0;
+    let result = 0;
+    let sign = 1; // 1 for positive, -1 for negative
 
-    for (let token of tokens) {
-        if (isOperator(token)) {
-            const b = stack.pop();
-            const a = stack.pop();
-            stack.push(performOperation(a, b, token));
-        } else {
-            stack.push(parseInt(token));
+    for (let i = 0; i < s.length; i++) {
+        let ch = s[i];
+
+        if (ch >= '0' && ch <= '9') {
+            currentNumber = currentNumber * 10 + (ch - '0');
+        } else if (ch === '+') {
+            result += sign * currentNumber;
+            sign = 1;
+            currentNumber = 0;
+        } else if (ch === '-') {
+            result += sign * currentNumber;
+            sign = -1;
+            currentNumber = 0;
+        } else if (ch === '(') {
+            stack.push(result);
+            stack.push(sign);
+            sign = 1;
+            result = 0;
+        } else if (ch === ')') {
+            result += sign * currentNumber;
+            result *= stack.pop(); // stack.pop() is the sign before the parenthesis
+            result += stack.pop(); // stack.pop() now is the result calculated before the parenthesis
+            currentNumber = 0;
         }
     }
 
-    return stack.pop();
-}
-
-function isOperator(token) {
-    return token === '+' || token === '-' || token === '*' || token === '/';
-}
-
-function performOperation(a, b, operator) {
-    switch (operator) {
-        case '+':
-            return a + b;
-        case '-':
-            return a - b;
-        case '*':
-            return a * b;
-        case '/':
-            return Math.trunc(a / b); // Truncate towards zero
-        default:
-            throw new Error(`Unknown operator: ${operator}`);
+    // Add the last number processed
+    if (currentNumber !== 0) {
+        result += sign * currentNumber;
     }
+
+    return result;
 }
