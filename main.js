@@ -1,61 +1,78 @@
-// Basic Calculator
-// Hard
+// Linked List Cycle
+// Easy
 // Topics
 // Companies
-// Given a string s representing a valid expression, implement a basic calculator to evaluate it, and return the result of the evaluation.
+// Given head, the head of a linked list, determine if the linked list has a cycle in it.
 
-//     Note: You are not allowed to use any built -in function which evaluates strings as mathematical expressions, such as eval().
+// There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the next pointer.Internally, pos is used to denote the index of the node that tail's next pointer is connected to. Note that pos is not passed as a parameter.
+
+// Return true if there is a cycle in the linked list.Otherwise, return false.
 
 
 
-//         Example 1:
+//     Example 1:
 
-// Input: s = "1 + 1"
-// Output: 2
-// Example 2:
 
-// Input: s = " 2-1 + 2 "
-// Output: 3
-// Example 3:
+// Input: head = [3, 2, 0, -4], pos = 1
+// Output: true
+// Explanation: There is a cycle in the linked list, where the tail connects to the 1st node(0 - indexed).
+//     Example 2:
 
-// Input: s = "(1+(4+5+2)-3)+(6+8)"
-// Output: 23
-function calculate(s) {
-    let stack = [];
-    let currentNumber = 0;
-    let result = 0;
-    let sign = 1; // 1 for positive, -1 for negative
 
-    for (let i = 0; i < s.length; i++) {
-        let ch = s[i];
+// Input: head = [1, 2], pos = 0
+// Output: true
+// Explanation: There is a cycle in the linked list, where the tail connects to the 0th node.
+//     Example 3:
 
-        if (ch >= '0' && ch <= '9') {
-            currentNumber = currentNumber * 10 + (ch - '0');
-        } else if (ch === '+') {
-            result += sign * currentNumber;
-            sign = 1;
-            currentNumber = 0;
-        } else if (ch === '-') {
-            result += sign * currentNumber;
-            sign = -1;
-            currentNumber = 0;
-        } else if (ch === '(') {
-            stack.push(result);
-            stack.push(sign);
-            sign = 1;
-            result = 0;
-        } else if (ch === ')') {
-            result += sign * currentNumber;
-            result *= stack.pop(); // stack.pop() is the sign before the parenthesis
-            result += stack.pop(); // stack.pop() now is the result calculated before the parenthesis
-            currentNumber = 0;
+
+// Input: head = [1], pos = -1
+// Output: false
+// Explanation: There is no cycle in the linked list.
+class ListNode {
+    constructor(val) {
+        this.val = val;
+        this.next = null;
+    }
+}
+
+function hasCycle(head) {
+    if (head === null || head.next === null) {
+        return false;
+    }
+
+    let slow = head;
+    let fast = head.next;
+
+    while (slow !== fast) {
+        if (fast === null || fast.next === null) {
+            return false;
         }
+        slow = slow.next;
+        fast = fast.next.next;
     }
 
-    // Add the last number processed
-    if (currentNumber !== 0) {
-        result += sign * currentNumber;
+    return true;
+}
+
+// Helper function to create a linked list from an array and create a cycle
+function createLinkedList(arr, pos) {
+    if (arr.length === 0) return null;
+
+    let head = new ListNode(arr[0]);
+    let current = head;
+    let cycleNode = null;
+
+    if (pos === 0) cycleNode = head;
+
+    for (let i = 1; i < arr.length; i++) {
+        current.next = new ListNode(arr[i]);
+        current = current.next;
+        if (i === pos) cycleNode = current;
     }
 
-    return result;
+    if (cycleNode !== null) {
+        current.next = cycleNode;
+    }
+
+    return head;
 }
