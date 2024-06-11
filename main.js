@@ -1,78 +1,72 @@
-// Linked List Cycle
-// Easy
+// Add Two Numbers
+// Medium
 // Topics
 // Companies
-// Given head, the head of a linked list, determine if the linked list has a cycle in it.
+// You are given two non - empty linked lists representing two non - negative integers.The digits are stored in reverse order, and each of their nodes contains a single digit.Add the two numbers and return the sum as a linked list.
 
-// There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the next pointer.Internally, pos is used to denote the index of the node that tail's next pointer is connected to. Note that pos is not passed as a parameter.
-
-// Return true if there is a cycle in the linked list.Otherwise, return false.
+// You may assume the two numbers do not contain any leading zero, except the number 0 itself.
 
 
 
 //     Example 1:
 
 
-// Input: head = [3, 2, 0, -4], pos = 1
-// Output: true
-// Explanation: There is a cycle in the linked list, where the tail connects to the 1st node(0 - indexed).
-//     Example 2:
+// Input: l1 = [2, 4, 3], l2 = [5, 6, 4]
+// Output: [7, 0, 8]
+// Explanation: 342 + 465 = 807.
+// Example 2:
 
+// Input: l1 = [0], l2 = [0]
+// Output: [0]
+// Example 3:
 
-// Input: head = [1, 2], pos = 0
-// Output: true
-// Explanation: There is a cycle in the linked list, where the tail connects to the 0th node.
-//     Example 3:
-
-
-// Input: head = [1], pos = -1
-// Output: false
-// Explanation: There is no cycle in the linked list.
-class ListNode {
-    constructor(val) {
-        this.val = val;
-        this.next = null;
-    }
+// Input: l1 = [9, 9, 9, 9, 9, 9, 9], l2 = [9, 9, 9, 9]
+// Output: [8, 9, 9, 9, 0, 0, 0, 1]
+function ListNode(val, next = null) {
+    this.val = val;
+    this.next = next;
 }
 
-function hasCycle(head) {
-    if (head === null || head.next === null) {
-        return false;
-    }
+function addTwoNumbers(l1, l2) {
+    let dummyHead = new ListNode(0);
+    let current = dummyHead;
+    let carry = 0;
 
-    let slow = head;
-    let fast = head.next;
-
-    while (slow !== fast) {
-        if (fast === null || fast.next === null) {
-            return false;
-        }
-        slow = slow.next;
-        fast = fast.next.next;
-    }
-
-    return true;
-}
-
-// Helper function to create a linked list from an array and create a cycle
-function createLinkedList(arr, pos) {
-    if (arr.length === 0) return null;
-
-    let head = new ListNode(arr[0]);
-    let current = head;
-    let cycleNode = null;
-
-    if (pos === 0) cycleNode = head;
-
-    for (let i = 1; i < arr.length; i++) {
-        current.next = new ListNode(arr[i]);
+    while (l1 !== null || l2 !== null) {
+        let x = (l1 !== null) ? l1.val : 0;
+        let y = (l2 !== null) ? l2.val : 0;
+        let sum = carry + x + y;
+        carry = Math.floor(sum / 10);
+        current.next = new ListNode(sum % 10);
         current = current.next;
-        if (i === pos) cycleNode = current;
+        if (l1 !== null) l1 = l1.next;
+        if (l2 !== null) l2 = l2.next;
     }
 
-    if (cycleNode !== null) {
-        current.next = cycleNode;
+    if (carry > 0) {
+        current.next = new ListNode(carry);
     }
 
-    return head;
+    return dummyHead.next;
+}
+
+// Helper function to create linked list from array
+function arrayToList(arr) {
+    let dummyHead = new ListNode(0);
+    let current = dummyHead;
+    for (let num of arr) {
+        current.next = new ListNode(num);
+        current = current.next;
+    }
+    return dummyHead.next;
+}
+
+// Helper function to convert linked list to array
+function listToArray(list) {
+    let arr = [];
+    while (list !== null) {
+        arr.push(list.val);
+        list = list.next;
+    }
+    return arr;
 }
