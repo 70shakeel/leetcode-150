@@ -1,72 +1,85 @@
-// Add Two Numbers
-// Medium
+// Merge Two Sorted Lists
+// Easy
 // Topics
 // Companies
-// You are given two non - empty linked lists representing two non - negative integers.The digits are stored in reverse order, and each of their nodes contains a single digit.Add the two numbers and return the sum as a linked list.
+// You are given the heads of two sorted linked lists list1 and list2.
 
-// You may assume the two numbers do not contain any leading zero, except the number 0 itself.
+// Merge the two lists into one sorted list.The list should be made by splicing together the nodes of the first two lists.
+
+// Return the head of the merged linked list.
 
 
 
 //     Example 1:
 
 
-// Input: l1 = [2, 4, 3], l2 = [5, 6, 4]
-// Output: [7, 0, 8]
-// Explanation: 342 + 465 = 807.
+// Input: list1 = [1, 2, 4], list2 = [1, 3, 4]
+// Output: [1, 1, 2, 3, 4, 4]
 // Example 2:
 
-// Input: l1 = [0], l2 = [0]
-// Output: [0]
+// Input: list1 = [], list2 = []
+// Output: []
 // Example 3:
 
-// Input: l1 = [9, 9, 9, 9, 9, 9, 9], l2 = [9, 9, 9, 9]
-// Output: [8, 9, 9, 9, 0, 0, 0, 1]
-function ListNode(val, next = null) {
-    this.val = val;
-    this.next = next;
+// Input: list1 = [], list2 = [0]
+// Output: [0]
+class ListNode {
+    constructor(val = 0, next = null) {
+        this.val = val;
+        this.next = next;
+    }
 }
 
-function addTwoNumbers(l1, l2) {
-    let dummyHead = new ListNode(0);
-    let current = dummyHead;
-    let carry = 0;
+function mergeTwoLists(list1, list2) {
+    // Create a dummy node to act as the head of the new linked list
+    let dummy = new ListNode();
+    let current = dummy;
 
-    while (l1 !== null || l2 !== null) {
-        let x = (l1 !== null) ? l1.val : 0;
-        let y = (l2 !== null) ? l2.val : 0;
-        let sum = carry + x + y;
-        carry = Math.floor(sum / 10);
-        current.next = new ListNode(sum % 10);
-        current = current.next;
-        if (l1 !== null) l1 = l1.next;
-        if (l2 !== null) l2 = l2.next;
-    }
-
-    if (carry > 0) {
-        current.next = new ListNode(carry);
-    }
-
-    return dummyHead.next;
-}
-
-// Helper function to create linked list from array
-function arrayToList(arr) {
-    let dummyHead = new ListNode(0);
-    let current = dummyHead;
-    for (let num of arr) {
-        current.next = new ListNode(num);
+    // Traverse both lists
+    while (list1 !== null && list2 !== null) {
+        // Compare the values of the current nodes in both lists
+        if (list1.val <= list2.val) {
+            // Attach the node from list1 to the new list
+            current.next = list1;
+            list1 = list1.next;
+        } else {
+            // Attach the node from list2 to the new list
+            current.next = list2;
+            list2 = list2.next;
+        }
+        // Move to the next node in the new list
         current = current.next;
     }
-    return dummyHead.next;
+
+    // If one of the lists is not empty, attach the remaining nodes to the new list
+    if (list1 !== null) {
+        current.next = list1;
+    } else {
+        current.next = list2;
+    }
+
+    // Return the next node of the dummy node, which is the head of the merged list
+    return dummy.next;
 }
 
-// Helper function to convert linked list to array
-function listToArray(list) {
-    let arr = [];
-    while (list !== null) {
-        arr.push(list.val);
-        list = list.next;
+// Helper function to create a linked list from an array
+function createLinkedList(arr) {
+    let dummy = new ListNode();
+    let current = dummy;
+    for (let val of arr) {
+        current.next = new ListNode(val);
+        current = current.next;
     }
-    return arr;
+    return dummy.next;
+}
+
+// Helper function to print the linked list
+function printLinkedList(head) {
+    let current = head;
+    let result = [];
+    while (current !== null) {
+        result.push(current.val);
+        current = current.next;
+    }
+    console.log(result.join(" -> "));
 }
