@@ -1,85 +1,83 @@
-// Merge Two Sorted Lists
-// Easy
+// Copy List with Random Pointer
+// Medium
 // Topics
 // Companies
-// You are given the heads of two sorted linked lists list1 and list2.
+// Hint
+// A linked list of length n is given such that each node contains an additional random pointer, which could point to any node in the list, or null.
 
-// Merge the two lists into one sorted list.The list should be made by splicing together the nodes of the first two lists.
+// Construct a deep copy of the list.The deep copy should consist of exactly n brand new nodes, where each new node has its value set to the value of its corresponding original node.Both the next and random pointer of the new nodes should point to new nodes in the copied list such that the pointers in the original list and copied list represent the same list state.None of the pointers in the new list should point to nodes in the original list.
 
-// Return the head of the merged linked list.
+// For example, if there are two nodes X and Y in the original list, where X.random-- > Y, then for the corresponding two nodes x and y in the copied list, x.random-- > y.
+
+// Return the head of the copied linked list.
+
+// The linked list is represented in the input / output as a list of n nodes.Each node is represented as a pair of[val, random_index] where:
+
+// val: an integer representing Node.val
+// random_index: the index of the node(range from 0 to n - 1) that the random pointer points to, or null if it does not point to any node.
+// Your code will only be given the head of the original linked list.
 
 
 
 //     Example 1:
 
 
-// Input: list1 = [1, 2, 4], list2 = [1, 3, 4]
-// Output: [1, 1, 2, 3, 4, 4]
+// Input: head = [[7, null], [13, 0], [11, 4], [10, 2], [1, 0]]
+// Output: [[7, null], [13, 0], [11, 4], [10, 2], [1, 0]]
 // Example 2:
 
-// Input: list1 = [], list2 = []
-// Output: []
+
+// Input: head = [[1, 1], [2, 1]]
+// Output: [[1, 1], [2, 1]]
 // Example 3:
 
-// Input: list1 = [], list2 = [0]
-// Output: [0]
-class ListNode {
-    constructor(val = 0, next = null) {
-        this.val = val;
-        this.next = next;
-    }
+
+
+// Input: head = [[3, null], [3, 0], [3, null]]
+// Output: [[3, null], [3, 0], [3, null]]
+// Definition for a Node.
+function Node(val, next = null, random = null) {
+    this.val = val;
+    this.next = next;
+    this.random = random;
 }
 
-function mergeTwoLists(list1, list2) {
-    // Create a dummy node to act as the head of the new linked list
-    let dummy = new ListNode();
-    let current = dummy;
+/**
+ * @param {Node} head
+ * @return {Node}
+ */
+var copyRandomList = function (head) {
+    if (!head) return null;
 
-    // Traverse both lists
-    while (list1 !== null && list2 !== null) {
-        // Compare the values of the current nodes in both lists
-        if (list1.val <= list2.val) {
-            // Attach the node from list1 to the new list
-            current.next = list1;
-            list1 = list1.next;
-        } else {
-            // Attach the node from list2 to the new list
-            current.next = list2;
-            list2 = list2.next;
-        }
-        // Move to the next node in the new list
-        current = current.next;
-    }
-
-    // If one of the lists is not empty, attach the remaining nodes to the new list
-    if (list1 !== null) {
-        current.next = list1;
-    } else {
-        current.next = list2;
-    }
-
-    // Return the next node of the dummy node, which is the head of the merged list
-    return dummy.next;
-}
-
-// Helper function to create a linked list from an array
-function createLinkedList(arr) {
-    let dummy = new ListNode();
-    let current = dummy;
-    for (let val of arr) {
-        current.next = new ListNode(val);
-        current = current.next;
-    }
-    return dummy.next;
-}
-
-// Helper function to print the linked list
-function printLinkedList(head) {
+    // Step 1: Create a new copy of each node and insert it right next to the original node
     let current = head;
-    let result = [];
-    while (current !== null) {
-        result.push(current.val);
+    while (current) {
+        const newNode = new Node(current.val);
+        newNode.next = current.next;
+        current.next = newNode;
+        current = newNode.next;
+    }
+
+    // Step 2: Assign random pointers for the copied nodes
+    current = head;
+    while (current) {
+        if (current.random) {
+            current.next.random = current.random.next;
+        }
+        current = current.next.next;
+    }
+
+    // Step 3: Separate the copied list from the original list
+    current = head;
+    const newHead = head.next;
+    while (current) {
+        const copy = current.next;
+        current.next = copy.next;
+        if (copy.next) {
+            copy.next = copy.next.next;
+        }
         current = current.next;
     }
-    console.log(result.join(" -> "));
-}
+
+    return newHead;
+};
