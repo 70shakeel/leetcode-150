@@ -1,92 +1,71 @@
-// Reverse Nodes in k - Group
-// Hard
+// Remove Nth Node From End of List
+// Medium
 // Topics
 // Companies
-// Given the head of a linked list, reverse the nodes of the list k at a time, and return the modified list.
-
-// k is a positive integer and is less than or equal to the length of the linked list.If the number of nodes is not a multiple of k then left - out nodes, in the end, should remain as it is.
-
-// You may not alter the values in the list's nodes, only nodes themselves may be changed.
+// Hint
+// Given the head of a linked list, remove the nth node from the end of the list and return its head.
 
 
 
-// Example 1:
+//     Example 1:
 
 
-// Input: head = [1, 2, 3, 4, 5], k = 2
-// Output: [2, 1, 4, 3, 5]
+// Input: head = [1, 2, 3, 4, 5], n = 2
+// Output: [1, 2, 3, 5]
 // Example 2:
 
+// Input: head = [1], n = 1
+// Output: []
+// Example 3:
 
-// Input: head = [1, 2, 3, 4, 5], k = 3
-// Output: [3, 2, 1, 4, 5]
-class ListNode {
-    constructor(val = 0, next = null) {
-        this.val = val;
-        this.next = next;
-    }
+// Input: head = [1, 2], n = 1
+// Output: [1]
+// Definition for singly-linked list.
+function ListNode(val, next) {
+    this.val = (val === undefined ? 0 : val)
+    this.next = (next === undefined ? null : next)
 }
 
-const reverseKGroup = (head, k) => {
-    if (head === null || k === 1) return head;
+function removeNthFromEnd(head, n) {
+    let dummy = new ListNode(0, head);
+    let first = dummy;
+    let second = dummy;
 
-    // Dummy node initialization
-    let dummy = new ListNode(0);
-    dummy.next = head;
-
-    let prevGroupEnd = dummy;
-
-    while (true) {
-        let kthNode = getKthNode(prevGroupEnd, k);
-        if (!kthNode) break;
-        let groupStart = prevGroupEnd.next;
-        let nextGroupStart = kthNode.next;
-
-        // Reverse the k nodes
-        reverse(groupStart, kthNode);
-
-        // Connect the reversed group to the previous part
-        prevGroupEnd.next = kthNode;
-        groupStart.next = nextGroupStart;
-
-        // Move prevGroupEnd to the end of the reversed group
-        prevGroupEnd = groupStart;
+    // Move first pointer so that there's a gap of n nodes between first and second
+    for (let i = 0; i <= n; i++) {
+        first = first.next;
     }
+
+    // Move both pointers until first reaches the end
+    while (first !== null) {
+        first = first.next;
+        second = second.next;
+    }
+
+    // Now, second is pointing to the node before the one we want to remove
+    second.next = second.next.next;
 
     return dummy.next;
-};
+}
 
-// Function to reverse a portion of the list from start to end
-const reverse = (start, end) => {
-    let prev = null;
-    let current = start;
-    let next = null;
-    let stop = end.next;
-
-    while (current !== stop) {
-        next = current.next;
-        current.next = prev;
-        prev = current;
-        current = next;
-    }
-};
-
-// Function to get the k-th node from the start node
-const getKthNode = (start, k) => {
-    let current = start;
-    while (k > 0 && current !== null) {
+// Helper function to create a linked list from an array
+function createLinkedList(arr) {
+    let dummy = new ListNode();
+    let current = dummy;
+    for (let val of arr) {
+        current.next = new ListNode(val);
         current = current.next;
-        k--;
     }
-    return current;
-};
+    return dummy.next;
+}
 
-// Helper function to print the linked list
-const printList = (head) => {
+// Helper function to convert a linked list to an array (for easy result checking)
+function linkedListToArray(head) {
+    let arr = [];
     let current = head;
-    while (current) {
-        process.stdout.write(current.val + " -> ");
+    while (current !== null) {
+        arr.push(current.val);
         current = current.next;
     }
-    console.log("null");
-};
+    return arr;
+}
