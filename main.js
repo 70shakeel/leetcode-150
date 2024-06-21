@@ -1,109 +1,74 @@
-// LRU Cache
-// Medium
+// Same Tree
+// Easy
 // Topics
 // Companies
-// Design a data structure that follows the constraints of a Least Recently Used(LRU) cache.
+// Given the roots of two binary trees p and q, write a function to check if they are the same or not.
 
-// Implement the LRUCache class:
-
-// LRUCache(int capacity) Initialize the LRU cache with positive size capacity.
-// int get(int key) Return the value of the key if the key exists, otherwise return -1.
-// void put(int key, int value) Update the value of the key if the key exists.Otherwise, add the key - value pair to the cache.If the number of keys exceeds the capacity from this operation, evict the least recently used key.
-// The functions get and put must each run in O(1) average time complexity.
+// Two binary trees are considered the same if they are structurally identical, and the nodes have the same value.
 
 
 
 //     Example 1:
 
-// Input
-// ["LRUCache", "put", "put", "get", "put", "get", "put", "get", "get", "get"]
-// [[2], [1, 1], [2, 2], [1], [3, 3], [2], [4, 4], [1], [3], [4]]
-// Output
-// [null, null, null, 1, null, -1, null, -1, 3, 4]
 
-// Explanation
-// LRUCache lRUCache = new LRUCache(2);
-// lRUCache.put(1, 1); // cache is {1=1}
-// lRUCache.put(2, 2); // cache is {1=1, 2=2}
-// lRUCache.get(1);    // return 1
-// lRUCache.put(3, 3); // LRU key was 2, evicts key 2, cache is {1=1, 3=3}
-// lRUCache.get(2);    // returns -1 (not found)
-// lRUCache.put(4, 4); // LRU key was 1, evicts key 1, cache is {4=4, 3=3}
-// lRUCache.get(1);    // return -1 (not found)
-// lRUCache.get(3);    // return 3
-// lRUCache.get(4);    // return 4
-class Node {
-    constructor(key, value) {
-        this.key = key;
-        this.value = value;
-        this.prev = null;
-        this.next = null;
+// Input: p = [1, 2, 3], q = [1, 2, 3]
+// Output: true
+// Example 2:
+
+
+// Input: p = [1, 2], q = [1, null, 2]
+// Output: false
+// Example 3:
+
+
+// Input: p = [1, 2, 1], q = [1, 1, 2]
+// Output: false
+class TreeNode {
+    constructor(val = 0, left = null, right = null) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
     }
 }
 
-class DoublyLinkedList {
-    constructor() {
-        this.head = new Node(null, null);
-        this.tail = new Node(null, null);
-        this.head.next = this.tail;
-        this.tail.prev = this.head;
+function isSameTree(p, q) {
+    if (p === null && q === null) {
+        return true;
     }
-
-    addNodeToFront(node) {
-        node.next = this.head.next;
-        node.prev = this.head;
-        this.head.next.prev = node;
-        this.head.next = node;
+    if (p === null || q === null) {
+        return false;
     }
-
-    removeNode(node) {
-        const prevNode = node.prev;
-        const nextNode = node.next;
-        prevNode.next = nextNode;
-        nextNode.prev = prevNode;
+    if (p.val !== q.val) {
+        return false;
     }
-
-    moveToFront(node) {
-        this.removeNode(node);
-        this.addNodeToFront(node);
-    }
-
-    removeLRUNode() {
-        const lruNode = this.tail.prev;
-        this.removeNode(lruNode);
-        return lruNode;
-    }
+    return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
 }
 
-class LRUCache {
-    constructor(capacity) {
-        this.capacity = capacity;
-        this.map = new Map();
-        this.list = new DoublyLinkedList();
+// Helper function to build a binary tree from an array (for testing)
+function buildTreeFromArray(arr) {
+    if (arr.length === 0) {
+        return null;
     }
 
-    get(key) {
-        if (!this.map.has(key)) {
-            return -1;
+    const root = new TreeNode(arr[0]);
+    const queue = [root];
+    let i = 1;
+
+    while (queue.length > 0 && i < arr.length) {
+        const currentNode = queue.shift();
+
+        if (arr[i] !== null) {
+            currentNode.left = new TreeNode(arr[i]);
+            queue.push(currentNode.left);
         }
-        const node = this.map.get(key);
-        this.list.moveToFront(node);
-        return node.value;
+        i++;
+
+        if (i < arr.length && arr[i] !== null) {
+            currentNode.right = new TreeNode(arr[i]);
+            queue.push(currentNode.right);
+        }
+        i++;
     }
 
-    put(key, value) {
-        if (this.map.has(key)) {
-            const node = this.map.get(key);
-            node.value = value;
-            this.list.moveToFront(node);
-        } else {
-            if (this.map.size >= this.capacity) {
-                const lruNode = this.list.removeLRUNode();
-                this.map.delete(lruNode.key);
-            }
-            const newNode = new Node(key, value);
-            this.list.addNodeToFront(newNode);
-            this.map.set(key, newNode);
-        }
-    }
+    return root;
 }
