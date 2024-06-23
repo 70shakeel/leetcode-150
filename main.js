@@ -1,81 +1,45 @@
-// Invert Binary Tree
+// Symmetric Tree
 // Easy
 // Topics
 // Companies
-// Given the root of a binary tree, invert the tree, and return its root.
+// Given the root of a binary tree, check whether it is a mirror of itself(i.e., symmetric around its center).
 
 
 
 //     Example 1:
 
 
-// Input: root = [4, 2, 7, 1, 3, 6, 9]
-// Output: [4, 7, 2, 9, 6, 3, 1]
+// Input: root = [1, 2, 2, 3, 4, 4, 3]
+// Output: true
 // Example 2:
 
 
-// Input: root = [2, 1, 3]
-// Output: [2, 3, 1]
-// Example 3:
-
-// Input: root = []
-// Output: []
-// Define the TreeNode class
+// Input: root = [1, 2, 2, null, 3, null, 3]
+// Output: false
 class TreeNode {
-    constructor(val = 0, left = null, right = null) {
+    constructor(val, left = null, right = null) {
         this.val = val;
         this.left = left;
         this.right = right;
     }
 }
 
-// Function to invert the binary tree
-function invertTree(root) {
-    if (root === null) {
-        return null;
-    }
+function isSymmetric(root) {
+    if (!root) return true;
 
-    // Swap the left and right children
-    let temp = root.left;
-    root.left = root.right;
-    root.right = temp;
+    let queue = [];
+    queue.push(root.left, root.right);
 
-    // Recursively invert the left and right subtrees
-    invertTree(root.left);
-    invertTree(root.right);
-
-    return root;
-}
-
-// Helper function to create a binary tree from an array
-function arrayToTree(arr, index = 0) {
-    if (index >= arr.length || arr[index] === null) {
-        return null;
-    }
-    let root = new TreeNode(arr[index]);
-    root.left = arrayToTree(arr, 2 * index + 1);
-    root.right = arrayToTree(arr, 2 * index + 2);
-    return root;
-}
-
-// Helper function to convert a binary tree to an array
-function treeToArray(root) {
-    if (!root) return [];
-    const result = [];
-    const queue = [root];
     while (queue.length) {
-        const node = queue.shift();
-        if (node) {
-            result.push(node.val);
-            queue.push(node.left);
-            queue.push(node.right);
-        } else {
-            result.push(null);
-        }
+        let left = queue.shift();
+        let right = queue.shift();
+
+        if (!left && !right) continue;
+        if (!left || !right || left.val !== right.val) return false;
+
+        queue.push(left.left, right.right);
+        queue.push(left.right, right.left);
     }
-    // Remove trailing nulls
-    while (result[result.length - 1] === null) {
-        result.pop();
-    }
-    return result;
+
+    return true;
 }
