@@ -1,45 +1,48 @@
-// Symmetric Tree
-// Easy
+// Construct Binary Tree from Preorder and Inorder Traversal
+// Medium
 // Topics
 // Companies
-// Given the root of a binary tree, check whether it is a mirror of itself(i.e., symmetric around its center).
+// Given two integer arrays preorder and inorder where preorder is the preorder traversal of a binary tree and inorder is the inorder traversal of the same tree, construct and return the binary tree.
 
 
 
 //     Example 1:
 
 
-// Input: root = [1, 2, 2, 3, 4, 4, 3]
-// Output: true
+// Input: preorder = [3, 9, 20, 15, 7], inorder = [9, 3, 15, 20, 7]
+// Output: [3, 9, 20, null, null, 15, 7]
 // Example 2:
 
+// Input: preorder = [-1], inorder = [-1]
+// Output: [-1]
 
-// Input: root = [1, 2, 2, null, 3, null, 3]
-// Output: false
+
+// Constraints:
+
+// 1 <= preorder.length <= 3000
+// inorder.length == preorder.length
+//     - 3000 <= preorder[i], inorder[i] <= 3000
+// preorder and inorder consist of unique values.
+// Each value of inorder also appears in preorder.
+// preorder is guaranteed to be the preorder traversal of the tree.
+// inorder is guaranteed to be the inorder traversal of the tree.
 class TreeNode {
-    constructor(val, left = null, right = null) {
+    constructor(val) {
         this.val = val;
-        this.left = left;
-        this.right = right;
+        this.left = null;
+        this.right = null;
     }
 }
 
-function isSymmetric(root) {
-    if (!root) return true;
+function buildTree(preorder, inorder) {
+    if (!preorder.length || !inorder.length) return null;
 
-    let queue = [];
-    queue.push(root.left, root.right);
+    const rootVal = preorder[0];
+    const root = new TreeNode(rootVal);
+    const mid = inorder.indexOf(rootVal);
 
-    while (queue.length) {
-        let left = queue.shift();
-        let right = queue.shift();
+    root.left = buildTree(preorder.slice(1, mid + 1), inorder.slice(0, mid));
+    root.right = buildTree(preorder.slice(mid + 1), inorder.slice(mid + 1));
 
-        if (!left && !right) continue;
-        if (!left || !right || left.val !== right.val) return false;
-
-        queue.push(left.left, right.right);
-        queue.push(left.right, right.left);
-    }
-
-    return true;
+    return root;
 }
