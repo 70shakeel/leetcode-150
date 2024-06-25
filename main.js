@@ -1,31 +1,31 @@
-// Construct Binary Tree from Preorder and Inorder Traversal
+// Construct Binary Tree from Inorder and Postorder Traversal
 // Medium
 // Topics
 // Companies
-// Given two integer arrays preorder and inorder where preorder is the preorder traversal of a binary tree and inorder is the inorder traversal of the same tree, construct and return the binary tree.
+// Given two integer arrays inorder and postorder where inorder is the inorder traversal of a binary tree and postorder is the postorder traversal of the same tree, construct and return the binary tree.
 
 
 
 //     Example 1:
 
 
-// Input: preorder = [3, 9, 20, 15, 7], inorder = [9, 3, 15, 20, 7]
+// Input: inorder = [9, 3, 15, 20, 7], postorder = [9, 15, 7, 20, 3]
 // Output: [3, 9, 20, null, null, 15, 7]
 // Example 2:
 
-// Input: preorder = [-1], inorder = [-1]
+// Input: inorder = [-1], postorder = [-1]
 // Output: [-1]
 
 
 // Constraints:
 
-// 1 <= preorder.length <= 3000
-// inorder.length == preorder.length
-//     - 3000 <= preorder[i], inorder[i] <= 3000
-// preorder and inorder consist of unique values.
-// Each value of inorder also appears in preorder.
-// preorder is guaranteed to be the preorder traversal of the tree.
+// 1 <= inorder.length <= 3000
+// postorder.length == inorder.length
+//     - 3000 <= inorder[i], postorder[i] <= 3000
+// inorder and postorder consist of unique values.
+// Each value of postorder also appears in inorder.
 // inorder is guaranteed to be the inorder traversal of the tree.
+// postorder is guaranteed to be the postorder traversal of the tree.
 class TreeNode {
     constructor(val) {
         this.val = val;
@@ -34,15 +34,31 @@ class TreeNode {
     }
 }
 
-function buildTree(preorder, inorder) {
-    if (!preorder.length || !inorder.length) return null;
+function buildTree(inorder, postorder) {
+    // Map to store the index of each value in inorder traversal
+    const inorderIndexMap = new Map();
+    inorder.forEach((val, index) => inorderIndexMap.set(val, index));
 
-    const rootVal = preorder[0];
-    const root = new TreeNode(rootVal);
-    const mid = inorder.indexOf(rootVal);
+    // Recursive helper function
+    function helper(inLeft, inRight) {
+        // If there are no elements to construct the tree
+        if (inLeft > inRight) return null;
 
-    root.left = buildTree(preorder.slice(1, mid + 1), inorder.slice(0, mid));
-    root.right = buildTree(preorder.slice(mid + 1), inorder.slice(mid + 1));
+        // Pick up the last element as a root
+        const rootVal = postorder.pop();
+        const root = new TreeNode(rootVal);
 
-    return root;
+        // Root splits inorder list into left and right subtrees
+        const index = inorderIndexMap.get(rootVal);
+
+        // Build right subtree
+        root.right = helper(index + 1, inRight);
+        // Build left subtree
+        root.left = helper(inLeft, index - 1);
+
+        return root;
+    }
+
+    // Start from the entire range of inorder array
+    return helper(0, inorder.length - 1);
 }
