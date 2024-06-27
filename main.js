@@ -1,102 +1,73 @@
-// Populating Next Right Pointers in Each Node II
+// Flatten Binary Tree to Linked List
 // Medium
 // Topics
 // Companies
-// Given a binary tree
+// Hint
+// Given the root of a binary tree, flatten the tree into a "linked list":
 
-// struct Node {
-//   int val;
-//     Node * left;
-//     Node * right;
-//     Node * next;
-// }
-// Populate each next pointer to point to its next right node.If there is no next right node, the next pointer should be set to NULL.
-
-//     Initially, all next pointers are set to NULL.
-
+// The "linked list" should use the same TreeNode class where the right child pointer points to the next node in the list and the left child pointer is always null.
+//     The "linked list" should be in the same order as a pre - order traversal of the binary tree.
 
 
 //         Example 1:
 
 
-// Input: root = [1, 2, 3, 4, 5, null, 7]
-// Output: [1,#, 2, 3,#, 4, 5, 7,#]
-// Explanation: Given the above binary tree(Figure A), your function should populate each next pointer to point to its next right node, just like in Figure B.The serialized output is in level order as connected by the next pointers, with '#' signifying the end of each level.
-//     Example 2:
+// Input: root = [1, 2, 5, 3, 4, null, 6]
+// Output: [1, null, 2, null, 3, null, 4, null, 5, null, 6]
+// Example 2:
 
 // Input: root = []
 // Output: []
-// Define the Node structure
-class Node {
-    constructor(val, left = null, right = null, next = null) {
-        this.val = val;
-        this.left = left;
-        this.right = right;
-        this.next = next;
-    }
+// Example 3:
+
+// Input: root = [0]
+// Output: [0]
+function TreeNode(val, left = null, right = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
 }
 
-// Function to populate each next pointer to point to its next right node
-function connect(root) {
+function flatten(root) {
     if (!root) return null;
 
-    let queue = [root];
+    // Helper function to perform the flattening
+    function flattenTree(node) {
+        if (!node) return null;
 
-    while (queue.length > 0) {
-        let size = queue.length;
-        let prev = null;
+        // Flatten left and right subtrees
+        const leftTail = flattenTree(node.left);
+        const rightTail = flattenTree(node.right);
 
-        for (let i = 0; i < size; i++) {
-            let currentNode = queue.shift();
-
-            if (prev) {
-                prev.next = currentNode;
-            }
-            prev = currentNode;
-
-            if (currentNode.left) queue.push(currentNode.left);
-            if (currentNode.right) queue.push(currentNode.right);
+        // If there is a left subtree, we need to insert it between the node and the right subtree
+        if (leftTail) {
+            leftTail.right = node.right;
+            node.right = node.left;
+            node.left = null;
         }
-        // At the end of the level, make sure the last node's next is set to null
-        if (prev) {
-            prev.next = null;
-        }
+
+        // We need to return the tail of the flattened tree rooted at 'node'
+        return rightTail || leftTail || node;
     }
 
-    return root;
+    flattenTree(root);
 }
 
-// Helper function to print the tree level by level using next pointers
-function printTreeByNext(root) {
-    if (!root) return;
-
-    let start = root;
-
-    while (start) {
-        let current = start;
-        let level = '';
-        while (current) {
-            level += current.val + ' -> ';
-            current = current.next;
+// Helper function to create a tree from an array
+function buildTreeFromArray(arr) {
+    if (!arr.length) return null;
+    let root = new TreeNode(arr[0]);
+    let queue = [root];
+    for (let i = 1; i < arr.length; i++) {
+        let node = queue.shift();
+        if (arr[i] !== null) {
+            node.left = new TreeNode(arr[i]);
+            queue.push(node.left);
         }
-        console.log(level + 'null');
-
-        // Move to the next level
-        if (start.left) {
-            start = start.left;
-        } else if (start.right) {
-            start = start.right;
-        } else {
-            // Find the next starting node from the next pointers
-            let nextStart = start.next;
-            while (nextStart && !nextStart.left && !nextStart.right) {
-                nextStart = nextStart.next;
-            }
-            if (nextStart) {
-                start = nextStart.left ? nextStart.left : nextStart.right;
-            } else {
-                start = null;
-            }
+        if (++i < arr.length && arr[i] !== null) {
+            node.right = new TreeNode(arr[i]);
+            queue.push(node.right);
         }
     }
+    return root;
 }
