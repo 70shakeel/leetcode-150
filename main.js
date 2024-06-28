@@ -1,73 +1,71 @@
-// Flatten Binary Tree to Linked List
-// Medium
+// Path Sum
+// Easy
 // Topics
 // Companies
-// Hint
-// Given the root of a binary tree, flatten the tree into a "linked list":
+// Given the root of a binary tree and an integer targetSum, return true if the tree has a root - to - leaf path such that adding up all the values along the path equals targetSum.
 
-// The "linked list" should use the same TreeNode class where the right child pointer points to the next node in the list and the left child pointer is always null.
-//     The "linked list" should be in the same order as a pre - order traversal of the binary tree.
+// A leaf is a node with no children.
 
 
-//         Example 1:
+
+//     Example 1:
 
 
-// Input: root = [1, 2, 5, 3, 4, null, 6]
-// Output: [1, null, 2, null, 3, null, 4, null, 5, null, 6]
-// Example 2:
+// Input: root = [5, 4, 8, 11, null, 13, 4, 7, 2, null, null, null, 1], targetSum = 22
+// Output: true
+// Explanation: The root - to - leaf path with the target sum is shown.
+//     Example 2:
 
-// Input: root = []
-// Output: []
+
+// Input: root = [1, 2, 3], targetSum = 5
+// Output: false
+// Explanation: There two root - to - leaf paths in the tree:
+// (1 -- > 2): The sum is 3.
+//     (1 -- > 3): The sum is 4.
+// There is no root - to - leaf path with sum = 5.
 // Example 3:
 
-// Input: root = [0]
-// Output: [0]
-function TreeNode(val, left = null, right = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
+// Input: root = [], targetSum = 0
+// Output: false
+// Explanation: Since the tree is empty, there are no root - to - leaf paths.
+
+
+//     Constraints:
+
+// The number of nodes in the tree is in the range[0, 5000].
+// - 1000 <= Node.val <= 1000
+//     - 1000 <= targetSum <= 1000
+// Definition for a binary tree node.
+class TreeNode {
+    constructor(val, left = null, right = null) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+    }
 }
 
-function flatten(root) {
-    if (!root) return null;
+function hasPathSum(root, targetSum) {
+    if (!root) return false;
 
-    // Helper function to perform the flattening
-    function flattenTree(node) {
-        if (!node) return null;
+    // Create a stack to simulate the linked list traversal
+    const stack = [{ node: root, sum: targetSum - root.val }];
 
-        // Flatten left and right subtrees
-        const leftTail = flattenTree(node.left);
-        const rightTail = flattenTree(node.right);
+    while (stack.length > 0) {
+        const { node, sum } = stack.pop();
 
-        // If there is a left subtree, we need to insert it between the node and the right subtree
-        if (leftTail) {
-            leftTail.right = node.right;
-            node.right = node.left;
-            node.left = null;
+        // Check if it's a leaf node and the remaining sum is zero
+        if (!node.left && !node.right && sum === 0) {
+            return true;
         }
 
-        // We need to return the tail of the flattened tree rooted at 'node'
-        return rightTail || leftTail || node;
-    }
-
-    flattenTree(root);
-}
-
-// Helper function to create a tree from an array
-function buildTreeFromArray(arr) {
-    if (!arr.length) return null;
-    let root = new TreeNode(arr[0]);
-    let queue = [root];
-    for (let i = 1; i < arr.length; i++) {
-        let node = queue.shift();
-        if (arr[i] !== null) {
-            node.left = new TreeNode(arr[i]);
-            queue.push(node.left);
+        // If not, continue the traversal
+        if (node.right) {
+            stack.push({ node: node.right, sum: sum - node.right.val });
         }
-        if (++i < arr.length && arr[i] !== null) {
-            node.right = new TreeNode(arr[i]);
-            queue.push(node.right);
+        if (node.left) {
+            stack.push({ node: node.left, sum: sum - node.left.val });
         }
     }
-    return root;
+
+    return false;
 }
