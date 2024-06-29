@@ -1,71 +1,76 @@
-// Path Sum
-// Easy
+// Sum Root to Leaf Numbers
+// Medium
 // Topics
 // Companies
-// Given the root of a binary tree and an integer targetSum, return true if the tree has a root - to - leaf path such that adding up all the values along the path equals targetSum.
+// You are given the root of a binary tree containing digits from 0 to 9 only.
 
-// A leaf is a node with no children.
+// Each root - to - leaf path in the tree represents a number.
+
+// For example, the root - to - leaf path 1 -> 2 -> 3 represents the number 123.
+// Return the total sum of all root - to - leaf numbers.Test cases are generated so that the answer will fit in a 32 - bit integer.
+
+// A leaf node is a node with no children.
 
 
 
 //     Example 1:
 
 
-// Input: root = [5, 4, 8, 11, null, 13, 4, 7, 2, null, null, null, 1], targetSum = 22
-// Output: true
-// Explanation: The root - to - leaf path with the target sum is shown.
-//     Example 2:
+// Input: root = [1, 2, 3]
+// Output: 25
+// Explanation:
+// The root - to - leaf path 1 -> 2 represents the number 12.
+// The root - to - leaf path 1 -> 3 represents the number 13.
+// Therefore, sum = 12 + 13 = 25.
+// Example 2:
 
 
-// Input: root = [1, 2, 3], targetSum = 5
-// Output: false
-// Explanation: There two root - to - leaf paths in the tree:
-// (1 -- > 2): The sum is 3.
-//     (1 -- > 3): The sum is 4.
-// There is no root - to - leaf path with sum = 5.
-// Example 3:
-
-// Input: root = [], targetSum = 0
-// Output: false
-// Explanation: Since the tree is empty, there are no root - to - leaf paths.
+// Input: root = [4, 9, 0, 5, 1]
+// Output: 1026
+// Explanation:
+// The root - to - leaf path 4 -> 9 -> 5 represents the number 495.
+// The root - to - leaf path 4 -> 9 -> 1 represents the number 491.
+// The root - to - leaf path 4 -> 0 represents the number 40.
+// Therefore, sum = 495 + 491 + 40 = 1026.
 
 
-//     Constraints:
+// Constraints:
 
-// The number of nodes in the tree is in the range[0, 5000].
-// - 1000 <= Node.val <= 1000
-//     - 1000 <= targetSum <= 1000
-// Definition for a binary tree node.
+// The number of nodes in the tree is in the range[1, 1000].
+// 0 <= Node.val <= 9
+// The depth of the tree will not exceed 10.
 class TreeNode {
-    constructor(val, left = null, right = null) {
+    constructor(val = 0, left = null, right = null) {
         this.val = val;
         this.left = left;
         this.right = right;
     }
 }
 
-function hasPathSum(root, targetSum) {
-    if (!root) return false;
+function sumNumbers(root) {
+    if (!root) return 0;
 
-    // Create a stack to simulate the linked list traversal
-    const stack = [{ node: root, sum: targetSum - root.val }];
+    let totalSum = 0;
 
-    while (stack.length > 0) {
-        const { node, sum } = stack.pop();
+    // Helper function to perform DFS
+    function dfs(node, currentNumber) {
+        if (!node) return;
 
-        // Check if it's a leaf node and the remaining sum is zero
-        if (!node.left && !node.right && sum === 0) {
-            return true;
-        }
+        // Update the current number
+        currentNumber = currentNumber * 10 + node.val;
 
-        // If not, continue the traversal
-        if (node.right) {
-            stack.push({ node: node.right, sum: sum - node.right.val });
-        }
-        if (node.left) {
-            stack.push({ node: node.left, sum: sum - node.left.val });
+        // If it's a leaf node, add the current number to the total sum
+        if (!node.left && !node.right) {
+            totalSum += currentNumber;
+        } else {
+            // Continue DFS on the left and right children
+            dfs(node.left, currentNumber);
+            dfs(node.right, currentNumber);
         }
     }
 
-    return false;
+    // Start DFS with the root node and initial number 0
+    dfs(root, 0);
+
+    return totalSum;
 }
