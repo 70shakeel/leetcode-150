@@ -1,15 +1,12 @@
-// Sum Root to Leaf Numbers
-// Medium
+// Binary Tree Maximum Path Sum
+// Hard
 // Topics
 // Companies
-// You are given the root of a binary tree containing digits from 0 to 9 only.
+// A path in a binary tree is a sequence of nodes where each pair of adjacent nodes in the sequence has an edge connecting them.A node can only appear in the sequence at most once.Note that the path does not need to pass through the root.
 
-// Each root - to - leaf path in the tree represents a number.
+// The path sum of a path is the sum of the node's values in the path.
 
-// For example, the root - to - leaf path 1 -> 2 -> 3 represents the number 123.
-// Return the total sum of all root - to - leaf numbers.Test cases are generated so that the answer will fit in a 32 - bit integer.
-
-// A leaf node is a node with no children.
+// Given the root of a binary tree, return the maximum path sum of any non - empty path.
 
 
 
@@ -17,60 +14,42 @@
 
 
 // Input: root = [1, 2, 3]
-// Output: 25
-// Explanation:
-// The root - to - leaf path 1 -> 2 represents the number 12.
-// The root - to - leaf path 1 -> 3 represents the number 13.
-// Therefore, sum = 12 + 13 = 25.
+// Output: 6
+// Explanation: The optimal path is 2 -> 1 -> 3 with a path sum of 2 + 1 + 3 = 6.
 // Example 2:
 
 
-// Input: root = [4, 9, 0, 5, 1]
-// Output: 1026
-// Explanation:
-// The root - to - leaf path 4 -> 9 -> 5 represents the number 495.
-// The root - to - leaf path 4 -> 9 -> 1 represents the number 491.
-// The root - to - leaf path 4 -> 0 represents the number 40.
-// Therefore, sum = 495 + 491 + 40 = 1026.
-
-
-// Constraints:
-
-// The number of nodes in the tree is in the range[1, 1000].
-// 0 <= Node.val <= 9
-// The depth of the tree will not exceed 10.
+// Input: root = [-10, 9, 20, null, null, 15, 7]
+// Output: 42
+// Explanation: The optimal path is 15 -> 20 -> 7 with a path sum of 15 + 20 + 7 = 42.
 class TreeNode {
-    constructor(val = 0, left = null, right = null) {
+    constructor(val, left = null, right = null) {
         this.val = val;
         this.left = left;
         this.right = right;
     }
 }
 
-function sumNumbers(root) {
-    if (!root) return 0;
+const maxPathSum = (root) => {
+    let maxSum = -Infinity;
 
-    let totalSum = 0;
+    const dfs = (node) => {
+        if (!node) return 0;
 
-    // Helper function to perform DFS
-    function dfs(node, currentNumber) {
-        if (!node) return;
+        // Recursively get the maximum path sum of the left and right subtrees
+        const leftMax = Math.max(dfs(node.left), 0);
+        const rightMax = Math.max(dfs(node.right), 0);
 
-        // Update the current number
-        currentNumber = currentNumber * 10 + node.val;
+        // Calculate the maximum path sum passing through the current node
+        const currentMax = node.val + leftMax + rightMax;
 
-        // If it's a leaf node, add the current number to the total sum
-        if (!node.left && !node.right) {
-            totalSum += currentNumber;
-        } else {
-            // Continue DFS on the left and right children
-            dfs(node.left, currentNumber);
-            dfs(node.right, currentNumber);
-        }
-    }
+        // Update the global maximum path sum
+        maxSum = Math.max(maxSum, currentMax);
 
-    // Start DFS with the root node and initial number 0
-    dfs(root, 0);
+        // Return the maximum sum of the path that can be extended to the parent node
+        return node.val + Math.max(leftMax, rightMax);
+    };
 
-    return totalSum;
-}
+    dfs(root);
+    return maxSum;
+};
