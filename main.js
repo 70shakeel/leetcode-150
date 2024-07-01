@@ -1,27 +1,38 @@
-// Binary Tree Maximum Path Sum
-// Hard
+// Binary Search Tree Iterator
+// Medium
 // Topics
 // Companies
-// A path in a binary tree is a sequence of nodes where each pair of adjacent nodes in the sequence has an edge connecting them.A node can only appear in the sequence at most once.Note that the path does not need to pass through the root.
+// Implement the BSTIterator class that represents an iterator over the in -order traversal of a binary search tree(BST):
 
-// The path sum of a path is the sum of the node's values in the path.
+// BSTIterator(TreeNode root) Initializes an object of the BSTIterator class. The root of the BST is given as part of the constructor.The pointer should be initialized to a non - existent number smaller than any element in the BST.
+// boolean hasNext() Returns true if there exists a number in the traversal to the right of the pointer, otherwise returns false.
+// int next() Moves the pointer to the right, then returns the number at the pointer.
+// Notice that by initializing the pointer to a non - existent smallest number, the first call to next() will return the smallest element in the BST.
 
-// Given the root of a binary tree, return the maximum path sum of any non - empty path.
+// You may assume that next() calls will always be valid.That is, there will be at least a next number in the in -order traversal when next() is called.
 
 
 
 //     Example 1:
 
 
-// Input: root = [1, 2, 3]
-// Output: 6
-// Explanation: The optimal path is 2 -> 1 -> 3 with a path sum of 2 + 1 + 3 = 6.
-// Example 2:
+// Input
+// ["BSTIterator", "next", "next", "hasNext", "next", "hasNext", "next", "hasNext", "next", "hasNext"]
+// [[[7, 3, 15, null, null, 9, 20]], [], [], [], [], [], [], [], [], []]
+// Output
+// [null, 3, 7, true, 9, true, 15, true, 20, false]
 
-
-// Input: root = [-10, 9, 20, null, null, 15, 7]
-// Output: 42
-// Explanation: The optimal path is 15 -> 20 -> 7 with a path sum of 15 + 20 + 7 = 42.
+// Explanation
+// BSTIterator bSTIterator = new BSTIterator([7, 3, 15, null, null, 9, 20]);
+// bSTIterator.next();    // return 3
+// bSTIterator.next();    // return 7
+// bSTIterator.hasNext(); // return True
+// bSTIterator.next();    // return 9
+// bSTIterator.hasNext(); // return True
+// bSTIterator.next();    // return 15
+// bSTIterator.hasNext(); // return True
+// bSTIterator.next();    // return 20
+// bSTIterator.hasNext(); // return False
 class TreeNode {
     constructor(val, left = null, right = null) {
         this.val = val;
@@ -30,26 +41,45 @@ class TreeNode {
     }
 }
 
-const maxPathSum = (root) => {
-    let maxSum = -Infinity;
+class ListNode {
+    constructor(val = null, next = null) {
+        this.val = val;
+        this.next = next;
+    }
+}
 
-    const dfs = (node) => {
-        if (!node) return 0;
+class BSTIterator {
+    constructor(root) {
+        this.head = this.buildList(root);
+        this.current = this.head;
+    }
 
-        // Recursively get the maximum path sum of the left and right subtrees
-        const leftMax = Math.max(dfs(node.left), 0);
-        const rightMax = Math.max(dfs(node.right), 0);
+    buildList(root) {
+        let dummy = new ListNode();
+        let current = dummy;
 
-        // Calculate the maximum path sum passing through the current node
-        const currentMax = node.val + leftMax + rightMax;
+        const inOrderTraversal = (node) => {
+            if (!node) return;
+            inOrderTraversal(node.left);
+            current.next = new ListNode(node.val);
+            current = current.next;
+            inOrderTraversal(node.right);
+        };
 
-        // Update the global maximum path sum
-        maxSum = Math.max(maxSum, currentMax);
+        inOrderTraversal(root);
+        return dummy.next;
+    }
 
-        // Return the maximum sum of the path that can be extended to the parent node
-        return node.val + Math.max(leftMax, rightMax);
-    };
+    hasNext() {
+        return this.current !== null;
+    }
 
-    dfs(root);
-    return maxSum;
-};
+    next() {
+        if (!this.hasNext()) {
+            throw new Error("No more elements in BST iterator");
+        }
+        let val = this.current.val;
+        this.current = this.current.next;
+        return val;
+    }
+}
