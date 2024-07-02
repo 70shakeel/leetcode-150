@@ -1,85 +1,82 @@
-// Binary Search Tree Iterator
-// Medium
+// Count Complete Tree Nodes
+// Easy
 // Topics
 // Companies
-// Implement the BSTIterator class that represents an iterator over the in -order traversal of a binary search tree(BST):
+// Given the root of a complete binary tree, return the number of the nodes in the tree.
 
-// BSTIterator(TreeNode root) Initializes an object of the BSTIterator class. The root of the BST is given as part of the constructor.The pointer should be initialized to a non - existent number smaller than any element in the BST.
-// boolean hasNext() Returns true if there exists a number in the traversal to the right of the pointer, otherwise returns false.
-// int next() Moves the pointer to the right, then returns the number at the pointer.
-// Notice that by initializing the pointer to a non - existent smallest number, the first call to next() will return the smallest element in the BST.
+// According to Wikipedia, every level, except possibly the last, is completely filled in a complete binary tree, and all nodes in the last level are as far left as possible.It can have between 1 and 2h nodes inclusive at the last level h.
 
-// You may assume that next() calls will always be valid.That is, there will be at least a next number in the in -order traversal when next() is called.
+// Design an algorithm that runs in less than O(n) time complexity.
 
 
 
 //     Example 1:
 
 
-// Input
-// ["BSTIterator", "next", "next", "hasNext", "next", "hasNext", "next", "hasNext", "next", "hasNext"]
-// [[[7, 3, 15, null, null, 9, 20]], [], [], [], [], [], [], [], [], []]
-// Output
-// [null, 3, 7, true, 9, true, 15, true, 20, false]
+// Input: root = [1, 2, 3, 4, 5, 6]
+// Output: 6
+// Example 2:
 
-// Explanation
-// BSTIterator bSTIterator = new BSTIterator([7, 3, 15, null, null, 9, 20]);
-// bSTIterator.next();    // return 3
-// bSTIterator.next();    // return 7
-// bSTIterator.hasNext(); // return True
-// bSTIterator.next();    // return 9
-// bSTIterator.hasNext(); // return True
-// bSTIterator.next();    // return 15
-// bSTIterator.hasNext(); // return True
-// bSTIterator.next();    // return 20
-// bSTIterator.hasNext(); // return False
+// Input: root = []
+// Output: 0
+// Example 3:
+
+// Input: root = [1]
+// Output: 1
 class TreeNode {
-    constructor(val, left = null, right = null) {
+    constructor(val = 0, left = null, right = null) {
         this.val = val;
         this.left = left;
         this.right = right;
     }
 }
 
-class ListNode {
-    constructor(val = null, next = null) {
-        this.val = val;
-        this.next = next;
-    }
-}
+function countNodes(root) {
+    if (!root) return 0;
 
-class BSTIterator {
-    constructor(root) {
-        this.head = this.buildList(root);
-        this.current = this.head;
-    }
-
-    buildList(root) {
-        let dummy = new ListNode();
-        let current = dummy;
-
-        const inOrderTraversal = (node) => {
-            if (!node) return;
-            inOrderTraversal(node.left);
-            current.next = new ListNode(node.val);
-            current = current.next;
-            inOrderTraversal(node.right);
-        };
-
-        inOrderTraversal(root);
-        return dummy.next;
-    }
-
-    hasNext() {
-        return this.current !== null;
-    }
-
-    next() {
-        if (!this.hasNext()) {
-            throw new Error("No more elements in BST iterator");
+    // Function to compute the height of the tree
+    const computeHeight = (node) => {
+        let height = 0;
+        while (node) {
+            height++;
+            node = node.left;
         }
-        let val = this.current.val;
-        this.current = this.current.next;
-        return val;
+        return height;
+    };
+
+    // Compute the height of the leftmost path (the height of the tree)
+    let height = computeHeight(root);
+
+    // If the tree has only one level
+    if (height === 1) return 1;
+
+    // Function to check if a node exists at the given index in the last level
+    const nodeExists = (index, height, node) => {
+        let left = 0, right = Math.pow(2, height - 1) - 1;
+        for (let i = 0; i < height - 1; i++) {
+            let mid = Math.floor((left + right) / 2);
+            if (index <= mid) {
+                node = node.left;
+                right = mid;
+            } else {
+                node = node.right;
+                left = mid + 1;
+            }
+        }
+        return node !== null;
+    };
+
+    // Perform binary search to count the nodes in the last level
+    let left = 0, right = Math.pow(2, height - 1) - 1;
+    while (left <= right) {
+        let mid = Math.floor((left + right) / 2);
+        if (nodeExists(mid, height, root)) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
     }
+
+    // The total number of nodes is the sum of all nodes in the full levels plus the nodes in the last level
+    return Math.pow(2, height - 1) - 1 + left;
 }
