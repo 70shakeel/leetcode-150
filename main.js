@@ -1,27 +1,29 @@
-// Count Complete Tree Nodes
-// Easy
+// Lowest Common Ancestor of a Binary Tree
+// Solved
+// Medium
 // Topics
 // Companies
-// Given the root of a complete binary tree, return the number of the nodes in the tree.
+// Given a binary tree, find the lowest common ancestor(LCA) of two given nodes in the tree.
 
-// According to Wikipedia, every level, except possibly the last, is completely filled in a complete binary tree, and all nodes in the last level are as far left as possible.It can have between 1 and 2h nodes inclusive at the last level h.
-
-// Design an algorithm that runs in less than O(n) time complexity.
+// According to the definition of LCA on Wikipedia: “The lowest common ancestor is defined between two nodes p and q as the lowest node in T that has both p and q as descendants (where we allow a node to be a descendant of itself).”
 
 
 
-//     Example 1:
+// Example 1:
 
 
-// Input: root = [1, 2, 3, 4, 5, 6]
-// Output: 6
+// Input: root = [3, 5, 1, 6, 2, 0, 8, null, null, 7, 4], p = 5, q = 1
+// Output: 3
+// Explanation: The LCA of nodes 5 and 1 is 3.
 // Example 2:
 
-// Input: root = []
-// Output: 0
-// Example 3:
 
-// Input: root = [1]
+// Input: root = [3, 5, 1, 6, 2, 0, 8, null, null, 7, 4], p = 5, q = 4
+// Output: 5
+// Explanation: The LCA of nodes 5 and 4 is 5, since a node can be a descendant of itself according to the LCA definition.
+//     Example 3:
+
+// Input: root = [1, 2], p = 1, q = 2
 // Output: 1
 class TreeNode {
     constructor(val = 0, left = null, right = null) {
@@ -31,52 +33,12 @@ class TreeNode {
     }
 }
 
-function countNodes(root) {
-    if (!root) return 0;
+const lowestCommonAncestor = (root, p, q) => {
+    if (!root || root === p || root === q) return root;
 
-    // Function to compute the height of the tree
-    const computeHeight = (node) => {
-        let height = 0;
-        while (node) {
-            height++;
-            node = node.left;
-        }
-        return height;
-    };
+    const left = lowestCommonAncestor(root.left, p, q);
+    const right = lowestCommonAncestor(root.right, p, q);
 
-    // Compute the height of the leftmost path (the height of the tree)
-    let height = computeHeight(root);
-
-    // If the tree has only one level
-    if (height === 1) return 1;
-
-    // Function to check if a node exists at the given index in the last level
-    const nodeExists = (index, height, node) => {
-        let left = 0, right = Math.pow(2, height - 1) - 1;
-        for (let i = 0; i < height - 1; i++) {
-            let mid = Math.floor((left + right) / 2);
-            if (index <= mid) {
-                node = node.left;
-                right = mid;
-            } else {
-                node = node.right;
-                left = mid + 1;
-            }
-        }
-        return node !== null;
-    };
-
-    // Perform binary search to count the nodes in the last level
-    let left = 0, right = Math.pow(2, height - 1) - 1;
-    while (left <= right) {
-        let mid = Math.floor((left + right) / 2);
-        if (nodeExists(mid, height, root)) {
-            left = mid + 1;
-        } else {
-            right = mid - 1;
-        }
-    }
-
-    // The total number of nodes is the sum of all nodes in the full levels plus the nodes in the last level
-    return Math.pow(2, height - 1) - 1 + left;
-}
+    if (left && right) return root;
+    return left || right;
+};
