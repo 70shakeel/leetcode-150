@@ -1,8 +1,8 @@
-// Binary Tree Level Order Traversal
+// Binary Tree Zigzag Level Order Traversal
 // Medium
 // Topics
 // Companies
-// Given the root of a binary tree, return the level order traversal of its nodes' values. (i.e., from left to right, level by level).
+// Given the root of a binary tree, return the zigzag level order traversal of its nodes' values. (i.e., from left to right, then right to left for the next level and alternate between).
 
 
 
@@ -10,7 +10,7 @@
 
 
 // Input: root = [3, 9, 20, null, null, 15, 7]
-// Output: [[3], [9, 20], [15, 7]]
+// Output: [[3], [20, 9], [15, 7]]
 // Example 2:
 
 // Input: root = [1]
@@ -19,39 +19,33 @@
 
 // Input: root = []
 // Output: []
-function levelOrder(root) {
+function zigzagLevelOrder(root) {
     if (!root) return [];
 
-    let result = [];
-    let queue = [root];
+    const result = [];
+    const queue = [root];
+    let leftToRight = true;
 
     while (queue.length > 0) {
-        let levelSize = queue.length;
-        let currentLevel = [];
+        const levelSize = queue.length;
+        const levelNodes = [];
 
         for (let i = 0; i < levelSize; i++) {
-            let currentNode = queue.shift();
-            currentLevel.push(currentNode.val);
+            const node = queue.shift();
 
-            if (currentNode.left) {
-                queue.push(currentNode.left);
+            if (leftToRight) {
+                levelNodes.push(node.val);
+            } else {
+                levelNodes.unshift(node.val);
             }
-            if (currentNode.right) {
-                queue.push(currentNode.right);
-            }
+
+            if (node.left) queue.push(node.left);
+            if (node.right) queue.push(node.right);
         }
 
-        result.push(currentLevel);
+        result.push(levelNodes);
+        leftToRight = !leftToRight;
     }
 
     return result;
-}
-
-// Example usage:
-class TreeNode {
-    constructor(val, left = null, right = null) {
-        this.val = val;
-        this.left = left;
-        this.right = right;
-    }
 }
