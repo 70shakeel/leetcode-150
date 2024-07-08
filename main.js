@@ -1,51 +1,49 @@
-// Binary Tree Zigzag Level Order Traversal
-// Medium
+// Minimum Absolute Difference in BST
+// Easy
 // Topics
 // Companies
-// Given the root of a binary tree, return the zigzag level order traversal of its nodes' values. (i.e., from left to right, then right to left for the next level and alternate between).
+// Given the root of a Binary Search Tree(BST), return the minimum absolute difference between the values of any two different nodes in the tree.
 
 
 
-// Example 1:
+//     Example 1:
 
 
-// Input: root = [3, 9, 20, null, null, 15, 7]
-// Output: [[3], [20, 9], [15, 7]]
+// Input: root = [4, 2, 6, 1, 3]
+// Output: 1
 // Example 2:
 
-// Input: root = [1]
-// Output: [[1]]
-// Example 3:
 
-// Input: root = []
-// Output: []
-function zigzagLevelOrder(root) {
-    if (!root) return [];
+// Input: root = [1, 0, 48, null, null, 12, 49]
+// Output: 1
+class TreeNode {
+    constructor(val, left = null, right = null) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+    }
+}
 
-    const result = [];
-    const queue = [root];
-    let leftToRight = true;
+function getMinimumDifference(root) {
+    let prev = null;
+    let minDiff = Infinity;
 
-    while (queue.length > 0) {
-        const levelSize = queue.length;
-        const levelNodes = [];
+    function inorder(node) {
+        if (!node) return;
 
-        for (let i = 0; i < levelSize; i++) {
-            const node = queue.shift();
+        // Traverse the left subtree
+        inorder(node.left);
 
-            if (leftToRight) {
-                levelNodes.push(node.val);
-            } else {
-                levelNodes.unshift(node.val);
-            }
-
-            if (node.left) queue.push(node.left);
-            if (node.right) queue.push(node.right);
+        // Process the current node
+        if (prev !== null) {
+            minDiff = Math.min(minDiff, Math.abs(node.val - prev));
         }
+        prev = node.val;
 
-        result.push(levelNodes);
-        leftToRight = !leftToRight;
+        // Traverse the right subtree
+        inorder(node.right);
     }
 
-    return result;
+    inorder(root);
+    return minDiff;
 }
