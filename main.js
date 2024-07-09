@@ -1,21 +1,22 @@
-// Minimum Absolute Difference in BST
-// Easy
+// Kth Smallest Element in a BST
+// Medium
 // Topics
 // Companies
-// Given the root of a Binary Search Tree(BST), return the minimum absolute difference between the values of any two different nodes in the tree.
+// Hint
+// Given the root of a binary search tree, and an integer k, return the kth smallest value(1 - indexed) of all the values of the nodes in the tree.
 
 
 
 //     Example 1:
 
 
-// Input: root = [4, 2, 6, 1, 3]
+// Input: root = [3, 1, 4, null, 2], k = 1
 // Output: 1
 // Example 2:
 
 
-// Input: root = [1, 0, 48, null, null, 12, 49]
-// Output: 1
+// Input: root = [5, 3, 6, 2, 4, null, null, 1], k = 3
+// Output: 3
 class TreeNode {
     constructor(val, left = null, right = null) {
         this.val = val;
@@ -24,26 +25,29 @@ class TreeNode {
     }
 }
 
-function getMinimumDifference(root) {
-    let prev = null;
-    let minDiff = Infinity;
+function kthSmallest(root, k) {
+    let count = 0;
+    let result = null;
 
-    function inorder(node) {
-        if (!node) return;
+    function inOrderTraversal(node) {
+        if (node === null || result !== null) {
+            return;
+        }
 
         // Traverse the left subtree
-        inorder(node.left);
+        inOrderTraversal(node.left);
 
-        // Process the current node
-        if (prev !== null) {
-            minDiff = Math.min(minDiff, Math.abs(node.val - prev));
+        // Visit the node
+        count++;
+        if (count === k) {
+            result = node.val;
+            return;
         }
-        prev = node.val;
 
         // Traverse the right subtree
-        inorder(node.right);
+        inOrderTraversal(node.right);
     }
 
-    inorder(root);
-    return minDiff;
+    inOrderTraversal(root);
+    return result;
 }
