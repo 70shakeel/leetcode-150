@@ -1,53 +1,47 @@
-// Kth Smallest Element in a BST
+// Validate Binary Search Tree
 // Medium
 // Topics
 // Companies
-// Hint
-// Given the root of a binary search tree, and an integer k, return the kth smallest value(1 - indexed) of all the values of the nodes in the tree.
+// Given the root of a binary tree, determine if it is a valid binary search tree(BST).
 
+// A valid BST is defined as follows:
+
+// The left
+// subtree
+//  of a node contains only nodes with keys less than the node's key.
+// The right subtree of a node contains only nodes with keys greater than the node's key.
+// Both the left and right subtrees must also be binary search trees.
 
 
 //     Example 1:
 
 
-// Input: root = [3, 1, 4, null, 2], k = 1
-// Output: 1
+// Input: root = [2, 1, 3]
+// Output: true
 // Example 2:
 
 
-// Input: root = [5, 3, 6, 2, 4, null, null, 1], k = 3
-// Output: 3
+// Input: root = [5, 1, 4, null, null, 3, 6]
+// Output: false
+// Explanation: The root node's value is 5 but its right child's value is 4.
 class TreeNode {
-    constructor(val, left = null, right = null) {
+    constructor(val = 0, left = null, right = null) {
         this.val = val;
         this.left = left;
         this.right = right;
     }
 }
 
-function kthSmallest(root, k) {
-    let count = 0;
-    let result = null;
+function isValidBST(root) {
+    return validate(root, null, null);
+}
 
-    function inOrderTraversal(node) {
-        if (node === null || result !== null) {
-            return;
-        }
+function validate(node, low, high) {
+    if (node === null) return true;
 
-        // Traverse the left subtree
-        inOrderTraversal(node.left);
-
-        // Visit the node
-        count++;
-        if (count === k) {
-            result = node.val;
-            return;
-        }
-
-        // Traverse the right subtree
-        inOrderTraversal(node.right);
+    if ((low !== null && node.val <= low) || (high !== null && node.val >= high)) {
+        return false;
     }
 
-    inOrderTraversal(root);
-    return result;
+    return validate(node.left, low, node.val) && validate(node.right, node.val, high);
 }
