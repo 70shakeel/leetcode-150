@@ -1,47 +1,62 @@
-// Validate Binary Search Tree
+// Number of Islands
 // Medium
 // Topics
 // Companies
-// Given the root of a binary tree, determine if it is a valid binary search tree(BST).
+// Given an m x n 2D binary grid grid which represents a map of '1's(land) and '0's(water), return the number of islands.
 
-// A valid BST is defined as follows:
+// An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically.You may assume all four edges of the grid are all surrounded by water.
 
-// The left
-// subtree
-//  of a node contains only nodes with keys less than the node's key.
-// The right subtree of a node contains only nodes with keys greater than the node's key.
-// Both the left and right subtrees must also be binary search trees.
 
 
 //     Example 1:
 
-
-// Input: root = [2, 1, 3]
-// Output: true
+// Input: grid = [
+//     ["1", "1", "1", "1", "0"],
+//     ["1", "1", "0", "1", "0"],
+//     ["1", "1", "0", "0", "0"],
+//     ["0", "0", "0", "0", "0"]
+// ]
+// Output: 1
 // Example 2:
 
-
-// Input: root = [5, 1, 4, null, null, 3, 6]
-// Output: false
-// Explanation: The root node's value is 5 but its right child's value is 4.
-class TreeNode {
-    constructor(val = 0, left = null, right = null) {
-        this.val = val;
-        this.left = left;
-        this.right = right;
-    }
-}
-
-function isValidBST(root) {
-    return validate(root, null, null);
-}
-
-function validate(node, low, high) {
-    if (node === null) return true;
-
-    if ((low !== null && node.val <= low) || (high !== null && node.val >= high)) {
-        return false;
+// Input: grid = [
+//     ["1", "1", "0", "0", "0"],
+//     ["1", "1", "0", "0", "0"],
+//     ["0", "0", "1", "0", "0"],
+//     ["0", "0", "0", "1", "1"]
+// ]
+// Output: 3
+var numIslands = function (grid) {
+    if (!grid || grid.length === 0) {
+        return 0;
     }
 
-    return validate(node.left, low, node.val) && validate(node.right, node.val, high);
-}
+    let numIslands = 0;
+    const rows = grid.length;
+    const cols = grid[0].length;
+
+    const dfs = (i, j) => {
+        if (i < 0 || j < 0 || i >= rows || j >= cols || grid[i][j] === '0') {
+            return;
+        }
+
+        grid[i][j] = '0'; // Mark the cell as visited by changing '1' to '0'
+
+        // Visit all four adjacent cells (up, down, left, right)
+        dfs(i + 1, j);
+        dfs(i - 1, j);
+        dfs(i, j + 1);
+        dfs(i, j - 1);
+    };
+
+    for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+            if (grid[i][j] === '1') {
+                numIslands++;
+                dfs(i, j); // Start DFS from the current cell
+            }
+        }
+    }
+
+    return numIslands;
+};
