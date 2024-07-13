@@ -1,70 +1,82 @@
-// Surrounded Regions
+// Clone Graph
 // Medium
 // Topics
 // Companies
-// You are given an m x n matrix board containing letters 'X' and 'O', capture regions that are surrounded:
+// Given a reference of a node in a connected undirected graph.
 
-// Connect: A cell is connected to adjacent cells horizontally or vertically.
-//     Region: To form a region connect every 'O' cell.
-//         Surround: The region is surrounded with 'X' cells if you can connect the region with 'X' cells and none of the region cells are on the edge of the board.
-// A surrounded region is captured by replacing all 'O's with 'X's in the input matrix board.
+// Return a deep copy(clone) of the graph.
+
+// Each node in the graph contains a value(int) and a list(List[Node]) of its neighbors.
+
+// class Node {
+//     public int val;
+//     public List<Node> neighbors;
+// }
+
+
+// Test case format:
+
+// For simplicity, each node's value is the same as the node's index(1 - indexed).For example, the first node with val == 1, the second node with val == 2, and so on.The graph is represented in the test case using an adjacency list.
+
+//     An adjacency list is a collection of unordered lists used to represent a finite graph.Each list describes the set of neighbors of a node in the graph.
+
+// The given node will always be the first node with val = 1. You must return the copy of the given node as a reference to the cloned graph.
 
 
 
 //     Example 1:
 
-// Input: board = [["X", "X", "X", "X"], ["X", "O", "O", "X"], ["X", "X", "O", "X"], ["X", "O", "X", "X"]]
 
-// Output: [["X", "X", "X", "X"], ["X", "X", "X", "X"], ["X", "X", "X", "X"], ["X", "O", "X", "X"]]
+// Input: adjList = [[2, 4], [1, 3], [2, 4], [1, 3]]
+// Output: [[2, 4], [1, 3], [2, 4], [1, 3]]
+// Explanation: There are 4 nodes in the graph.
+// 1st node(val = 1)'s neighbors are 2nd node (val = 2) and 4th node (val = 4).
+// 2nd node(val = 2)'s neighbors are 1st node (val = 1) and 3rd node (val = 3).
+// 3rd node(val = 3)'s neighbors are 2nd node (val = 2) and 4th node (val = 4).
+// 4th node(val = 4)'s neighbors are 1st node (val = 1) and 3rd node (val = 3).
+// Example 2:
 
-// Explanation:
 
+// Input: adjList = [[]]
+// Output: [[]]
+// Explanation: Note that the input contains one empty list.The graph consists of only one node with val = 1 and it does not have any neighbors.
+//     Example 3:
 
-// In the above diagram, the bottom region is not captured because it is on the edge of the board and cannot be surrounded.
+// Input: adjList = []
+// Output: []
+// Explanation: This an empty graph, it does not have any nodes.
+/**
+ * @param {Node} node
+ * @return {Node}
+ */
+function cloneGraph(node) {
+    if (!node) return null;
 
-//     Example 2:
+    // Map to keep track of copied nodes
+    const map = new Map();
 
-// Input: board = [["X"]]
+    // Clone the root node
+    const clone = new Node(node.val);
+    map.set(node, clone);
 
-// Output: [["X"]]
-function solve(board) {
-    if (board.length === 0) return;
+    // Queue for BFS
+    const queue = [node];
 
-    const rows = board.length;
-    const cols = board[0].length;
+    while (queue.length > 0) {
+        const current = queue.shift();
 
-    // Helper function to perform DFS
-    function dfs(x, y) {
-        if (x < 0 || y < 0 || x >= rows || y >= cols || board[x][y] !== 'O') {
-            return;
-        }
-        board[x][y] = 'T'; // Temporarily mark this cell
-
-        // Explore all four directions
-        dfs(x + 1, y);
-        dfs(x - 1, y);
-        dfs(x, y + 1);
-        dfs(x, y - 1);
-    }
-
-    // Mark the border 'O's and connected 'O's
-    for (let i = 0; i < rows; i++) {
-        if (board[i][0] === 'O') dfs(i, 0);
-        if (board[i][cols - 1] === 'O') dfs(i, cols - 1);
-    }
-    for (let j = 0; j < cols; j++) {
-        if (board[0][j] === 'O') dfs(0, j);
-        if (board[rows - 1][j] === 'O') dfs(rows - 1, j);
-    }
-
-    // Flip the cells to the correct final states
-    for (let i = 0; i < rows; i++) {
-        for (let j = 0; j < cols; j++) {
-            if (board[i][j] === 'O') {
-                board[i][j] = 'X'; // Surrounded regions
-            } else if (board[i][j] === 'T') {
-                board[i][j] = 'O'; // Regions connected to the border
+        // Iterate through neighbors
+        for (let neighbor of current.neighbors) {
+            if (!map.has(neighbor)) {
+                // Clone the neighbor and add it to the map
+                map.set(neighbor, new Node(neighbor.val));
+                // Add the original neighbor to the queue
+                queue.push(neighbor);
             }
+            // Add the cloned neighbor to the current node's neighbors
+            map.get(current).neighbors.push(map.get(neighbor));
         }
     }
+
+    return clone;
 }
