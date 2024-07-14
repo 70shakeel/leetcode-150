@@ -1,82 +1,92 @@
-// Clone Graph
+// Evaluate Division
+// Solved
 // Medium
 // Topics
 // Companies
-// Given a reference of a node in a connected undirected graph.
+// Hint
+// You are given an array of variable pairs equations and an array of real numbers values, where equations[i] = [Ai, Bi] and values[i] represent the equation Ai / Bi = values[i].Each Ai or Bi is a string that represents a single variable.
 
-// Return a deep copy(clone) of the graph.
+// You are also given some queries, where queries[j] = [Cj, Dj] represents the jth query where you must find the answer for Cj / Dj = ?.
 
-// Each node in the graph contains a value(int) and a list(List[Node]) of its neighbors.
+// Return the answers to all queries.If a single answer cannot be determined, return -1.0.
 
-// class Node {
-//     public int val;
-//     public List<Node> neighbors;
-// }
+//     Note: The input is always valid.You may assume that evaluating the queries will not result in division by zero and that there is no contradiction.
 
-
-// Test case format:
-
-// For simplicity, each node's value is the same as the node's index(1 - indexed).For example, the first node with val == 1, the second node with val == 2, and so on.The graph is represented in the test case using an adjacency list.
-
-//     An adjacency list is a collection of unordered lists used to represent a finite graph.Each list describes the set of neighbors of a node in the graph.
-
-// The given node will always be the first node with val = 1. You must return the copy of the given node as a reference to the cloned graph.
+//         Note: The variables that do not occur in the list of equations are undefined, so the answer cannot be determined for them.
 
 
 
-//     Example 1:
+//             Example 1:
 
-
-// Input: adjList = [[2, 4], [1, 3], [2, 4], [1, 3]]
-// Output: [[2, 4], [1, 3], [2, 4], [1, 3]]
-// Explanation: There are 4 nodes in the graph.
-// 1st node(val = 1)'s neighbors are 2nd node (val = 2) and 4th node (val = 4).
-// 2nd node(val = 2)'s neighbors are 1st node (val = 1) and 3rd node (val = 3).
-// 3rd node(val = 3)'s neighbors are 2nd node (val = 2) and 4th node (val = 4).
-// 4th node(val = 4)'s neighbors are 1st node (val = 1) and 3rd node (val = 3).
+//     Input: equations = [["a", "b"], ["b", "c"]], values = [2.0, 3.0], queries = [["a", "c"], ["b", "a"], ["a", "e"], ["a", "a"], ["x", "x"]]
+// Output: [6.00000, 0.50000, -1.00000, 1.00000, -1.00000]
+// Explanation:
+// Given: a / b = 2.0, b / c = 3.0
+// queries are: a / c = ?, b / a = ?, a / e = ?, a / a = ?, x / x = ?
+// return: [6.0, 0.5, -1.0, 1.0, -1.0]
+// note: x is undefined => -1.0
 // Example 2:
 
+// Input: equations = [["a", "b"], ["b", "c"], ["bc", "cd"]], values = [1.5, 2.5, 5.0], queries = [["a", "c"], ["c", "b"], ["bc", "cd"], ["cd", "bc"]]
+// Output: [3.75000, 0.40000, 5.00000, 0.20000]
+// Example 3:
 
-// Input: adjList = [[]]
-// Output: [[]]
-// Explanation: Note that the input contains one empty list.The graph consists of only one node with val = 1 and it does not have any neighbors.
-//     Example 3:
-
-// Input: adjList = []
-// Output: []
-// Explanation: This an empty graph, it does not have any nodes.
+// Input: equations = [["a", "b"]], values = [0.5], queries = [["a", "b"], ["b", "a"], ["a", "c"], ["x", "y"]]
+// Output: [0.50000, 2.00000, -1.00000, -1.00000]
 /**
- * @param {Node} node
- * @return {Node}
+ * @param {string[][]} equations
+ * @param {number[]} values
+ * @param {string[][]} queries
+ * @return {number[]}
  */
-function cloneGraph(node) {
-    if (!node) return null;
+var calcEquation = function (equations, values, queries) {
+    // Create the graph
+    const graph = {};
 
-    // Map to keep track of copied nodes
-    const map = new Map();
+    for (let i = 0; i < equations.length; i++) {
+        const [a, b] = equations[i];
+        const value = values[i];
 
-    // Clone the root node
-    const clone = new Node(node.val);
-    map.set(node, clone);
+        if (!graph[a]) graph[a] = {};
+        if (!graph[b]) graph[b] = {};
 
-    // Queue for BFS
-    const queue = [node];
+        graph[a][b] = value;
+        graph[b][a] = 1 / value;
+    }
 
-    while (queue.length > 0) {
-        const current = queue.shift();
+    const results = [];
 
-        // Iterate through neighbors
-        for (let neighbor of current.neighbors) {
-            if (!map.has(neighbor)) {
-                // Clone the neighbor and add it to the map
-                map.set(neighbor, new Node(neighbor.val));
-                // Add the original neighbor to the queue
-                queue.push(neighbor);
-            }
-            // Add the cloned neighbor to the current node's neighbors
-            map.get(current).neighbors.push(map.get(neighbor));
+    for (const [start, end] of queries) {
+        if (!graph[start] || !graph[end]) {
+            results.push(-1.0);
+        } else if (start === end) {
+            results.push(1.0);
+        } else {
+            const visited = new Set();
+            const result = dfs(graph, start, end, 1, visited);
+            results.push(result !== undefined ? result : -1.0);
         }
     }
 
-    return clone;
-}
+    return results;
+};
+
+const dfs = (graph, current, target, product, visited) => {
+    visited.add(current);
+
+    const neighbors = graph[current];
+    if (neighbors[target] !== undefined) {
+        return product * neighbors[target];
+    }
+
+    for (const neighbor in neighbors) {
+        if (!visited.has(neighbor)) {
+            const result = dfs(graph, neighbor, target, product * neighbors[neighbor], visited);
+            if (result !== undefined) {
+                return result;
+            }
+        }
+    }
+
+    return undefined;
+};
