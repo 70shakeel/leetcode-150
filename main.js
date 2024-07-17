@@ -1,65 +1,80 @@
-// Course Schedule II
+// Snakes and Ladders
 // Medium
 // Topics
 // Companies
-// Hint
-// There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course bi first if you want to take course ai.
+// You are given an n x n integer matrix board where the cells are labeled from 1 to n2 in a Boustrophedon style starting from the bottom left of the board(i.e.board[n - 1][0]) and alternating direction each row.
 
-// For example, the pair[0, 1], indicates that to take course 0 you have to first take course 1.
-// Return the ordering of courses you should take to finish all courses.If there are many valid answers, return any of them.If it is impossible to finish all courses, return an empty array.
+// You start on square 1 of the board.In each move, starting from square curr, do the following:
+
+// Choose a destination square next with a label in the range[curr + 1, min(curr + 6, n2)].
+// This choice simulates the result of a standard 6 - sided die roll: i.e., there are always at most 6 destinations, regardless of the size of the board.
+// If next has a snake or ladder, you must move to the destination of that snake or ladder.Otherwise, you move to next.
+// The game ends when you reach the square n2.
+// A board square on row r and column c has a snake or ladder if board[r][c] != -1. The destination of that snake or ladder is board[r][c].Squares 1 and n2 do not have a snake or ladder.
+
+// Note that you only take a snake or ladder at most once per move.If the destination to a snake or ladder is the start of another snake or ladder, you do not follow the subsequent snake or ladder.
+
+// For example, suppose the board is[[-1, 4], [-1, 3]], and on the first move, your destination square is 2. You follow the ladder to square 3, but do not follow the subsequent ladder to 4.
+// Return the least number of moves required to reach the square n2.If it is not possible to reach the square, return -1.
 
 
 
-//     Example 1:
+// Example 1:
 
-// Input: numCourses = 2, prerequisites = [[1, 0]]
-// Output: [0, 1]
-// Explanation: There are a total of 2 courses to take.To take course 1 you should have finished course 0. So the correct course order is[0, 1].
-//     Example 2:
 
-// Input: numCourses = 4, prerequisites = [[1, 0], [2, 0], [3, 1], [3, 2]]
-// Output: [0, 2, 1, 3]
-// Explanation: There are a total of 4 courses to take.To take course 3 you should have finished both courses 1 and 2. Both courses 1 and 2 should be taken after you finished course 0.
-// So one correct course order is[0, 1, 2, 3].Another correct ordering is[0, 2, 1, 3].
-//     Example 3:
+// Input: board = [[-1, -1, -1, -1, -1, -1], [-1, -1, -1, -1, -1, -1], [-1, -1, -1, -1, -1, -1], [-1, 35, -1, -1, 13, -1], [-1, -1, -1, -1, -1, -1], [-1, 15, -1, -1, -1, -1]]
+// Output: 4
+// Explanation: 
+// In the beginning, you start at square 1(at row 5, column 0).
+// You decide to move to square 2 and must take the ladder to square 15.
+// You then decide to move to square 17 and must take the snake to square 13.
+// You then decide to move to square 14 and must take the ladder to square 35.
+// You then decide to move to square 36, ending the game.
+// This is the lowest possible number of moves to reach the last square, so return 4.
+// Example 2:
 
-// Input: numCourses = 1, prerequisites = []
-// Output: [0]
-function findOrder(numCourses, prerequisites) {
-    const adjList = new Array(numCourses).fill(0).map(() => []);
-    const inDegree = new Array(numCourses).fill(0);
+// Input: board = [[-1, -1], [-1, 3]]
+// Output: 1
+function snakesAndLadders(board) {
+    const n = board.length;
 
-    // Build the adjacency list and in-degree array
-    for (const [course, prereq] of prerequisites) {
-        adjList[prereq].push(course);
-        inDegree[course]++;
+    // Convert the 2D board to a 1D array to make it easier to handle.
+    function getBoardValue(index) {
+        const quot = Math.floor((index - 1) / n);
+        const rem = (index - 1) % n;
+        const row = n - 1 - quot;
+        const col = quot % 2 === 0 ? rem : n - 1 - rem;
+        return board[row][col];
     }
 
-    const queue = [];
-    // Enqueue courses with no prerequisites
-    for (let i = 0; i < numCourses; i++) {
-        if (inDegree[i] === 0) {
-            queue.push(i);
-        }
-    }
+    // BFS initialization
+    const queue = [[1, 0]]; // [current position, number of moves]
+    const visited = new Set();
+    visited.add(1);
 
-    const order = [];
+    // BFS loop
     while (queue.length > 0) {
-        const current = queue.shift();
-        order.push(current);
-        for (const neighbor of adjList[current]) {
-            inDegree[neighbor]--;
-            if (inDegree[neighbor] === 0) {
-                queue.push(neighbor);
+        const [curr, moves] = queue.shift();
+
+        // If we reach the last square, return the number of moves
+        if (curr === n * n) return moves;
+
+        // Roll the die from 1 to 6
+        for (let i = 1; i <= 6; i++) {
+            let next = curr + i;
+
+            if (next > n * n) break; // No need to consider moves beyond the last square
+
+            const boardValue = getBoardValue(next);
+            if (boardValue !== -1) next = boardValue; // Take the ladder or snake
+
+            if (!visited.has(next)) {
+                visited.add(next);
+                queue.push([next, moves + 1]);
             }
         }
     }
 
-    // If we were able to process all courses, return the order
-    if (order.length === numCourses) {
-        return order;
-    } else {
-        // Otherwise, return an empty array (cycle detected)
-        return [];
-    }
+    // If we exhaust the queue without finding the last square, return -1
+    return -1;
 }
