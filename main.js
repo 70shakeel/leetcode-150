@@ -1,57 +1,53 @@
-// Minimum Genetic Mutation
-// Medium
+// Word Ladder
+// Hard
 // Topics
 // Companies
-// A gene string can be represented by an 8 - character long string, with choices from 'A', 'C', 'G', and 'T'.
+// A transformation sequence from word beginWord to word endWord using a dictionary wordList is a sequence of words beginWord -> s1 -> s2 -> ... -> sk such that:
 
-// Suppose we need to investigate a mutation from a gene string startGene to a gene string endGene where one mutation is defined as one single character changed in the gene string.
-
-// For example, "AACCGGTT" -- > "AACCGGTA" is one mutation.
-// There is also a gene bank bank that records all the valid gene mutations.A gene must be in bank to make it a valid gene string.
-
-// Given the two gene strings startGene and endGene and the gene bank bank, return the minimum number of mutations needed to mutate from startGene to endGene.If there is no such a mutation, return -1.
-
-// Note that the starting point is assumed to be valid, so it might not be included in the bank.
+// Every adjacent pair of words differs by a single letter.
+// Every si for 1 <= i <= k is in wordList.Note that beginWord does not need to be in wordList.
+//     sk == endWord
+// Given two words, beginWord and endWord, and a dictionary wordList, return the number of words in the shortest transformation sequence from beginWord to endWord, or 0 if no such sequence exists.
 
 
 
 //     Example 1:
 
-// Input: startGene = "AACCGGTT", endGene = "AACCGGTA", bank = ["AACCGGTA"]
-// Output: 1
+// Input: beginWord = "hit", endWord = "cog", wordList = ["hot", "dot", "dog", "lot", "log", "cog"]
+// Output: 5
+// Explanation: One shortest transformation sequence is "hit" -> "hot" -> "dot" -> "dog" -> cog", which is 5 words long.
 // Example 2:
 
-// Input: startGene = "AACCGGTT", endGene = "AAACGGTA", bank = ["AACCGGTA", "AACCGCTA", "AAACGGTA"]
-// Output: 2
-function minMutation(startGene, endGene, bank) {
-    const bankSet = new Set(bank);
-    if (!bankSet.has(endGene)) return -1;
+// Input: beginWord = "hit", endWord = "cog", wordList = ["hot", "dot", "dog", "lot", "log"]
+// Output: 0
+// Explanation: The endWord "cog" is not in wordList, therefore there is no valid transformation sequence.
+function ladderLength(beginWord, endWord, wordList) {
+    const wordSet = new Set(wordList);
+    if (!wordSet.has(endWord)) return 0;
 
-    const queue = [[startGene, 0]];
+    const queue = [[beginWord, 1]]; // [current word, current length]
     const visited = new Set();
-    visited.add(startGene);
-
-    const chars = ['A', 'C', 'G', 'T'];
+    visited.add(beginWord);
 
     while (queue.length > 0) {
-        const [current, mutations] = queue.shift();
+        const [currentWord, level] = queue.shift();
 
-        if (current === endGene) {
-            return mutations;
+        if (currentWord === endWord) {
+            return level;
         }
 
-        for (let i = 0; i < current.length; i++) {
-            for (const char of chars) {
-                if (char !== current[i]) {
-                    const mutatedGene = current.slice(0, i) + char + current.slice(i + 1);
-                    if (bankSet.has(mutatedGene) && !visited.has(mutatedGene)) {
-                        queue.push([mutatedGene, mutations + 1]);
-                        visited.add(mutatedGene);
-                    }
+        // Generate all possible one-letter transformations
+        for (let i = 0; i < currentWord.length; i++) {
+            for (let charCode = 97; charCode <= 122; charCode++) { // 'a' to 'z'
+                const newWord = currentWord.substring(0, i) + String.fromCharCode(charCode) + currentWord.substring(i + 1);
+
+                if (wordSet.has(newWord) && !visited.has(newWord)) {
+                    visited.add(newWord);
+                    queue.push([newWord, level + 1]);
                 }
             }
         }
     }
 
-    return -1;
+    return 0; // No such sequence exists
 }
