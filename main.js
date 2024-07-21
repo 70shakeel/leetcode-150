@@ -1,34 +1,34 @@
-// Implement Trie(Prefix Tree)
-// Solved
+// Design Add and Search Words Data Structure
 // Medium
 // Topics
 // Companies
-// A trie(pronounced as "try") or prefix tree is a tree data structure used to efficiently store and retrieve keys in a dataset of strings.There are various applications of this data structure, such as autocomplete and spellchecker.
+// Hint
+// Design a data structure that supports adding new words and finding if a string matches any previously added string.
 
-// Implement the Trie class:
+// Implement the WordDictionary class:
 
-// Trie() Initializes the trie object.
-// void insert(String word) Inserts the string word into the trie.
-// boolean search(String word) Returns true if the string word is in the trie(i.e., was inserted before), and false otherwise.
-// boolean startsWith(String prefix) Returns true if there is a previously inserted string word that has the prefix prefix, and false otherwise.
+// WordDictionary() Initializes the object.
+// void addWord(word) Adds word to the data structure, it can be matched later.
+// bool search(word) Returns true if there is any string in the data structure that matches word or false otherwise.word may contain dots '.' where dots can be matched with any letter.
 
 
-//     Example 1:
+//     Example:
 
 // Input
-// ["Trie", "insert", "search", "search", "startsWith", "insert", "search"]
-// [[], ["apple"], ["apple"], ["app"], ["app"], ["app"], ["app"]]
+// ["WordDictionary", "addWord", "addWord", "addWord", "search", "search", "search", "search"]
+// [[], ["bad"], ["dad"], ["mad"], ["pad"], ["bad"], [".ad"], ["b.."]]
 // Output
-// [null, null, true, false, true, null, true]
+// [null, null, null, null, false, true, true, true]
 
 // Explanation
-// Trie trie = new Trie();
-// trie.insert("apple");
-// trie.search("apple");   // return True
-// trie.search("app");     // return False
-// trie.startsWith("app"); // return True
-// trie.insert("app");
-// trie.search("app");     // return True
+// WordDictionary wordDictionary = new WordDictionary();
+// wordDictionary.addWord("bad");
+// wordDictionary.addWord("dad");
+// wordDictionary.addWord("mad");
+// wordDictionary.search("pad"); // return False
+// wordDictionary.search("bad"); // return True
+// wordDictionary.search(".ad"); // return True
+// wordDictionary.search("b.."); // return True
 class TrieNode {
     constructor() {
         this.children = {};
@@ -36,14 +36,14 @@ class TrieNode {
     }
 }
 
-class Trie {
+class WordDictionary {
     constructor() {
         this.root = new TrieNode();
     }
 
-    insert(word) {
+    addWord(word) {
         let node = this.root;
-        for (let char of word) {
+        for (const char of word) {
             if (!node.children[char]) {
                 node.children[char] = new TrieNode();
             }
@@ -53,24 +53,26 @@ class Trie {
     }
 
     search(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                return false;
+        const searchInNode = (word, node) => {
+            for (let i = 0; i < word.length; i++) {
+                const char = word[i];
+                if (char === '.') {
+                    for (const child in node.children) {
+                        if (searchInNode(word.slice(i + 1), node.children[child])) {
+                            return true;
+                        }
+                    }
+                    return false;
+                } else {
+                    if (!node.children[char]) {
+                        return false;
+                    }
+                    node = node.children[char];
+                }
             }
-            node = node.children[char];
-        }
-        return node.isEndOfWord;
-    }
+            return node.isEndOfWord;
+        };
 
-    startsWith(prefix) {
-        let node = this.root;
-        for (let char of prefix) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        return true;
+        return searchInNode(word, this.root);
     }
 }
