@@ -1,78 +1,91 @@
-// Design Add and Search Words Data Structure
-// Medium
+// Word Search II
+// Hard
 // Topics
 // Companies
 // Hint
-// Design a data structure that supports adding new words and finding if a string matches any previously added string.
+// Given an m x n board of characters and a list of strings words, return all words on the board.
 
-// Implement the WordDictionary class:
-
-// WordDictionary() Initializes the object.
-// void addWord(word) Adds word to the data structure, it can be matched later.
-// bool search(word) Returns true if there is any string in the data structure that matches word or false otherwise.word may contain dots '.' where dots can be matched with any letter.
+// Each word must be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring.The same letter cell may not be used more than once in a word.
 
 
-//     Example:
 
-// Input
-// ["WordDictionary", "addWord", "addWord", "addWord", "search", "search", "search", "search"]
-// [[], ["bad"], ["dad"], ["mad"], ["pad"], ["bad"], [".ad"], ["b.."]]
-// Output
-// [null, null, null, null, false, true, true, true]
+//     Example 1:
 
-// Explanation
-// WordDictionary wordDictionary = new WordDictionary();
-// wordDictionary.addWord("bad");
-// wordDictionary.addWord("dad");
-// wordDictionary.addWord("mad");
-// wordDictionary.search("pad"); // return False
-// wordDictionary.search("bad"); // return True
-// wordDictionary.search(".ad"); // return True
-// wordDictionary.search("b.."); // return True
+
+// Input: board = [["o", "a", "a", "n"], ["e", "t", "a", "e"], ["i", "h", "k", "r"], ["i", "f", "l", "v"]], words = ["oath", "pea", "eat", "rain"]
+// Output: ["eat", "oath"]
+// Example 2:
+
+
+// Input: board = [["a", "b"], ["c", "d"]], words = ["abcb"]
+// Output: []
 class TrieNode {
     constructor() {
         this.children = {};
-        this.isEndOfWord = false;
+        this.word = null;
     }
 }
 
-class WordDictionary {
+class Trie {
     constructor() {
         this.root = new TrieNode();
     }
 
-    addWord(word) {
+    insert(word) {
         let node = this.root;
-        for (const char of word) {
+        for (let char of word) {
             if (!node.children[char]) {
                 node.children[char] = new TrieNode();
             }
             node = node.children[char];
         }
-        node.isEndOfWord = true;
-    }
-
-    search(word) {
-        const searchInNode = (word, node) => {
-            for (let i = 0; i < word.length; i++) {
-                const char = word[i];
-                if (char === '.') {
-                    for (const child in node.children) {
-                        if (searchInNode(word.slice(i + 1), node.children[child])) {
-                            return true;
-                        }
-                    }
-                    return false;
-                } else {
-                    if (!node.children[char]) {
-                        return false;
-                    }
-                    node = node.children[char];
-                }
-            }
-            return node.isEndOfWord;
-        };
-
-        return searchInNode(word, this.root);
+        node.word = word;
     }
 }
+
+const findWords = (board, words) => {
+    const result = [];
+    const trie = new Trie();
+
+    // Insert all words into the Trie
+    for (let word of words) {
+        trie.insert(word);
+    }
+
+    const dfs = (board, node, i, j) => {
+        // If out of bounds or the letter is not in the Trie, return
+        if (i < 0 || j < 0 || i >= board.length || j >= board[0].length || !node.children[board[i][j]]) {
+            return;
+        }
+
+        let char = board[i][j];
+        node = node.children[char];
+
+        // Check if we found a word
+        if (node.word !== null) {
+            result.push(node.word);
+            node.word = null; // Prevent duplicate entries
+        }
+
+        // Mark the current cell as visited
+        board[i][j] = '#';
+
+        // Explore neighbors in four possible directions
+        const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+        for (let [dx, dy] of directions) {
+            dfs(board, node, i + dx, j + dy);
+        }
+
+        // Unmark the current cell
+        board[i][j] = char;
+    };
+
+    // Start DFS from each cell
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board[0].length; j++) {
+            dfs(board, trie.root, i, j);
+        }
+    }
+
+    return result;
+};
