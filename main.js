@@ -1,91 +1,55 @@
-// Word Search II
-// Hard
+// Letter Combinations of a Phone Number
+// Solved
+// Medium
 // Topics
 // Companies
-// Hint
-// Given an m x n board of characters and a list of strings words, return all words on the board.
+// Given a string containing digits from 2 - 9 inclusive, return all possible letter combinations that the number could represent.Return the answer in any order.
 
-// Each word must be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring.The same letter cell may not be used more than once in a word.
+// A mapping of digits to letters(just like on the telephone buttons) is given below.Note that 1 does not map to any letters.
+
 
 
 
 //     Example 1:
 
-
-// Input: board = [["o", "a", "a", "n"], ["e", "t", "a", "e"], ["i", "h", "k", "r"], ["i", "f", "l", "v"]], words = ["oath", "pea", "eat", "rain"]
-// Output: ["eat", "oath"]
+// Input: digits = "23"
+// Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"]
 // Example 2:
 
-
-// Input: board = [["a", "b"], ["c", "d"]], words = ["abcb"]
+// Input: digits = ""
 // Output: []
-class TrieNode {
-    constructor() {
-        this.children = {};
-        this.word = null;
-    }
-}
+// Example 3:
 
-class Trie {
-    constructor() {
-        this.root = new TrieNode();
-    }
+// Input: digits = "2"
+// Output: ["a", "b", "c"]
+const letterCombinations = function (digits) {
+    if (!digits) return [];
 
-    insert(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                node.children[char] = new TrieNode();
-            }
-            node = node.children[char];
-        }
-        node.word = word;
-    }
-}
+    const digitToLetters = {
+        '2': 'abc',
+        '3': 'def',
+        '4': 'ghi',
+        '5': 'jkl',
+        '6': 'mno',
+        '7': 'pqrs',
+        '8': 'tuv',
+        '9': 'wxyz'
+    };
 
-const findWords = (board, words) => {
     const result = [];
-    const trie = new Trie();
-
-    // Insert all words into the Trie
-    for (let word of words) {
-        trie.insert(word);
-    }
-
-    const dfs = (board, node, i, j) => {
-        // If out of bounds or the letter is not in the Trie, return
-        if (i < 0 || j < 0 || i >= board.length || j >= board[0].length || !node.children[board[i][j]]) {
+    const backtrack = (index, path) => {
+        if (index === digits.length) {
+            result.push(path);
             return;
         }
 
-        let char = board[i][j];
-        node = node.children[char];
-
-        // Check if we found a word
-        if (node.word !== null) {
-            result.push(node.word);
-            node.word = null; // Prevent duplicate entries
+        const letters = digitToLetters[digits[index]];
+        for (let letter of letters) {
+            backtrack(index + 1, path + letter);
         }
-
-        // Mark the current cell as visited
-        board[i][j] = '#';
-
-        // Explore neighbors in four possible directions
-        const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
-        for (let [dx, dy] of directions) {
-            dfs(board, node, i + dx, j + dy);
-        }
-
-        // Unmark the current cell
-        board[i][j] = char;
     };
 
-    // Start DFS from each cell
-    for (let i = 0; i < board.length; i++) {
-        for (let j = 0; j < board[0].length; j++) {
-            dfs(board, trie.root, i, j);
-        }
-    }
+    backtrack(0, '');
 
     return result;
 };
