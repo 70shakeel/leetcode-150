@@ -1,55 +1,41 @@
-// Letter Combinations of a Phone Number
-// Solved
+// Combinations
 // Medium
 // Topics
 // Companies
-// Given a string containing digits from 2 - 9 inclusive, return all possible letter combinations that the number could represent.Return the answer in any order.
+// Given two integers n and k, return all possible combinations of k numbers chosen from the range[1, n].
 
-// A mapping of digits to letters(just like on the telephone buttons) is given below.Note that 1 does not map to any letters.
-
+// You may return the answer in any order.
 
 
 
 //     Example 1:
 
-// Input: digits = "23"
-// Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"]
-// Example 2:
+// Input: n = 4, k = 2
+// Output: [[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]]
+// Explanation: There are 4 choose 2 = 6 total combinations.
+// Note that combinations are unordered, i.e., [1, 2] and[2, 1] are considered to be the same combination.
+//     Example 2:
 
-// Input: digits = ""
-// Output: []
-// Example 3:
-
-// Input: digits = "2"
-// Output: ["a", "b", "c"]
-const letterCombinations = function (digits) {
-    if (!digits) return [];
-
-    const digitToLetters = {
-        '2': 'abc',
-        '3': 'def',
-        '4': 'ghi',
-        '5': 'jkl',
-        '6': 'mno',
-        '7': 'pqrs',
-        '8': 'tuv',
-        '9': 'wxyz'
-    };
-
+// Input: n = 1, k = 1
+// Output: [[1]]
+// Explanation: There is 1 choose 1 = 1 total combination.
+function combine(n, k) {
     const result = [];
-    const backtrack = (index, path) => {
-        if (index === digits.length) {
-            result.push(path);
+    const combination = [];
+
+    function backtrack(start) {
+        if (combination.length === k) {
+            result.push([...combination]);
             return;
         }
 
-        const letters = digitToLetters[digits[index]];
-        for (let letter of letters) {
-            backtrack(index + 1, path + letter);
+        for (let i = start; i <= n; i++) {
+            combination.push(i);
+            backtrack(i + 1);
+            combination.pop();
         }
-    };
+    }
 
-    backtrack(0, '');
-
+    backtrack(1);
     return result;
-};
+}
