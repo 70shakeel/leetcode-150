@@ -1,41 +1,45 @@
-// Combinations
+// Permutations
 // Medium
 // Topics
 // Companies
-// Given two integers n and k, return all possible combinations of k numbers chosen from the range[1, n].
-
-// You may return the answer in any order.
+// Given an array nums of distinct integers, return all the possible permutations.You can return the answer in any order.
 
 
 
 //     Example 1:
 
-// Input: n = 4, k = 2
-// Output: [[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]]
-// Explanation: There are 4 choose 2 = 6 total combinations.
-// Note that combinations are unordered, i.e., [1, 2] and[2, 1] are considered to be the same combination.
-//     Example 2:
+// Input: nums = [1, 2, 3]
+// Output: [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]]
+// Example 2:
 
-// Input: n = 1, k = 1
+// Input: nums = [0, 1]
+// Output: [[0, 1], [1, 0]]
+// Example 3:
+
+// Input: nums = [1]
 // Output: [[1]]
-// Explanation: There is 1 choose 1 = 1 total combination.
-function combine(n, k) {
+function permute(nums) {
     const result = [];
-    const combination = [];
+    const temp = [];
+    const used = new Array(nums.length).fill(false);
 
-    function backtrack(start) {
-        if (combination.length === k) {
-            result.push([...combination]);
+    function backtrack() {
+        if (temp.length === nums.length) {
+            result.push([...temp]);
             return;
         }
 
-        for (let i = start; i <= n; i++) {
-            combination.push(i);
-            backtrack(i + 1);
-            combination.pop();
+        for (let i = 0; i < nums.length; i++) {
+            if (used[i]) continue;
+
+            used[i] = true;
+            temp.push(nums[i]);
+            backtrack();
+            temp.pop();
+            used[i] = false;
         }
     }
 
-    backtrack(1);
+    backtrack();
     return result;
 }
