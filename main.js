@@ -1,53 +1,64 @@
-// Combination Sum
-// Medium
+// N - Queens II
+// Hard
 // Topics
 // Companies
-// Given an array of distinct integers candidates and a target integer target, return a list of all unique combinations of candidates where the chosen numbers sum to target. You may return the combinations in any order.
+// The n - queens puzzle is the problem of placing n queens on an n x n chessboard such that no two queens attack each other.
 
-// The same number may be chosen from candidates an unlimited number of times. Two combinations are unique if the 
-// frequency
-//  of at least one of the chosen numbers is different.
-
-// The test cases are generated such that the number of unique combinations that sum up to target is less than 150 combinations for the given input.
+// Given an integer n, return the number of distinct solutions to the n - queens puzzle.
 
 
 
-// Example 1:
+//     Example 1:
 
-// Input: candidates = [2,3,6,7], target = 7
-// Output: [[2,2,3],[7]]
-// Explanation:
-// 2 and 3 are candidates, and 2 + 2 + 3 = 7. Note that 2 can be used multiple times.
-// 7 is a candidate, and 7 = 7.
-// These are the only two combinations.
-// Example 2:
 
-// Input: candidates = [2,3,5], target = 8
-// Output: [[2,2,2,2],[2,3,3],[3,5]]
-// Example 3:
+// Input: n = 4
+// Output: 2
+// Explanation: There are two distinct solutions to the 4 - queens puzzle as shown.
+//     Example 2:
 
-// Input: candidates = [2], target = 1
-// Output: []
-function combinationSum(candidates, target) {
-    const result = [];
-    candidates.sort((a, b) => a - b); // Sort to help with optimizations
+// Input: n = 1
+// Output: 1
+function totalNQueens(n) {
+    let result = 0;
 
-    function backtrack(start, currentCombination, currentSum) {
-        if (currentSum === target) {
-            result.push([...currentCombination]); // Found a valid combination
+    // Initialize the board with empty strings
+    const board = Array.from({ length: n }, () => '.'.repeat(n));
+
+    // Check if the position (row, col) is safe to place a queen
+    const isSafe = (board, row, col) => {
+        // Check the column
+        for (let i = 0; i < row; i++) {
+            if (board[i][col] === 'Q') return false;
+        }
+        // Check the upper left diagonal
+        for (let i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
+            if (board[i][j] === 'Q') return false;
+        }
+        // Check the upper right diagonal
+        for (let i = row - 1, j = col + 1; i >= 0 && j < n; i--, j++) {
+            if (board[i][j] === 'Q') return false;
+        }
+        return true;
+    };
+
+    // Backtrack to find all solutions
+    const backtrack = (board, row) => {
+        if (row === n) {
+            result++;
             return;
         }
-        if (currentSum > target) {
-            return; // Exceeded the target, backtrack
+        for (let col = 0; col < n; col++) {
+            if (isSafe(board, row, col)) {
+                // Place the queen
+                board[row] = board[row].substring(0, col) + 'Q' + board[row].substring(col + 1);
+                // Move to the next row
+                backtrack(board, row + 1);
+                // Remove the queen
+                board[row] = board[row].substring(0, col) + '.' + board[row].substring(col + 1);
+            }
         }
+    };
 
-        for (let i = start; i < candidates.length; i++) {
-            currentCombination.push(candidates[i]); // Choose the candidate
-            backtrack(i, currentCombination, currentSum + candidates[i]); // Explore further
-            currentCombination.pop(); // Backtrack
-        }
-    }
-
-    backtrack(0, [], 0);
+    backtrack(board, 0);
     return result;
 }
