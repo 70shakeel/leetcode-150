@@ -1,57 +1,103 @@
-// Convert Sorted Array to Binary Search Tree
-// Easy
+// Sort List
+// Medium
 // Topics
 // Companies
-// Given an integer array nums where the elements are sorted in ascending order, convert it to a
-// height - balanced
-//  binary search tree.
+// Given the head of a linked list, return the list after sorting it in ascending order.
 
 
 
 //     Example 1:
 
 
-// Input: nums = [-10, -3, 0, 5, 9]
-// Output: [0, -3, 9, -10, null, 5]
-// Explanation: [0, -10, 5, null, -3, null, 9] is also accepted:
-
+// Input: head = [4, 2, 1, 3]
+// Output: [1, 2, 3, 4]
 // Example 2:
 
 
-// Input: nums = [1, 3]
-// Output: [3, 1]
-// Explanation: [1, null, 3] and[3, 1] are both height - balanced BSTs.
-// Definition for a binary tree node.
-function TreeNode(val, left = null, right = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
+// Input: head = [-1, 5, 3, 4, 0]
+// Output: [-1, 0, 3, 4, 5]
+// Example 3:
+
+// Input: head = []
+// Output: []
+class ListNode {
+    constructor(val = 0, next = null) {
+        this.val = val;
+        this.next = next;
+    }
 }
 
-/**
- * @param {number[]} nums
- * @return {TreeNode}
- */
-var sortedArrayToBST = function (nums) {
-    if (!nums.length) return null;
+function sortList(head) {
+    if (!head || !head.next) {
+        return head;
+    }
 
-    // Helper function to construct BST
-    const convertToBST = (left, right) => {
-        if (left > right) return null;
+    // Split the list into two halves
+    let slow = head;
+    let fast = head;
+    let prev = null;
 
-        // Middle element to maintain height-balance
-        const mid = Math.floor((left + right) / 2);
+    while (fast && fast.next) {
+        prev = slow;
+        slow = slow.next;
+        fast = fast.next.next;
+    }
 
-        // Create a new node with the mid element
-        const node = new TreeNode(nums[mid]);
+    // Disconnect the two halves
+    prev.next = null;
 
-        // Recursively construct the left and right subtrees
-        node.left = convertToBST(left, mid - 1);
-        node.right = convertToBST(mid + 1, right);
+    // Sort each half
+    const left = sortList(head);
+    const right = sortList(slow);
 
-        return node;
-    };
+    // Merge the sorted halves
+    return merge(left, right);
+}
 
-    // Initial call to the helper function
-    return convertToBST(0, nums.length - 1);
-};
+function merge(left, right) {
+    const dummy = new ListNode();
+    let current = dummy;
+
+    while (left && right) {
+        if (left.val < right.val) {
+            current.next = left;
+            left = left.next;
+        } else {
+            current.next = right;
+            right = right.next;
+        }
+        current = current.next;
+    }
+
+    if (left) {
+        current.next = left;
+    } else if (right) {
+        current.next = right;
+    }
+
+    return dummy.next;
+}
+
+// Helper function to convert array to linked list
+function arrayToList(arr) {
+    if (arr.length === 0) {
+        return null;
+    }
+    let head = new ListNode(arr[0]);
+    let current = head;
+    for (let i = 1; i < arr.length; i++) {
+        current.next = new ListNode(arr[i]);
+        current = current.next;
+    }
+    return head;
+}
+
+// Helper function to convert linked list to array
+function listToArray(head) {
+    let arr = [];
+    while (head) {
+        arr.push(head.val);
+        head = head.next;
+    }
+    return arr;
+}
