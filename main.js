@@ -1,95 +1,99 @@
-// Construct Quad Tree
-// Medium
+// Merge k Sorted Lists
+// Hard
 // Topics
 // Companies
-// Given a n * n matrix grid of 0's and 1's only.We want to represent grid with a Quad - Tree.
+// You are given an array of k linked - lists lists, each linked - list is sorted in ascending order.
 
-// Return the root of the Quad - Tree representing grid.
-
-// A Quad - Tree is a tree data structure in which each internal node has exactly four children.Besides, each node has two attributes:
-
-// val: True if the node represents a grid of 1's or False if the node represents a grid of 0's.Notice that you can assign the val to True or False when isLeaf is False, and both are accepted in the answer.
-//     isLeaf: True if the node is a leaf node on the tree or False if the node has four children.
-// class Node {
-//     public boolean val;
-//     public boolean isLeaf;
-//     public Node topLeft;
-//     public Node topRight;
-//     public Node bottomLeft;
-//     public Node bottomRight;
-// }
-// We can construct a Quad - Tree from a two - dimensional area using the following steps:
-
-//     If the current grid has the same value (i.e all 1's or all 0's) set isLeaf True and set val to the value of the grid and set the four children to Null and stop.
-// If the current grid has different values, set isLeaf to False and set val to any value and divide the current grid into four sub - grids as shown in the photo.
-// Recurse for each of the children with the proper sub - grid.
-
-// If you want to know more about the Quad - Tree, you can refer to the wiki.
-
-//     Quad - Tree format:
-
-// You don't need to read this section for solving the problem. This is only if you want to understand the output format here. The output represents the serialized format of a Quad-Tree using level order traversal, where null signifies a path terminator where no node exists below.
-
-// It is very similar to the serialization of the binary tree.The only difference is that the node is represented as a list[isLeaf, val].
-
-// If the value of isLeaf or val is True we represent it as 1 in the list[isLeaf, val] and if the value of isLeaf or val is False we represent it as 0.
+// Merge all the linked - lists into one sorted linked - list and return it.
 
 
 
-// Example 1:
+//     Example 1:
 
+// Input: lists = [[1, 4, 5], [1, 3, 4], [2, 6]]
+// Output: [1, 1, 2, 3, 4, 4, 5, 6]
+// Explanation: The linked - lists are:
+// [
+//     1 -> 4 -> 5,
+//     1 -> 3 -> 4,
+//     2 -> 6
+// ]
+// merging them into one sorted list:
+// 1 -> 1 -> 2 -> 3 -> 4 -> 4 -> 5 -> 6
+// Example 2:
 
-// Input: grid = [[0, 1], [1, 0]]
-// Output: [[0, 1], [1, 0], [1, 1], [1, 1], [1, 0]]
-// Explanation: The explanation of this example is shown below:
-// Notice that 0 represents False and 1 represents True in the photo representing the Quad - Tree.
+// Input: lists = []
+// Output: []
+// Example 3:
 
-//     Example 2:
-
-
-
-// Input: grid = [[1, 1, 1, 1, 0, 0, 0, 0], [1, 1, 1, 1, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 0, 0, 0, 0], [1, 1, 1, 1, 0, 0, 0, 0], [1, 1, 1, 1, 0, 0, 0, 0], [1, 1, 1, 1, 0, 0, 0, 0]]
-// Output: [[0, 1], [1, 1], [0, 1], [1, 1], [1, 0], null, null, null, null, [1, 0], [1, 0], [1, 1], [1, 1]]
-// Explanation: All values in the grid are not the same.We divide the grid into four sub - grids.
-// The topLeft, bottomLeft and bottomRight each has the same value.
-// The topRight have different values so we divide it into 4 sub - grids where each has the same value.
-class Node {
-    constructor(val, isLeaf, topLeft, topRight, bottomLeft, bottomRight) {
+// Input: lists = [[]]
+// Output: []
+class ListNode {
+    constructor(val = 0, next = null) {
         this.val = val;
-        this.isLeaf = isLeaf;
-        this.topLeft = topLeft;
-        this.topRight = topRight;
-        this.bottomLeft = bottomLeft;
-        this.bottomRight = bottomRight;
+        this.next = next;
     }
 }
 
-function construct(grid) {
-    function isSameValue(grid, row, col, length) {
-        let value = grid[row][col];
-        for (let i = row; i < row + length; i++) {
-            for (let j = col; j < col + length; j++) {
-                if (grid[i][j] !== value) {
-                    return false;
-                }
-            }
+function mergeTwoLists(l1, l2) {
+    let dummy = new ListNode();
+    let current = dummy;
+
+    while (l1 !== null && l2 !== null) {
+        if (l1.val < l2.val) {
+            current.next = l1;
+            l1 = l1.next;
+        } else {
+            current.next = l2;
+            l2 = l2.next;
         }
-        return true;
+        current = current.next;
     }
 
-    function buildTree(grid, row, col, length) {
-        if (length === 1 || isSameValue(grid, row, col, length)) {
-            return new Node(grid[row][col] === 1, true, null, null, null, null);
-        }
-
-        let halfLength = length / 2;
-        let topLeft = buildTree(grid, row, col, halfLength);
-        let topRight = buildTree(grid, row, col + halfLength, halfLength);
-        let bottomLeft = buildTree(grid, row + halfLength, col, halfLength);
-        let bottomRight = buildTree(grid, row + halfLength, col + halfLength, halfLength);
-
-        return new Node(true, false, topLeft, topRight, bottomLeft, bottomRight);
+    if (l1 !== null) {
+        current.next = l1;
     }
 
-    return buildTree(grid, 0, 0, grid.length);
+    if (l2 !== null) {
+        current.next = l2;
+    }
+
+    return dummy.next;
+}
+
+function mergeKLists(lists) {
+    if (lists.length === 0) return null;
+    return mergeKListsHelper(lists, 0, lists.length - 1);
+}
+
+function mergeKListsHelper(lists, left, right) {
+    if (left === right) {
+        return lists[left];
+    }
+
+    const mid = Math.floor((left + right) / 2);
+    const l1 = mergeKListsHelper(lists, left, mid);
+    const l2 = mergeKListsHelper(lists, mid + 1, right);
+    return mergeTwoLists(l1, l2);
+}
+
+// Helper function to create a linked list from an array
+function createLinkedList(arr) {
+    let dummy = new ListNode();
+    let current = dummy;
+    for (let num of arr) {
+        current.next = new ListNode(num);
+        current = current.next;
+    }
+    return dummy.next;
+}
+
+// Helper function to print linked list
+function printLinkedList(list) {
+    let result = [];
+    while (list !== null) {
+        result.push(list.val);
+        list = list.next;
+    }
+    console.log(result.join('->'));
 }
