@@ -1,49 +1,43 @@
-// Search a 2D Matrix
+// Find Peak Element
+// Solved
 // Medium
 // Topics
 // Companies
-// You are given an m x n integer matrix matrix with the following two properties:
+// A peak element is an element that is strictly greater than its neighbors.
 
-// Each row is sorted in non - decreasing order.
-// The first integer of each row is greater than the last integer of the previous row.
-// Given an integer target, return true if target is in matrix or false otherwise.
+// Given a 0 - indexed integer array nums, find a peak element, and return its index.If the array contains multiple peaks, return the index to any of the peaks.
 
-// You must write a solution in O(log(m * n)) time complexity.
+// You may imagine that nums[-1] = nums[n] = -∞. In other words, an element is always considered to be strictly greater than a neighbor that is outside the array.
+
+// You must write an algorithm that runs in O(log n) time.
 
 
 
 //     Example 1:
 
-
-// Input: matrix = [[1, 3, 5, 7], [10, 11, 16, 20], [23, 30, 34, 60]], target = 3
-// Output: true
+// Input: nums = [1, 2, 3, 1]
+// Output: 2
+// Explanation: 3 is a peak element and your function should return the index number 2.
 // Example 2:
 
-
-// Input: matrix = [[1, 3, 5, 7], [10, 11, 16, 20], [23, 30, 34, 60]], target = 13
-// Output: false
-function searchMatrix(matrix, target) {
-    if (!matrix.length || !matrix[0].length) {
-        return false;
-    }
-
-    let m = matrix.length;
-    let n = matrix[0].length;
+// Input: nums = [1, 2, 1, 3, 5, 6, 4]
+// Output: 5
+// Explanation: Your function can return either index number 1 where the peak element is 2, or index number 5 where the peak element is 6.
+function findPeakElement(nums) {
     let left = 0;
-    let right = m * n - 1;
+    let right = nums.length - 1;
 
-    while (left <= right) {
+    while (left < right) {
         let mid = Math.floor((left + right) / 2);
-        let midValue = matrix[Math.floor(mid / n)][mid % n];
 
-        if (midValue === target) {
-            return true;
-        } else if (midValue < target) {
-            left = mid + 1;
+        if (nums[mid] > nums[mid + 1]) {
+            // Peak is in the left half
+            right = mid;
         } else {
-            right = mid - 1;
+            // Peak is in the right half
+            left = mid + 1;
         }
     }
 
-    return false;
+    return left;
 }
