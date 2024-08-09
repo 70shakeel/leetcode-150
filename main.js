@@ -1,59 +1,72 @@
-// Search in Rotated Sorted Array
+// Find First and Last Position of Element in Sorted Array
 // Medium
 // Topics
 // Companies
-// There is an integer array nums sorted in ascending order(with distinct values).
+// Given an array of integers nums sorted in non-decreasing order, find the starting and ending position of a given target value.
 
-// Prior to being passed to your function, nums is possibly rotated at an unknown pivot index k(1 <= k < nums.length) such that the resulting array is[nums[k], nums[k + 1], ..., nums[n - 1], nums[0], nums[1], ..., nums[k - 1]](0 - indexed).For example, [0, 1, 2, 4, 5, 6, 7] might be rotated at pivot index 3 and become[4, 5, 6, 7, 0, 1, 2].
-
-// Given the array nums after the possible rotation and an integer target, return the index of target if it is in nums, or - 1 if it is not in nums.
+// If target is not found in the array, return [-1, -1].
 
 // You must write an algorithm with O(log n) runtime complexity.
 
 
 
-//     Example 1:
+// Example 1:
 
-// Input: nums = [4, 5, 6, 7, 0, 1, 2], target = 0
-// Output: 4
+// Input: nums = [5,7,7,8,8,10], target = 8
+// Output: [3,4]
 // Example 2:
 
-// Input: nums = [4, 5, 6, 7, 0, 1, 2], target = 3
-// Output: -1
+// Input: nums = [5,7,7,8,8,10], target = 6
+// Output: [-1,-1]
 // Example 3:
 
-// Input: nums = [1], target = 0
-// Output: -1
-function search(nums, target) {
-    let left = 0;
-    let right = nums.length - 1;
+// Input: nums = [], target = 0
+// Output: [-1,-1]
+function searchRange(nums, target) {
+    function findFirst(nums, target) {
+        let left = 0;
+        let right = nums.length - 1;
+        let firstPos = -1;
 
-    while (left <= right) {
-        let mid = Math.floor((left + right) / 2);
+        while (left <= right) {
+            const mid = Math.floor((left + right) / 2);
 
-        if (nums[mid] === target) {
-            return mid;
-        }
-
-        // Check if the left side is sorted
-        if (nums[left] <= nums[mid]) {
-            // Check if the target is in the left side
-            if (nums[left] <= target && target < nums[mid]) {
-                right = mid - 1;
-            } else {
-                left = mid + 1;
-            }
-        }
-        // Else the right side is sorted
-        else {
-            // Check if the target is in the right side
-            if (nums[mid] < target && target <= nums[right]) {
+            if (nums[mid] === target) {
+                firstPos = mid;
+                right = mid - 1; // continue searching in the left half
+            } else if (nums[mid] < target) {
                 left = mid + 1;
             } else {
                 right = mid - 1;
             }
         }
+
+        return firstPos;
     }
 
-    return -1;
+    function findLast(nums, target) {
+        let left = 0;
+        let right = nums.length - 1;
+        let lastPos = -1;
+
+        while (left <= right) {
+            const mid = Math.floor((left + right) / 2);
+
+            if (nums[mid] === target) {
+                lastPos = mid;
+                left = mid + 1; // continue searching in the right half
+            } else if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        return lastPos;
+    }
+
+    const first = findFirst(nums, target);
+    const last = findLast(nums, target);
+
+    return [first, last];
 }
