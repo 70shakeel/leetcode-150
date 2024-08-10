@@ -1,72 +1,52 @@
-// Find First and Last Position of Element in Sorted Array
+// Find Minimum in Rotated Sorted Array
 // Medium
 // Topics
 // Companies
-// Given an array of integers nums sorted in non-decreasing order, find the starting and ending position of a given target value.
+// Hint
+// Suppose an array of length n sorted in ascending order is rotated between 1 and n times.For example, the array nums = [0, 1, 2, 4, 5, 6, 7] might become:
 
-// If target is not found in the array, return [-1, -1].
+// [4, 5, 6, 7, 0, 1, 2] if it was rotated 4 times.
+// [0, 1, 2, 4, 5, 6, 7] if it was rotated 7 times.
+// Notice that rotating an array[a[0], a[1], a[2], ..., a[n - 1]]1 time results in the array[a[n - 1], a[0], a[1], a[2], ..., a[n - 2]].
 
-// You must write an algorithm with O(log n) runtime complexity.
+// Given the sorted rotated array nums of unique elements, return the minimum element of this array.
+
+// You must write an algorithm that runs in O(log n) time.
 
 
 
-// Example 1:
+//     Example 1:
 
-// Input: nums = [5,7,7,8,8,10], target = 8
-// Output: [3,4]
-// Example 2:
+// Input: nums = [3, 4, 5, 1, 2]
+// Output: 1
+// Explanation: The original array was[1, 2, 3, 4, 5] rotated 3 times.
+//     Example 2:
 
-// Input: nums = [5,7,7,8,8,10], target = 6
-// Output: [-1,-1]
-// Example 3:
+// Input: nums = [4, 5, 6, 7, 0, 1, 2]
+// Output: 0
+// Explanation: The original array was[0, 1, 2, 4, 5, 6, 7] and it was rotated 4 times.
+//     Example 3:
 
-// Input: nums = [], target = 0
-// Output: [-1,-1]
-function searchRange(nums, target) {
-    function findFirst(nums, target) {
-        let left = 0;
-        let right = nums.length - 1;
-        let firstPos = -1;
+// Input: nums = [11, 13, 15, 17]
+// Output: 11
+// Explanation: The original array was[11, 13, 15, 17] and it was rotated 4 times. 
 
-        while (left <= right) {
-            const mid = Math.floor((left + right) / 2);
+function findMin(nums) {
+    let left = 0;
+    let right = nums.length - 1;
 
-            if (nums[mid] === target) {
-                firstPos = mid;
-                right = mid - 1; // continue searching in the left half
-            } else if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
-            }
+    while (left < right) {
+        let mid = Math.floor((left + right) / 2);
+
+        // If the middle element is greater than the right element, the minimum is in the right half
+        if (nums[mid] > nums[right]) {
+            left = mid + 1;
+        } else {
+            // Otherwise, the minimum is in the left half including mid
+            right = mid;
         }
-
-        return firstPos;
     }
 
-    function findLast(nums, target) {
-        let left = 0;
-        let right = nums.length - 1;
-        let lastPos = -1;
-
-        while (left <= right) {
-            const mid = Math.floor((left + right) / 2);
-
-            if (nums[mid] === target) {
-                lastPos = mid;
-                left = mid + 1; // continue searching in the right half
-            } else if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
-            }
-        }
-
-        return lastPos;
-    }
-
-    const first = findFirst(nums, target);
-    const last = findLast(nums, target);
-
-    return [first, last];
+    // At the end of the loop, left == right and both point to the minimum element
+    return nums[left];
 }
