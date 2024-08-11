@@ -1,52 +1,54 @@
-// Find Minimum in Rotated Sorted Array
-// Medium
+// Median of Two Sorted Arrays
+// Hard
 // Topics
 // Companies
-// Hint
-// Suppose an array of length n sorted in ascending order is rotated between 1 and n times.For example, the array nums = [0, 1, 2, 4, 5, 6, 7] might become:
+// Given two sorted arrays nums1 and nums2 of size m and n respectively, return the median of the two sorted arrays.
 
-// [4, 5, 6, 7, 0, 1, 2] if it was rotated 4 times.
-// [0, 1, 2, 4, 5, 6, 7] if it was rotated 7 times.
-// Notice that rotating an array[a[0], a[1], a[2], ..., a[n - 1]]1 time results in the array[a[n - 1], a[0], a[1], a[2], ..., a[n - 2]].
-
-// Given the sorted rotated array nums of unique elements, return the minimum element of this array.
-
-// You must write an algorithm that runs in O(log n) time.
+// The overall run time complexity should be O(log(m + n)).
 
 
 
 //     Example 1:
 
-// Input: nums = [3, 4, 5, 1, 2]
-// Output: 1
-// Explanation: The original array was[1, 2, 3, 4, 5] rotated 3 times.
-//     Example 2:
+// Input: nums1 = [1, 3], nums2 = [2]
+// Output: 2.00000
+// Explanation: merged array = [1, 2, 3] and median is 2.
+// Example 2:
 
-// Input: nums = [4, 5, 6, 7, 0, 1, 2]
-// Output: 0
-// Explanation: The original array was[0, 1, 2, 4, 5, 6, 7] and it was rotated 4 times.
-//     Example 3:
+// Input: nums1 = [1, 2], nums2 = [3, 4]
+// Output: 2.50000
+// Explanation: merged array = [1, 2, 3, 4] and median is(2 + 3) / 2 = 2.5.
+function findMedianSortedArrays(nums1, nums2) {
+    if (nums1.length > nums2.length) {
+        return findMedianSortedArrays(nums2, nums1);
+    }
 
-// Input: nums = [11, 13, 15, 17]
-// Output: 11
-// Explanation: The original array was[11, 13, 15, 17] and it was rotated 4 times. 
+    let x = nums1.length;
+    let y = nums2.length;
 
-function findMin(nums) {
-    let left = 0;
-    let right = nums.length - 1;
+    let low = 0, high = x;
+    while (low <= high) {
+        let partitionX = Math.floor((low + high) / 2);
+        let partitionY = Math.floor((x + y + 1) / 2) - partitionX;
 
-    while (left < right) {
-        let mid = Math.floor((left + right) / 2);
+        let maxX = (partitionX === 0) ? -Infinity : nums1[partitionX - 1];
+        let minX = (partitionX === x) ? Infinity : nums1[partitionX];
 
-        // If the middle element is greater than the right element, the minimum is in the right half
-        if (nums[mid] > nums[right]) {
-            left = mid + 1;
+        let maxY = (partitionY === 0) ? -Infinity : nums2[partitionY - 1];
+        let minY = (partitionY === y) ? Infinity : nums2[partitionY];
+
+        if (maxX <= minY && maxY <= minX) {
+            if ((x + y) % 2 === 0) {
+                return (Math.max(maxX, maxY) + Math.min(minX, minY)) / 2;
+            } else {
+                return Math.max(maxX, maxY);
+            }
+        } else if (maxX > minY) {
+            high = partitionX - 1;
         } else {
-            // Otherwise, the minimum is in the left half including mid
-            right = mid;
+            low = partitionX + 1;
         }
     }
 
-    // At the end of the loop, left == right and both point to the minimum element
-    return nums[left];
+    throw new Error("Input arrays are not sorted");
 }
