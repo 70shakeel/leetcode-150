@@ -1,54 +1,103 @@
-// Median of Two Sorted Arrays
-// Hard
+// Kth Largest Element in an Array
+// Solved
+// Medium
 // Topics
 // Companies
-// Given two sorted arrays nums1 and nums2 of size m and n respectively, return the median of the two sorted arrays.
+// Given an integer array nums and an integer k, return the kth largest element in the array.
 
-// The overall run time complexity should be O(log(m + n)).
+// Note that it is the kth largest element in the sorted order, not the kth distinct element.
+
+// Can you solve it without sorting ?
 
 
 
 //     Example 1:
 
-// Input: nums1 = [1, 3], nums2 = [2]
-// Output: 2.00000
-// Explanation: merged array = [1, 2, 3] and median is 2.
+// Input: nums = [3, 2, 1, 5, 6, 4], k = 2
+// Output: 5
 // Example 2:
 
-// Input: nums1 = [1, 2], nums2 = [3, 4]
-// Output: 2.50000
-// Explanation: merged array = [1, 2, 3, 4] and median is(2 + 3) / 2 = 2.5.
-function findMedianSortedArrays(nums1, nums2) {
-    if (nums1.length > nums2.length) {
-        return findMedianSortedArrays(nums2, nums1);
+// Input: nums = [3, 2, 3, 1, 2, 4, 5, 5, 6], k = 4
+// Output: 4
+class MinHeap {
+    constructor() {
+        this.heap = [];
     }
 
-    let x = nums1.length;
-    let y = nums2.length;
+    insert(value) {
+        this.heap.push(value);
+        this.heapifyUp();
+    }
 
-    let low = 0, high = x;
-    while (low <= high) {
-        let partitionX = Math.floor((low + high) / 2);
-        let partitionY = Math.floor((x + y + 1) / 2) - partitionX;
+    extractMin() {
+        if (this.isEmpty()) {
+            return null;
+        }
+        if (this.heap.length === 1) {
+            return this.heap.pop();
+        }
+        const min = this.heap[0];
+        this.heap[0] = this.heap.pop();
+        this.heapifyDown();
+        return min;
+    }
 
-        let maxX = (partitionX === 0) ? -Infinity : nums1[partitionX - 1];
-        let minX = (partitionX === x) ? Infinity : nums1[partitionX];
-
-        let maxY = (partitionY === 0) ? -Infinity : nums2[partitionY - 1];
-        let minY = (partitionY === y) ? Infinity : nums2[partitionY];
-
-        if (maxX <= minY && maxY <= minX) {
-            if ((x + y) % 2 === 0) {
-                return (Math.max(maxX, maxY) + Math.min(minX, minY)) / 2;
-            } else {
-                return Math.max(maxX, maxY);
-            }
-        } else if (maxX > minY) {
-            high = partitionX - 1;
-        } else {
-            low = partitionX + 1;
+    heapifyUp() {
+        let currentIndex = this.heap.length - 1;
+        let parentIndex = Math.floor((currentIndex - 1) / 2);
+        while (parentIndex >= 0 && this.heap[currentIndex] < this.heap[parentIndex]) {
+            this.swap(currentIndex, parentIndex);
+            currentIndex = parentIndex;
+            parentIndex = Math.floor((currentIndex - 1) / 2);
         }
     }
 
-    throw new Error("Input arrays are not sorted");
+    heapifyDown() {
+        let currentIndex = 0;
+        let leftChildIndex = 2 * currentIndex + 1;
+        let rightChildIndex = 2 * currentIndex + 2;
+        let nextIndex = null;
+        while (
+            (leftChildIndex < this.heap.length && this.heap[currentIndex] > this.heap[leftChildIndex]) ||
+            (rightChildIndex < this.heap.length && this.heap[currentIndex] > this.heap[rightChildIndex])
+        ) {
+            if (
+                rightChildIndex < this.heap.length &&
+                this.heap[rightChildIndex] < this.heap[leftChildIndex]
+            ) {
+                nextIndex = rightChildIndex;
+            } else {
+                nextIndex = leftChildIndex;
+            }
+            this.swap(currentIndex, nextIndex);
+            currentIndex = nextIndex;
+            leftChildIndex = 2 * currentIndex + 1;
+            rightChildIndex = 2 * currentIndex + 2;
+        }
+    }
+
+    swap(i, j) {
+        const temp = this.heap[i];
+        this.heap[i] = this.heap[j];
+        this.heap[j] = temp;
+    }
+
+    isEmpty() {
+        return this.heap.length === 0;
+    }
+
+    peek() {
+        return this.heap[0];
+    }
+}
+
+function findKthLargest(nums, k) {
+    const minHeap = new MinHeap();
+    for (let num of nums) {
+        minHeap.insert(num);
+        if (minHeap.heap.length > k) {
+            minHeap.extractMin();
+        }
+    }
+    return minHeap.peek();
 }
