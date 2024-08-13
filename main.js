@@ -1,103 +1,116 @@
-// Kth Largest Element in an Array
-// Solved
-// Medium
+// IPO
+// Hard
 // Topics
 // Companies
-// Given an integer array nums and an integer k, return the kth largest element in the array.
+// Suppose LeetCode will start its IPO soon.In order to sell a good price of its shares to Venture Capital, LeetCode would like to work on some projects to increase its capital before the IPO.Since it has limited resources, it can only finish at most k distinct projects before the IPO.Help LeetCode design the best way to maximize its total capital after finishing at most k distinct projects.
 
-// Note that it is the kth largest element in the sorted order, not the kth distinct element.
+// You are given n projects where the ith project has a pure profit profits[i] and a minimum capital of capital[i] is needed to start it.
 
-// Can you solve it without sorting ?
+//     Initially, you have w capital.When you finish a project, you will obtain its pure profit and the profit will be added to your total capital.
+
+// Pick a list of at most k distinct projects from given projects to maximize your final capital, and return the final maximized capital.
+
+// The answer is guaranteed to fit in a 32 - bit signed integer.
 
 
 
 //     Example 1:
 
-// Input: nums = [3, 2, 1, 5, 6, 4], k = 2
-// Output: 5
+// Input: k = 2, w = 0, profits = [1, 2, 3], capital = [0, 1, 1]
+// Output: 4
+// Explanation: Since your initial capital is 0, you can only start the project indexed 0.
+// After finishing it you will obtain profit 1 and your capital becomes 1.
+// With capital 1, you can either start the project indexed 1 or the project indexed 2.
+// Since you can choose at most 2 projects, you need to finish the project indexed 2 to get the maximum capital.
+//     Therefore, output the final maximized capital, which is 0 + 1 + 3 = 4.
 // Example 2:
 
-// Input: nums = [3, 2, 3, 1, 2, 4, 5, 5, 6], k = 4
-// Output: 4
-class MinHeap {
+// Input: k = 3, w = 0, profits = [1, 2, 3], capital = [0, 1, 2]
+// Output: 6
+class MaxHeap {
     constructor() {
         this.heap = [];
     }
 
-    insert(value) {
-        this.heap.push(value);
-        this.heapifyUp();
+    insert(val) {
+        this.heap.push(val);
+        this._heapifyUp();
     }
 
-    extractMin() {
-        if (this.isEmpty()) {
-            return null;
-        }
-        if (this.heap.length === 1) {
-            return this.heap.pop();
-        }
-        const min = this.heap[0];
+    extractMax() {
+        if (this.heap.length === 1) return this.heap.pop();
+        const max = this.heap[0];
         this.heap[0] = this.heap.pop();
-        this.heapifyDown();
-        return min;
+        this._heapifyDown();
+        return max;
     }
 
-    heapifyUp() {
-        let currentIndex = this.heap.length - 1;
-        let parentIndex = Math.floor((currentIndex - 1) / 2);
-        while (parentIndex >= 0 && this.heap[currentIndex] < this.heap[parentIndex]) {
-            this.swap(currentIndex, parentIndex);
-            currentIndex = parentIndex;
-            parentIndex = Math.floor((currentIndex - 1) / 2);
+    _heapifyUp() {
+        let index = this.heap.length - 1;
+        while (index > 0) {
+            const parentIndex = Math.floor((index - 1) / 2);
+            if (this.heap[parentIndex] >= this.heap[index]) break;
+            [this.heap[parentIndex], this.heap[index]] = [this.heap[index], this.heap[parentIndex]];
+            index = parentIndex;
         }
     }
 
-    heapifyDown() {
-        let currentIndex = 0;
-        let leftChildIndex = 2 * currentIndex + 1;
-        let rightChildIndex = 2 * currentIndex + 2;
-        let nextIndex = null;
-        while (
-            (leftChildIndex < this.heap.length && this.heap[currentIndex] > this.heap[leftChildIndex]) ||
-            (rightChildIndex < this.heap.length && this.heap[currentIndex] > this.heap[rightChildIndex])
-        ) {
-            if (
-                rightChildIndex < this.heap.length &&
-                this.heap[rightChildIndex] < this.heap[leftChildIndex]
-            ) {
-                nextIndex = rightChildIndex;
-            } else {
-                nextIndex = leftChildIndex;
+    _heapifyDown() {
+        let index = 0;
+        const length = this.heap.length;
+        while (true) {
+            const leftChildIndex = 2 * index + 1;
+            const rightChildIndex = 2 * index + 2;
+            let largest = index;
+
+            if (leftChildIndex < length && this.heap[leftChildIndex] > this.heap[largest]) {
+                largest = leftChildIndex;
             }
-            this.swap(currentIndex, nextIndex);
-            currentIndex = nextIndex;
-            leftChildIndex = 2 * currentIndex + 1;
-            rightChildIndex = 2 * currentIndex + 2;
+
+            if (rightChildIndex < length && this.heap[rightChildIndex] > this.heap[largest]) {
+                largest = rightChildIndex;
+            }
+
+            if (largest === index) break;
+
+            [this.heap[index], this.heap[largest]] = [this.heap[largest], this.heap[index]];
+            index = largest;
         }
     }
 
-    swap(i, j) {
-        const temp = this.heap[i];
-        this.heap[i] = this.heap[j];
-        this.heap[j] = temp;
-    }
-
-    isEmpty() {
-        return this.heap.length === 0;
-    }
-
-    peek() {
-        return this.heap[0];
+    size() {
+        return this.heap.length;
     }
 }
 
-function findKthLargest(nums, k) {
-    const minHeap = new MinHeap();
-    for (let num of nums) {
-        minHeap.insert(num);
-        if (minHeap.heap.length > k) {
-            minHeap.extractMin();
-        }
+function findMaximizedCapital(k, w, profits, capital) {
+    const n = profits.length;
+    const projects = [];
+
+    for (let i = 0; i < n; i++) {
+        projects.push([capital[i], profits[i]]);
     }
-    return minHeap.peek();
+
+    // Sort projects by the capital required
+    projects.sort((a, b) => a[0] - b[0]);
+
+    const maxHeap = new MaxHeap();
+    let i = 0;
+
+    while (k > 0) {
+        // Add all projects that can be started with current capital to the max heap
+        while (i < n && projects[i][0] <= w) {
+            maxHeap.insert(projects[i][1]);
+            i++;
+        }
+
+        // If we cannot start any project, break
+        if (maxHeap.size() === 0) break;
+
+        // Start the project with the max profit
+        w += maxHeap.extractMax();
+        k--;
+    }
+
+    return w;
 }
