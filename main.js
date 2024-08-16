@@ -1,212 +1,47 @@
-// Find Median from Data Stream
-// Hard
+// Add Binary
+// Easy
 // Topics
 // Companies
-// The median is the middle value in an ordered integer list.If the size of the list is even, there is no middle value, and the median is the mean of the two middle values.
+// Given two binary strings a and b, return their sum as a binary string.
 
-// For example, for arr = [2, 3, 4], the median is 3.
-// For example, for arr = [2, 3], the median is(2 + 3) / 2 = 2.5.
-// Implement the MedianFinder class:
-
-// MedianFinder() initializes the MedianFinder object.
-// void addNum(int num) adds the integer num from the data stream to the data structure.
-// double findMedian() returns the median of all elements so far.Answers within 10 - 5 of the actual answer will be accepted.
 
 
 //     Example 1:
 
-// Input
-// ["MedianFinder", "addNum", "addNum", "findMedian", "addNum", "findMedian"]
-// [[], [1], [2], [], [3], []]
-// Output
-// [null, null, null, 1.5, null, 2.0]
+// Input: a = "11", b = "1"
+// Output: "100"
+// Example 2:
 
-// Explanation
-// MedianFinder medianFinder = new MedianFinder();
-// medianFinder.addNum(1);    // arr = [1]
-// medianFinder.addNum(2);    // arr = [1, 2]
-// medianFinder.findMedian(); // return 1.5 (i.e., (1 + 2) / 2)
-// medianFinder.addNum(3);    // arr[1, 2, 3]
-// medianFinder.findMedian(); // return 2.0
-class MedianFinder {
-    constructor() {
-        this.maxHeap = new MaxHeap(); // Max Heap for the lower half
-        this.minHeap = new MinHeap(); // Min Heap for the upper half
-    }
+// Input: a = "1010", b = "1011"
+// Output: "10101"
+function addBinary(a, b) {
+    let result = "";
+    let carry = 0;
+    let i = a.length - 1;
+    let j = b.length - 1;
 
-    addNum(num) {
-        // First, add the number to the maxHeap
-        this.maxHeap.insert(num);
+    while (i >= 0 || j >= 0) {
+        let sum = carry;
 
-        // Then, balance the heaps
-        // If the maxHeap's max is greater than the minHeap's min, move the max to minHeap
-        if (this.maxHeap.size() > 0 && this.minHeap.size() > 0 && this.maxHeap.peek() > this.minHeap.peek()) {
-            this.minHeap.insert(this.maxHeap.extractMax());
+        if (i >= 0) {
+            sum += parseInt(a[i]);
+            i--;
         }
 
-        // Balance the sizes of the heaps, if necessary
-        if (this.maxHeap.size() > this.minHeap.size() + 1) {
-            this.minHeap.insert(this.maxHeap.extractMax());
-        } else if (this.minHeap.size() > this.maxHeap.size()) {
-            this.maxHeap.insert(this.minHeap.extractMin());
+        if (j >= 0) {
+            sum += parseInt(b[j]);
+            j--;
         }
+
+        // sum can be 0, 1, 2, or 3.
+        result = (sum % 2) + result;  // append the remainder to result
+        carry = Math.floor(sum / 2);  // carry will be 1 if sum is 2 or 3, otherwise 0
     }
 
-    findMedian() {
-        if (this.maxHeap.size() > this.minHeap.size()) {
-            return this.maxHeap.peek();
-        } else {
-            return (this.maxHeap.peek() + this.minHeap.peek()) / 2;
-        }
-    }
-}
-
-// Helper class for MaxHeap
-class MaxHeap {
-    constructor() {
-        this.heap = [];
+    // If there's any carry left, append it to the result.
+    if (carry > 0) {
+        result = carry + result;
     }
 
-    size() {
-        return this.heap.length;
-    }
-
-    insert(value) {
-        this.heap.push(value);
-        this.bubbleUp();
-    }
-
-    peek() {
-        return this.heap[0];
-    }
-
-    extractMax() {
-        if (this.size() === 1) return this.heap.pop();
-
-        const max = this.heap[0];
-        this.heap[0] = this.heap.pop();
-        this.bubbleDown();
-
-        return max;
-    }
-
-    bubbleUp() {
-        let index = this.size() - 1;
-        while (index > 0) {
-            let parentIndex = Math.floor((index - 1) / 2);
-            if (this.heap[parentIndex] >= this.heap[index]) break;
-
-            [this.heap[parentIndex], this.heap[index]] = [this.heap[index], this.heap[parentIndex]];
-            index = parentIndex;
-        }
-    }
-
-    bubbleDown() {
-        let index = 0;
-        const length = this.size();
-        const element = this.heap[0];
-
-        while (true) {
-            let leftChildIndex = 2 * index + 1;
-            let rightChildIndex = 2 * index + 2;
-            let leftChild, rightChild;
-            let swap = null;
-
-            if (leftChildIndex < length) {
-                leftChild = this.heap[leftChildIndex];
-                if (leftChild > element) {
-                    swap = leftChildIndex;
-                }
-            }
-
-            if (rightChildIndex < length) {
-                rightChild = this.heap[rightChildIndex];
-                if (
-                    (swap === null && rightChild > element) ||
-                    (swap !== null && rightChild > leftChild)
-                ) {
-                    swap = rightChildIndex;
-                }
-            }
-
-            if (swap === null) break;
-            [this.heap[index], this.heap[swap]] = [this.heap[swap], this.heap[index]];
-            index = swap;
-        }
-    }
-}
-
-// Helper class for MinHeap
-class MinHeap {
-    constructor() {
-        this.heap = [];
-    }
-
-    size() {
-        return this.heap.length;
-    }
-
-    insert(value) {
-        this.heap.push(value);
-        this.bubbleUp();
-    }
-
-    peek() {
-        return this.heap[0];
-    }
-
-    extractMin() {
-        if (this.size() === 1) return this.heap.pop();
-
-        const min = this.heap[0];
-        this.heap[0] = this.heap.pop();
-        this.bubbleDown();
-
-        return min;
-    }
-
-    bubbleUp() {
-        let index = this.size() - 1;
-        while (index > 0) {
-            let parentIndex = Math.floor((index - 1) / 2);
-            if (this.heap[parentIndex] <= this.heap[index]) break;
-
-            [this.heap[parentIndex], this.heap[index]] = [this.heap[index], this.heap[parentIndex]];
-            index = parentIndex;
-        }
-    }
-
-    bubbleDown() {
-        let index = 0;
-        const length = this.size();
-        const element = this.heap[0];
-
-        while (true) {
-            let leftChildIndex = 2 * index + 1;
-            let rightChildIndex = 2 * index + 2;
-            let leftChild, rightChild;
-            let swap = null;
-
-            if (leftChildIndex < length) {
-                leftChild = this.heap[leftChildIndex];
-                if (leftChild < element) {
-                    swap = leftChildIndex;
-                }
-            }
-
-            if (rightChildIndex < length) {
-                rightChild = this.heap[rightChildIndex];
-                if (
-                    (swap === null && rightChild < element) ||
-                    (swap !== null && rightChild < leftChild)
-                ) {
-                    swap = rightChildIndex;
-                }
-            }
-
-            if (swap === null) break;
-            [this.heap[index], this.heap[swap]] = [this.heap[swap], this.heap[index]];
-            index = swap;
-        }
-    }
+    return result;
 }
