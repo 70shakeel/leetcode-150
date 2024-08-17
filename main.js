@@ -1,47 +1,31 @@
-// Add Binary
+// Reverse Bits
 // Easy
 // Topics
 // Companies
-// Given two binary strings a and b, return their sum as a binary string.
+// Reverse bits of a given 32 bits unsigned integer.
+
+//     Note:
+
+// Note that in some languages, such as Java, there is no unsigned integer type.In this case, both input and output will be given as a signed integer type.They should not affect your implementation, as the integer's internal binary representation is the same, whether it is signed or unsigned.
+// In Java, the compiler represents the signed integers using 2's complement notation. Therefore, in Example 2 above, the input represents the signed integer -3 and the output represents the signed integer -1073741825.
 
 
+// Example 1:
 
-//     Example 1:
+// Input: n = 00000010100101000001111010011100
+// Output: 964176192(00111001011110000010100101000000)
+// Explanation: The input binary string 00000010100101000001111010011100 represents the unsigned integer 43261596, so return 964176192 which its binary representation is 00111001011110000010100101000000.
+//     Example 2:
 
-// Input: a = "11", b = "1"
-// Output: "100"
-// Example 2:
-
-// Input: a = "1010", b = "1011"
-// Output: "10101"
-function addBinary(a, b) {
-    let result = "";
-    let carry = 0;
-    let i = a.length - 1;
-    let j = b.length - 1;
-
-    while (i >= 0 || j >= 0) {
-        let sum = carry;
-
-        if (i >= 0) {
-            sum += parseInt(a[i]);
-            i--;
-        }
-
-        if (j >= 0) {
-            sum += parseInt(b[j]);
-            j--;
-        }
-
-        // sum can be 0, 1, 2, or 3.
-        result = (sum % 2) + result;  // append the remainder to result
-        carry = Math.floor(sum / 2);  // carry will be 1 if sum is 2 or 3, otherwise 0
+// Input: n = 11111111111111111111111111111101
+// Output: 3221225471(10111111111111111111111111111111)
+// Explanation: The input binary string 11111111111111111111111111111101 represents the unsigned integer 4294967293, so return 3221225471 which its binary representation is 10111111111111111111111111111111.
+function reverseBits(n) {
+    let result = 0;
+    for (let i = 0; i < 32; i++) {
+        result <<= 1;          // Shift result to the left
+        result |= (n & 1);     // Add the last bit of n to result
+        n >>>= 1;              // Shift n to the right (unsigned shift)
     }
-
-    // If there's any carry left, append it to the result.
-    if (carry > 0) {
-        result = carry + result;
-    }
-
-    return result;
+    return result >>> 0;       // Convert result to an unsigned 32-bit integer
 }
