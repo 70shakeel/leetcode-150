@@ -1,31 +1,47 @@
-// Reverse Bits
+// Number of 1 Bits
 // Easy
 // Topics
 // Companies
-// Reverse bits of a given 32 bits unsigned integer.
-
-//     Note:
-
-// Note that in some languages, such as Java, there is no unsigned integer type.In this case, both input and output will be given as a signed integer type.They should not affect your implementation, as the integer's internal binary representation is the same, whether it is signed or unsigned.
-// In Java, the compiler represents the signed integers using 2's complement notation. Therefore, in Example 2 above, the input represents the signed integer -3 and the output represents the signed integer -1073741825.
+// Write a function that takes the binary representation of a positive integer and returns the number of 
+// set bits
+//  it has(also known as the Hamming weight).
 
 
-// Example 1:
 
-// Input: n = 00000010100101000001111010011100
-// Output: 964176192(00111001011110000010100101000000)
-// Explanation: The input binary string 00000010100101000001111010011100 represents the unsigned integer 43261596, so return 964176192 which its binary representation is 00111001011110000010100101000000.
+//     Example 1:
+
+// Input: n = 11
+
+// Output: 3
+
+// Explanation:
+
+// The input binary string 1011 has a total of three set bits.
+
 //     Example 2:
 
-// Input: n = 11111111111111111111111111111101
-// Output: 3221225471(10111111111111111111111111111111)
-// Explanation: The input binary string 11111111111111111111111111111101 represents the unsigned integer 4294967293, so return 3221225471 which its binary representation is 10111111111111111111111111111111.
-function reverseBits(n) {
-    let result = 0;
-    for (let i = 0; i < 32; i++) {
-        result <<= 1;          // Shift result to the left
-        result |= (n & 1);     // Add the last bit of n to result
-        n >>>= 1;              // Shift n to the right (unsigned shift)
+// Input: n = 128
+
+// Output: 1
+
+// Explanation:
+
+// The input binary string 10000000 has a total of one set bit.
+
+//     Example 3:
+
+// Input: n = 2147483645
+
+// Output: 30
+
+// Explanation:
+
+// The input binary string 1111111111111111111111111111101 has a total of thirty set bits.
+function hammingWeight(n) {
+    let count = 0;
+    while (n !== 0) {
+        count += n & 1; // Increment count if the last bit is 1
+        n >>>= 1;       // Shift right by 1 bit, using unsigned shift
     }
-    return result >>> 0;       // Convert result to an unsigned 32-bit integer
+    return count;
 }
