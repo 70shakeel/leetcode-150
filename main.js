@@ -1,47 +1,33 @@
-// Number of 1 Bits
+// Single Number
+// Solved
 // Easy
 // Topics
 // Companies
-// Write a function that takes the binary representation of a positive integer and returns the number of 
-// set bits
-//  it has(also known as the Hamming weight).
+// Hint
+// Given a non - empty array of integers nums, every element appears twice except for one.Find that single one.
+
+// You must implement a solution with a linear runtime complexity and use only constant extra space.
 
 
 
 //     Example 1:
 
-// Input: n = 11
-
-// Output: 3
-
-// Explanation:
-
-// The input binary string 1011 has a total of three set bits.
-
-//     Example 2:
-
-// Input: n = 128
-
+// Input: nums = [2, 2, 1]
 // Output: 1
+// Example 2:
 
-// Explanation:
+// Input: nums = [4, 1, 2, 1, 2]
+// Output: 4
+// Example 3:
 
-// The input binary string 10000000 has a total of one set bit.
+// Input: nums = [1]
+// Output: 1
+function singleNumber(nums) {
+    let result = 0;
 
-//     Example 3:
-
-// Input: n = 2147483645
-
-// Output: 30
-
-// Explanation:
-
-// The input binary string 1111111111111111111111111111101 has a total of thirty set bits.
-function hammingWeight(n) {
-    let count = 0;
-    while (n !== 0) {
-        count += n & 1; // Increment count if the last bit is 1
-        n >>>= 1;       // Shift right by 1 bit, using unsigned shift
+    for (let num of nums) {
+        result ^= num;
     }
-    return count;
+
+    return result;
 }
