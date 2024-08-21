@@ -1,33 +1,33 @@
-// Single Number II
+// Bitwise AND of Numbers Range
 // Medium
 // Topics
 // Companies
-// Given an integer array nums where every element appears three times except for one, which appears exactly once.Find the single element and return it.
-
-// You must implement a solution with a linear runtime complexity and use only constant extra space.
+// Given two integers left and right that represent the range[left, right], return the bitwise AND of all numbers in this range, inclusive.
 
 
 
 //     Example 1:
 
-// Input: nums = [2, 2, 3, 2]
-// Output: 3
+// Input: left = 5, right = 7
+// Output: 4
 // Example 2:
 
-// Input: nums = [0, 1, 0, 1, 0, 1, 99]
-// Output: 99
-function singleNumber(nums) {
-    let ones = 0, twos = 0;
+// Input: left = 0, right = 0
+// Output: 0
+// Example 3:
 
-    for (let num of nums) {
-        // Update ones with the bits of the current number that appear only once
-        ones = (ones ^ num) & ~twos;
+// Input: left = 1, right = 2147483647
+// Output: 0
+function rangeBitwiseAnd(left, right) {
+    let shift = 0;
 
-        // Update twos with the bits of the current number that appear only twice
-        twos = (twos ^ num) & ~ones;
+    // Find the common prefix
+    while (left < right) {
+        left >>= 1;
+        right >>= 1;
+        shift++;
     }
 
-    // The result will be in ones, as it contains the bit pattern of the number
-    // that appears only once.
-    return ones;
+    // Shift the result back to the left by the number of shifts
+    return left << shift;
 }
