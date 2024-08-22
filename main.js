@@ -1,33 +1,44 @@
-// Bitwise AND of Numbers Range
-// Medium
+// Palindrome Number
+// Easy
 // Topics
 // Companies
-// Given two integers left and right that represent the range[left, right], return the bitwise AND of all numbers in this range, inclusive.
+// Hint
+// Given an integer x, return true if x is a
+// palindrome
+//     , and false otherwise.
 
 
 
-//     Example 1:
+//         Example 1:
 
-// Input: left = 5, right = 7
-// Output: 4
-// Example 2:
+// Input: x = 121
+// Output: true
+// Explanation: 121 reads as 121 from left to right and from right to left.
+//     Example 2:
 
-// Input: left = 0, right = 0
-// Output: 0
-// Example 3:
+// Input: x = -121
+// Output: false
+// Explanation: From left to right, it reads - 121. From right to left, it becomes 121 -.Therefore it is not a palindrome.
+//     Example 3:
 
-// Input: left = 1, right = 2147483647
-// Output: 0
-function rangeBitwiseAnd(left, right) {
-    let shift = 0;
+// Input: x = 10
+// Output: false
+// Explanation: Reads 01 from right to left.Therefore it is not a palindrome.
+function isPalindrome(x) {
+    // Negative numbers are not palindromes
+    if (x < 0) return false;
 
-    // Find the common prefix
-    while (left < right) {
-        left >>= 1;
-        right >>= 1;
-        shift++;
+    // Initialize variables
+    let original = x;
+    let reversed = 0;
+
+    // Reverse the digits of the number
+    while (x > 0) {
+        let digit = x % 10; // Get the last digit
+        reversed = reversed * 10 + digit; // Append the digit to reversed number
+        x = Math.floor(x / 10); // Remove the last digit from x
     }
 
-    // Shift the result back to the left by the number of shifts
-    return left << shift;
+    // Compare the reversed number with the original number
+    return reversed === original;
 }
