@@ -1,44 +1,51 @@
-// Palindrome Number
+// Plus One
 // Easy
 // Topics
 // Companies
-// Hint
-// Given an integer x, return true if x is a
-// palindrome
-//     , and false otherwise.
+// You are given a large integer represented as an integer array digits, where each digits[i] is the ith digit of the integer.The digits are ordered from most significant to least significant in left - to - right order.The large integer does not contain any leading 0's.
+
+// Increment the large integer by one and return the resulting array of digits.
 
 
 
-//         Example 1:
+//     Example 1:
 
-// Input: x = 121
-// Output: true
-// Explanation: 121 reads as 121 from left to right and from right to left.
+// Input: digits = [1, 2, 3]
+// Output: [1, 2, 4]
+// Explanation: The array represents the integer 123.
+// Incrementing by one gives 123 + 1 = 124.
+// Thus, the result should be[1, 2, 4].
 //     Example 2:
 
-// Input: x = -121
-// Output: false
-// Explanation: From left to right, it reads - 121. From right to left, it becomes 121 -.Therefore it is not a palindrome.
+// Input: digits = [4, 3, 2, 1]
+// Output: [4, 3, 2, 2]
+// Explanation: The array represents the integer 4321.
+// Incrementing by one gives 4321 + 1 = 4322.
+// Thus, the result should be[4, 3, 2, 2].
 //     Example 3:
 
-// Input: x = 10
-// Output: false
-// Explanation: Reads 01 from right to left.Therefore it is not a palindrome.
-function isPalindrome(x) {
-    // Negative numbers are not palindromes
-    if (x < 0) return false;
+// Input: digits = [9]
+// Output: [1, 0]
+// Explanation: The array represents the integer 9.
+// Incrementing by one gives 9 + 1 = 10.
+// Thus, the result should be[1, 0].
 
-    // Initialize variables
-    let original = x;
-    let reversed = 0;
+function plusOne(digits) {
+    // Start from the last digit and move backwards
+    for (let i = digits.length - 1; i >= 0; i--) {
+        // Increment the current digit
+        digits[i]++;
 
-    // Reverse the digits of the number
-    while (x > 0) {
-        let digit = x % 10; // Get the last digit
-        reversed = reversed * 10 + digit; // Append the digit to reversed number
-        x = Math.floor(x / 10); // Remove the last digit from x
+        // If the incremented digit is less than 10, no carry needed
+        if (digits[i] < 10) {
+            return digits;
+        }
+
+        // If the incremented digit is 10, set it to 0 and carry over to the next digit
+        digits[i] = 0;
     }
 
-    // Compare the reversed number with the original number
-    return reversed === original;
+    // If we have a carry beyond the most significant digit, add a 1 at the start
+    digits.unshift(1);
+    return digits;
 }
