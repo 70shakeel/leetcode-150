@@ -1,42 +1,43 @@
-// Sqrt(x)
-// Easy
+// Pow(x, n)
+// Medium
 // Topics
 // Companies
-// Hint
-// Given a non-negative integer x, return the square root of x rounded down to the nearest integer. The returned integer should be non-negative as well.
-
-// You must not use any built-in exponent function or operator.
-
-// For example, do not use pow(x, 0.5) in c++ or x ** 0.5 in python.
+// Implement pow(x, n), which calculates x raised to the power n(i.e., xn).
 
 
-// Example 1:
 
-// Input: x = 4
-// Output: 2
-// Explanation: The square root of 4 is 2, so we return 2.
+//     Example 1:
+
+// Input: x = 2.00000, n = 10
+// Output: 1024.00000
 // Example 2:
 
-// Input: x = 8
-// Output: 2
-// Explanation: The square root of 8 is 2.82842..., and since we round it down to the nearest integer, 2 is returned.
-function mySqrt(x) {
-    if (x < 2) return x; // If x is 0 or 1, the square root is x itself.
+// Input: x = 2.10000, n = 3
+// Output: 9.26100
+// Example 3:
 
-    let left = 1;
-    let right = x;
-    let result = 0;
+// Input: x = 2.00000, n = -2
+// Output: 0.25000
+// Explanation: 2 - 2 = 1 / 22 = 1 / 4 = 0.25
+function myPow(x, n) {
+    if (n === 0) return 1; // Any number raised to the power of 0 is 1.
 
-    while (left <= right) {
-        let mid = Math.floor(left + (right - left) / 2);
+    // If n is negative, convert it to positive and invert x.
+    if (n < 0) {
+        x = 1 / x;
+        n = -n;
+    }
 
-        if (mid * mid <= x) {
-            result = mid; // `mid` is a potential answer, store it.
-            left = mid + 1; // Try to find a larger answer.
+    // Recursive function to calculate power using Exponentiation by Squaring
+    function power(x, n) {
+        if (n === 0) return 1;
+        const half = power(x, Math.floor(n / 2));
+        if (n % 2 === 0) {
+            return half * half;
         } else {
-            right = mid - 1; // Reduce the search range.
+            return half * half * x;
         }
     }
 
-    return result;
+    return power(x, n);
 }
