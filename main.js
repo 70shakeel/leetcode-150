@@ -1,43 +1,58 @@
-// Pow(x, n)
-// Medium
+// Max Points on a Line
+// Hard
 // Topics
 // Companies
-// Implement pow(x, n), which calculates x raised to the power n(i.e., xn).
+// Given an array of points where points[i] = [xi, yi] represents a point on the X - Y plane, return the maximum number of points that lie on the same straight line.
 
 
 
 //     Example 1:
 
-// Input: x = 2.00000, n = 10
-// Output: 1024.00000
+
+// Input: points = [[1, 1], [2, 2], [3, 3]]
+// Output: 3
 // Example 2:
 
-// Input: x = 2.10000, n = 3
-// Output: 9.26100
-// Example 3:
 
-// Input: x = 2.00000, n = -2
-// Output: 0.25000
-// Explanation: 2 - 2 = 1 / 22 = 1 / 4 = 0.25
-function myPow(x, n) {
-    if (n === 0) return 1; // Any number raised to the power of 0 is 1.
+// Input: points = [[1, 1], [3, 2], [5, 3], [4, 1], [2, 3], [1, 4]]
+// Output: 4
+function maxPoints(points) {
+    if (points.length <= 2) return points.length;
 
-    // If n is negative, convert it to positive and invert x.
-    if (n < 0) {
-        x = 1 / x;
-        n = -n;
-    }
+    const gcd = (a, b) => b === 0 ? a : gcd(b, a % b);
 
-    // Recursive function to calculate power using Exponentiation by Squaring
-    function power(x, n) {
-        if (n === 0) return 1;
-        const half = power(x, Math.floor(n / 2));
-        if (n % 2 === 0) {
-            return half * half;
-        } else {
-            return half * half * x;
+    let maxPointsOnLine = 1;
+
+    for (let i = 0; i < points.length; i++) {
+        const slopes = new Map();
+        let duplicate = 0;
+        let vertical = 0;
+        let currentMax = 0;
+
+        for (let j = i + 1; j < points.length; j++) {
+            const [x1, y1] = points[i];
+            const [x2, y2] = points[j];
+
+            if (x1 === x2 && y1 === y2) {
+                duplicate++;
+            } else if (x1 === x2) {
+                vertical++;
+            } else {
+                let dx = x2 - x1;
+                let dy = y2 - y1;
+                const slopeGCD = gcd(dx, dy);
+
+                dx /= slopeGCD;
+                dy /= slopeGCD;
+
+                const slope = `${dy}/${dx}`;
+                slopes.set(slope, (slopes.get(slope) || 0) + 1);
+                currentMax = Math.max(currentMax, slopes.get(slope));
+            }
         }
+
+        maxPointsOnLine = Math.max(maxPointsOnLine, currentMax + duplicate + 1, vertical + duplicate + 1);
     }
 
-    return power(x, n);
+    return maxPointsOnLine;
 }
