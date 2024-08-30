@@ -1,40 +1,41 @@
-// House Robber
-// Solved
+// Word Break
 // Medium
 // Topics
 // Companies
-// You are a professional robber planning to rob houses along a street.Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security systems connected and it will automatically contact the police if two adjacent houses were broken into on the same night.
+// Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space - separated sequence of one or more dictionary words.
 
-// Given an integer array nums representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.
+// Note that the same word in the dictionary may be reused multiple times in the segmentation.
 
 
 
 //     Example 1:
 
-// Input: nums = [1, 2, 3, 1]
-// Output: 4
-// Explanation: Rob house 1(money = 1) and then rob house 3(money = 3).
-// Total amount you can rob = 1 + 3 = 4.
+// Input: s = "leetcode", wordDict = ["leet", "code"]
+// Output: true
+// Explanation: Return true because "leetcode" can be segmented as "leet code".
 // Example 2:
 
-// Input: nums = [2, 7, 9, 3, 1]
-// Output: 12
-// Explanation: Rob house 1(money = 2), rob house 3(money = 9) and rob house 5(money = 1).
-// Total amount you can rob = 2 + 9 + 1 = 12.
-function rob(nums) {
-    if (nums.length === 0) return 0;
-    if (nums.length === 1) return nums[0];
+// Input: s = "applepenapple", wordDict = ["apple", "pen"]
+// Output: true
+// Explanation: Return true because "applepenapple" can be segmented as "apple pen apple".
+// Note that you are allowed to reuse a dictionary word.
+//     Example 3:
 
-    // Initialize an array to store the maximum money that can be robbed up to the ith house
-    const dp = new Array(nums.length);
-    dp[0] = nums[0];
-    dp[1] = Math.max(nums[0], nums[1]);
+// Input: s = "catsandog", wordDict = ["cats", "dog", "sand", "and", "cat"]
+// Output: false
+function wordBreak(s, wordDict) {
+    const n = s.length;
+    const dp = Array(n + 1).fill(false);
+    dp[0] = true;
 
-    // Calculate the maximum money that can be robbed up to the ith house
-    for (let i = 2; i < nums.length; i++) {
-        dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i]);
+    for (let i = 1; i <= n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (dp[j] && wordDict.includes(s.substring(j, i))) {
+                dp[i] = true;
+                break;
+            }
+        }
     }
 
-    // Return the maximum money that can be robbed from all houses
-    return dp[nums.length - 1];
+    return dp[n];
 }
