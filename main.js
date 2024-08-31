@@ -1,41 +1,44 @@
-// Word Break
+// Coin Change
 // Medium
 // Topics
 // Companies
-// Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space - separated sequence of one or more dictionary words.
+// You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money.
 
-// Note that the same word in the dictionary may be reused multiple times in the segmentation.
+// Return the fewest number of coins that you need to make up that amount.If that amount of money cannot be made up by any combination of the coins, return -1.
+
+// You may assume that you have an infinite number of each kind of coin.
 
 
 
 //     Example 1:
 
-// Input: s = "leetcode", wordDict = ["leet", "code"]
-// Output: true
-// Explanation: Return true because "leetcode" can be segmented as "leet code".
+// Input: coins = [1, 2, 5], amount = 11
+// Output: 3
+// Explanation: 11 = 5 + 5 + 1
 // Example 2:
 
-// Input: s = "applepenapple", wordDict = ["apple", "pen"]
-// Output: true
-// Explanation: Return true because "applepenapple" can be segmented as "apple pen apple".
-// Note that you are allowed to reuse a dictionary word.
-//     Example 3:
+// Input: coins = [2], amount = 3
+// Output: -1
+// Example 3:
 
-// Input: s = "catsandog", wordDict = ["cats", "dog", "sand", "and", "cat"]
-// Output: false
-function wordBreak(s, wordDict) {
-    const n = s.length;
-    const dp = Array(n + 1).fill(false);
-    dp[0] = true;
+// Input: coins = [1], amount = 0
+// Output: 0
+function coinChange(coins, amount) {
+    // Initialize dp array with Infinity, except dp[0] set to 0
+    const dp = Array(amount + 1).fill(Infinity);
+    dp[0] = 0;
 
-    for (let i = 1; i <= n; i++) {
-        for (let j = 0; j < i; j++) {
-            if (dp[j] && wordDict.includes(s.substring(j, i))) {
-                dp[i] = true;
-                break;
+    // Loop through each amount from 1 to the target amount
+    for (let i = 1; i <= amount; i++) {
+        // Check each coin to see if it can be used to make up the amount i
+        for (const coin of coins) {
+            if (coin <= i) {
+                // Update the dp array for the minimum number of coins needed
+                dp[i] = Math.min(dp[i], dp[i - coin] + 1);
             }
         }
     }
 
-    return dp[n];
+    // If dp[amount] is still Infinity, return -1, otherwise return dp[amount]
+    return dp[amount] === Infinity ? -1 : dp[amount];
 }
