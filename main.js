@@ -1,38 +1,35 @@
-// Longest Increasing Subsequence
+// Triangle
 // Medium
 // Topics
 // Companies
-// Given an integer array nums, return the length of the longest strictly increasing
-// subsequence
-//     .
+// Given a triangle array, return the minimum path sum from top to bottom.
+
+// For each step, you may move to an adjacent number of the row below.More formally, if you are on index i on the current row, you may move to either index i or index i + 1 on the next row.
 
 
 
 //     Example 1:
 
-// Input: nums = [10, 9, 2, 5, 3, 7, 101, 18]
-// Output: 4
-// Explanation: The longest increasing subsequence is[2, 3, 7, 101], therefore the length is 4.
-// Example 2:
+// Input: triangle = [[2], [3, 4], [6, 5, 7], [4, 1, 8, 3]]
+// Output: 11
+// Explanation: The triangle looks like:
+// 2
+// 3 4
+// 6 5 7
+// 4 1 8 3
+// The minimum path sum from top to bottom is 2 + 3 + 5 + 1 = 11(underlined above).
+//     Example 2:
 
-// Input: nums = [0, 1, 0, 3, 2, 3]
-// Output: 4
-// Example 3:
-
-// Input: nums = [7, 7, 7, 7, 7, 7, 7]
-// Output: 1
-function lengthOfLIS(nums) {
-    if (nums.length === 0) return 0;
-
-    const dp = Array(nums.length).fill(1);
-
-    for (let i = 1; i < nums.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (nums[i] > nums[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
+// Input: triangle = [[-10]]
+// Output: -10
+function minimumTotal(triangle) {
+    // Start from the second to last row and move upwards
+    for (let row = triangle.length - 2; row >= 0; row--) {
+        for (let col = 0; col < triangle[row].length; col++) {
+            // Update the current element with the minimum path sum from the row below
+            triangle[row][col] += Math.min(triangle[row + 1][col], triangle[row + 1][col + 1]);
         }
     }
-
-    return Math.max(...dp);
+    // The top element will have the minimum path sum
+    return triangle[0][0];
 }
