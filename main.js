@@ -1,35 +1,50 @@
-// Triangle
+// Minimum Path Sum
 // Medium
 // Topics
 // Companies
-// Given a triangle array, return the minimum path sum from top to bottom.
+// Given a m x n grid filled with non - negative numbers, find a path from top left to bottom right, which minimizes the sum of all numbers along its path.
 
-// For each step, you may move to an adjacent number of the row below.More formally, if you are on index i on the current row, you may move to either index i or index i + 1 on the next row.
+//     Note: You can only move either down or right at any point in time.
 
 
 
-//     Example 1:
+//         Example 1:
 
-// Input: triangle = [[2], [3, 4], [6, 5, 7], [4, 1, 8, 3]]
-// Output: 11
-// Explanation: The triangle looks like:
-// 2
-// 3 4
-// 6 5 7
-// 4 1 8 3
-// The minimum path sum from top to bottom is 2 + 3 + 5 + 1 = 11(underlined above).
+
+// Input: grid = [[1, 3, 1], [1, 5, 1], [4, 2, 1]]
+// Output: 7
+// Explanation: Because the path 1 → 3 → 1 → 1 → 1 minimizes the sum.
 //     Example 2:
 
-// Input: triangle = [[-10]]
-// Output: -10
-function minimumTotal(triangle) {
-    // Start from the second to last row and move upwards
-    for (let row = triangle.length - 2; row >= 0; row--) {
-        for (let col = 0; col < triangle[row].length; col++) {
-            // Update the current element with the minimum path sum from the row below
-            triangle[row][col] += Math.min(triangle[row + 1][col], triangle[row + 1][col + 1]);
+// Input: grid = [[1, 2, 3], [4, 5, 6]]
+// Output: 12
+function minPathSum(grid) {
+    if (grid.length === 0 || grid[0].length === 0) return 0;
+
+    const m = grid.length;    // Number of rows
+    const n = grid[0].length; // Number of columns
+    const dp = Array.from({ length: m }, () => Array(n).fill(0));
+
+    // Initialize the starting point
+    dp[0][0] = grid[0][0];
+
+    // Fill the first row
+    for (let j = 1; j < n; j++) {
+        dp[0][j] = dp[0][j - 1] + grid[0][j];
+    }
+
+    // Fill the first column
+    for (let i = 1; i < m; i++) {
+        dp[i][0] = dp[i - 1][0] + grid[i][0];
+    }
+
+    // Fill the rest of the dp array
+    for (let i = 1; i < m; i++) {
+        for (let j = 1; j < n; j++) {
+            dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + grid[i][j];
         }
     }
-    // The top element will have the minimum path sum
-    return triangle[0][0];
+
+    // Return the minimum path sum to the bottom-right corner
+    return dp[m - 1][n - 1];
 }
