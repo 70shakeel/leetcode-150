@@ -1,63 +1,66 @@
-// Unique Paths II
+// Longest Palindromic Substring
 // Medium
 // Topics
 // Companies
 // Hint
-// You are given an m x n integer array grid.There is a robot initially located at the top - left corner(i.e., grid[0][0]).The robot tries to move to the bottom - right corner(i.e., grid[m - 1][n - 1]).The robot can only move either down or right at any point in time.
+// Given a string s, return the longest
+// palindromic
 
-// An obstacle and space are marked as 1 or 0 respectively in grid.A path that the robot takes cannot include any square that is an obstacle.
-
-// Return the number of possible unique paths that the robot can take to reach the bottom - right corner.
-
-// The testcases are generated so that the answer will be less than or equal to 2 * 109.
+// substring
+//     in s.
 
 
 
-// Example 1:
+//         Example 1:
 
+// Input: s = "babad"
+// Output: "bab"
+// Explanation: "aba" is also a valid answer.
+//     Example 2:
 
-// Input: obstacleGrid = [[0, 0, 0], [0, 1, 0], [0, 0, 0]]
-// Output: 2
-// Explanation: There is one obstacle in the middle of the 3x3 grid above.
-// There are two ways to reach the bottom - right corner:
-// 1. Right -> Right -> Down -> Down
-// 2. Down -> Down -> Right -> Right
-// Example 2:
+// Input: s = "cbbd"
+// Output: "bb"
+function longestPalindrome(s) {
+    const n = s.length;
+    if (n < 2) return s;
 
+    // dp[i][j] will be true if substring s[i..j] is a palindrome
+    const dp = Array.from({ length: n }, () => Array(n).fill(false));
 
-// Input: obstacleGrid = [[0, 1], [0, 0]]
-// Output: 1
-function uniquePathsWithObstacles(obstacleGrid) {
-    const m = obstacleGrid.length;
-    const n = obstacleGrid[0].length;
+    let start = 0;  // To store the start index of the longest palindrome
+    let maxLength = 1;  // To store the length of the longest palindrome
 
-    // Initialize a DP table with the same dimensions as obstacleGrid
-    const dp = Array.from({ length: m }, () => Array(n).fill(0));
-
-    // Base case: Starting point
-    dp[0][0] = obstacleGrid[0][0] === 1 ? 0 : 1;
-
-    // Fill the first row
-    for (let j = 1; j < n; j++) {
-        dp[0][j] = obstacleGrid[0][j] === 1 ? 0 : dp[0][j - 1];
+    // Every single character is a palindrome
+    for (let i = 0; i < n; i++) {
+        dp[i][i] = true;
     }
 
-    // Fill the first column
-    for (let i = 1; i < m; i++) {
-        dp[i][0] = obstacleGrid[i][0] === 1 ? 0 : dp[i - 1][0];
+    // Check for substring of length 2
+    for (let i = 0; i < n - 1; i++) {
+        if (s[i] === s[i + 1]) {
+            dp[i][i + 1] = true;
+            start = i;
+            maxLength = 2;
+        }
     }
 
-    // Fill the rest of the DP table
-    for (let i = 1; i < m; i++) {
-        for (let j = 1; j < n; j++) {
-            if (obstacleGrid[i][j] === 1) {
-                dp[i][j] = 0; // No path through obstacles
-            } else {
-                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+    // Check for substrings of length greater than 2
+    for (let len = 3; len <= n; len++) {
+        for (let i = 0; i < n - len + 1; i++) {
+            let j = i + len - 1;  // Ending index of the current substring
+
+            // Check if s[i] equals s[j] and the substring s[i+1..j-1] is a palindrome
+            if (s[i] === s[j] && dp[i + 1][j - 1]) {
+                dp[i][j] = true;
+
+                if (len > maxLength) {
+                    start = i;
+                    maxLength = len;
+                }
             }
         }
     }
 
-    // The bottom-right corner will have the number of unique paths
-    return dp[m - 1][n - 1];
+    // Return the longest palindromic substring
+    return s.substring(start, start + maxLength);
 }
