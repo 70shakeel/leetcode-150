@@ -1,61 +1,46 @@
-// Edit Distance
-// Solved
-// Medium
+// Best Time to Buy and Sell Stock III
+// Hard
 // Topics
 // Companies
-// Given two strings word1 and word2, return the minimum number of operations required to convert word1 to word2.
+// You are given an array prices where prices[i] is the price of a given stock on the ith day.
 
-// You have the following three operations permitted on a word:
+// Find the maximum profit you can achieve.You may complete at most two transactions.
 
-// Insert a character
-// Delete a character
-// Replace a character
+//     Note: You may not engage in multiple transactions simultaneously(i.e., you must sell the stock before you buy again).
 
 
-// Example 1:
 
-// Input: word1 = "horse", word2 = "ros"
-// Output: 3
-// Explanation:
-// horse -> rorse(replace 'h' with 'r')
-// rorse -> rose(remove 'r')
-// rose -> ros(remove 'e')
+//         Example 1:
+
+// Input: prices = [3, 3, 5, 0, 0, 3, 1, 4]
+// Output: 6
+// Explanation: Buy on day 4(price = 0) and sell on day 6(price = 3), profit = 3 - 0 = 3.
+// Then buy on day 7(price = 1) and sell on day 8(price = 4), profit = 4 - 1 = 3.
 // Example 2:
 
-// Input: word1 = "intention", word2 = "execution"
-// Output: 5
-// Explanation:
-// intention -> inention(remove 't')
-// inention -> enention(replace 'i' with 'e')
-// enention -> exention(replace 'n' with 'x')
-// exention -> exection(replace 'n' with 'c')
-// exection -> execution(insert 'u')
-function minDistance(word1, word2) {
-    const m = word1.length;
-    const n = word2.length;
+// Input: prices = [1, 2, 3, 4, 5]
+// Output: 4
+// Explanation: Buy on day 1(price = 1) and sell on day 5(price = 5), profit = 5 - 1 = 4.
+// Note that you cannot buy on day 1, buy on day 2 and sell them later, as you are engaging multiple transactions at the same time.You must sell before buying again.
+//     Example 3:
 
-    // Create a 2D array to store the minimum operations required
-    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+// Input: prices = [7, 6, 4, 3, 1]
+// Output: 0
+// Explanation: In this case, no transaction is done, i.e.max profit = 0.
+function maxProfit(prices) {
+    if (prices.length == 0) return 0;
 
-    // Initialize the dp array with base cases
-    for (let i = 0; i <= m; i++) {
-        dp[i][0] = i;
+    let firstBuy = -Infinity;
+    let firstSell = 0;
+    let secondBuy = -Infinity;
+    let secondSell = 0;
+
+    for (let i = 0; i < prices.length; i++) {
+        firstBuy = Math.max(firstBuy, -prices[i]);         // Maximum profit after first buy
+        firstSell = Math.max(firstSell, firstBuy + prices[i]);  // Maximum profit after first sell
+        secondBuy = Math.max(secondBuy, firstSell - prices[i]); // Maximum profit after second buy
+        secondSell = Math.max(secondSell, secondBuy + prices[i]); // Maximum profit after second sell
     }
 
-    for (let j = 0; j <= n; j++) {
-        dp[0][j] = j;
-    }
-
-    // Fill the dp array using dynamic programming
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (word1[i - 1] === word2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1];
-            } else {
-                dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]) + 1;
-            }
-        }
-    }
-
-    return dp[m][n];
+    return secondSell; // This is the maximum profit with at most two transactions
 }
