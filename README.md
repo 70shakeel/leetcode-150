@@ -13,17 +13,17 @@ My solutions to the **LeetCode Top Interview 150** problem set — the official 
 |---|---|---|
 | Array / String | 13 | ✅ |
 | Two Pointers | 5 | ✅ |
-| Sliding Window | 4 | 🔄 |
-| Matrix | 5 | 🔄 |
-| Hashmap | 9 | 🔄 |
-| Intervals | 5 | 🔄 |
-| Stack | 5 | 🔄 |
-| Linked List | 11 | 🔄 |
-| Binary Tree | 15 | 🔄 |
-| Binary Search Tree | 3 | 🔄 |
-| Graph | 13 | 🔄 |
-| Dynamic Programming | 13 | 🔄 |
-| Bit Manipulation | 7 | 🔄 |
+| Sliding Window | 4 | ✅ |
+| Matrix | 5 | ✅ |
+| Hashmap | 9 | ✅ |
+| Intervals | 5 | ✅ |
+| Stack | 5 | ✅ |
+| Linked List | 11 | ✅ |
+| Binary Tree | 15 | ✅ |
+| Binary Search Tree | 3 | ✅ |
+| Graph | 13 | ✅ |
+| Dynamic Programming | 13 | ✅ |
+| Bit Manipulation | 7 | ✅ |
 
 ## 🧰 Tech
 - **Language:** JavaScript (Node.js)
