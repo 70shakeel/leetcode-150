@@ -6,9 +6,7 @@
 
 My solutions to the **LeetCode Top Interview 150** problem set — the official curated list used for technical interview preparation at top tech companies.
 
-## 📸 Screenshots
 
-![LeetCode Study Plan](https://image.thum.io/get/width/1280/crop/700/https://leetcode.com/studyplan/top-interview-150/)
 
 ## 📊 Progress
 
