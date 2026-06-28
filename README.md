@@ -2,10 +2,13 @@
 
 [![LeetCode](https://img.shields.io/badge/LeetCode-150%20Problems-FFA116?style=flat&logo=leetcode&logoColor=white)](https://leetcode.com/studyplan/top-interview-150/)
 [![Language](https://img.shields.io/badge/Language-JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)]()
-[![Status](https://img.shields.io/badge/Status-In%20Progress-blue?style=flat)]()
+[![Status](https://img.shields.io/badge/Status-Completed-00C851?style=flat)]()
 
 My solutions to the **LeetCode Top Interview 150** problem set — the official curated list used for technical interview preparation at top tech companies.
 
+## 📸 Screenshots
+
+![LeetCode Study Plan](https://image.thum.io/get/width/1280/crop/700/https://leetcode.com/studyplan/top-interview-150/)
 
 ## 📊 Progress
 
